@@ -19,10 +19,8 @@ public class Category {
     private Long id;
 
     private String categoryName;
-    // 상위 카테고리가 있으면 moving_01 - dancing
-    // 없으면 dancing
 
-    private Integer categoryCount;
+    private String subCategoryName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asset_id")
