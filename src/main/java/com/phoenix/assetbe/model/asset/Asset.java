@@ -43,4 +43,8 @@ public class Asset extends MyTimeBaseUtil{
 
     private LocalDateTime updatedAt; // 비즈니스 로직상 찍기 (최신 버전을 찍은 날짜)
 
+    private String fileUrl;
+
+    private String thumbnailUrl;
+
 }

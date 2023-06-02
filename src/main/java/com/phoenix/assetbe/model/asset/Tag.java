@@ -20,8 +20,6 @@ public class Tag {
 
     private String tagName;
 
-    private Integer tagCount;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asset_id")
     private Asset asset;
