@@ -63,4 +63,13 @@ public class UserInDTO {
         @NotEmpty(message = "인증코드를 입력해주세요.")
         private String code;
     }
+
+    @Setter
+    @Getter
+    @NoArgsConstructor
+    public static class EmailCheckInDTO {
+        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
+        @NotEmpty(message = "이메일을 입력해주세요.")
+        private String email;
+    }
 }

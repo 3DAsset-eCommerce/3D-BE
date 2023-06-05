@@ -3,6 +3,7 @@ package com.phoenix.assetbe.dto;
 import com.phoenix.assetbe.model.auth.VerifiedCode;
 import com.phoenix.assetbe.model.user.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
@@ -45,4 +46,13 @@ public class UserOutDTO {
         }
     }
 
+    @Setter
+    @Getter
+    public static class EmailCheckOutDTO {
+        private String email;
+
+        public EmailCheckOutDTO(String email) {
+            this.email = email;
+        }
+    }
 }

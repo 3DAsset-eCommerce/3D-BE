@@ -6,6 +6,7 @@ import com.phoenix.assetbe.dto.UserInDTO;
 import com.phoenix.assetbe.dto.UserOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.CodeCheckOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.CodeOutDTO;
+import com.phoenix.assetbe.dto.UserOutDTO.EmailCheckOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.PasswordChangeOutDTO;
 import com.phoenix.assetbe.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,11 @@ public class UserController {
     public ResponseEntity<?> passwordChange(@RequestBody @Valid UserInDTO.PasswordChangeInDTO passwordChangeInDTO, Errors errors){
         PasswordChangeOutDTO passwordChangeOutDTO = userService.passwordChanging(passwordChangeInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(passwordChangeOutDTO));
+    }
+
+    @PostMapping("/signup/duplicate")
+    public ResponseEntity<?> emailIsDuplicate(@RequestBody @Valid UserInDTO.EmailCheckInDTO emailCheckInDTO, Errors errors){
+        EmailCheckOutDTO emailCheckOutDTO = userService.emailChecking(emailCheckInDTO);
+        return ResponseEntity.ok(new ResponseDTO<>(emailCheckOutDTO));
     }
 }

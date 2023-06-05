@@ -4,12 +4,13 @@ import com.phoenix.assetbe.core.auth.jwt.MyJwtProvider;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception401;
-import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.dto.UserInDTO;
 import com.phoenix.assetbe.dto.UserInDTO.CodeCheckInDTO;
+import com.phoenix.assetbe.dto.UserInDTO.EmailCheckInDTO;
 import com.phoenix.assetbe.dto.UserInDTO.PasswordChangeInDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.CodeCheckOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.CodeOutDTO;
+import com.phoenix.assetbe.dto.UserOutDTO.EmailCheckOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.PasswordChangeOutDTO;
 import com.phoenix.assetbe.model.auth.VerifiedCode;
 import com.phoenix.assetbe.model.auth.VerifiedCodeRepository;
@@ -86,5 +87,14 @@ public class UserService {
             return new PasswordChangeOutDTO(user.get().getEmail());
         }
         throw new Exception400("none","패스워드 재설정 실패");
+    }
+
+    public EmailCheckOutDTO emailChecking(EmailCheckInDTO emailCheckInDTO) {
+        Optional<User> user = userRepository.existsByEmail(emailCheckInDTO.getEmail());
+        if(user.isPresent()){
+            throw new Exception400("email","이미 존재하는 이메일입니다.");
+        }
+
+        return new EmailCheckOutDTO(emailCheckInDTO.getEmail());
     }
 }
