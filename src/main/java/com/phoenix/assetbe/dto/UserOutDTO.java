@@ -22,4 +22,16 @@ public class UserOutDTO {
             this.emailCheckToken = verifiedCode.getEmailCheckToken();
         }
     }
+
+    @Setter
+    @Getter
+    public static class CodeCheckOutDTO {
+        private String email;
+        private boolean verified;
+
+        public CodeCheckOutDTO(String email, boolean verified) {
+            this.email = email;
+            this.verified = verified;
+        }
+    }
 }

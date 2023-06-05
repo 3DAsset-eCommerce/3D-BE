@@ -3,14 +3,13 @@ package com.phoenix.assetbe.controller;
 import com.phoenix.assetbe.core.auth.jwt.MyJwtProvider;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.UserInDTO;
+import com.phoenix.assetbe.dto.UserOutDTO.CodeCheckOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.CodeOutDTO;
 import com.phoenix.assetbe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -31,4 +30,9 @@ public class UserController {
         return ResponseEntity.ok(codeOutDTO);
     }
 
+    @PostMapping("/login/check")
+    public ResponseEntity<?> verifyingCodeCheck(@RequestBody UserInDTO.CodeCheckInDTO codeCheckInDTO){
+        CodeCheckOutDTO codeCheckOutDTO = userService.codeChecking(codeCheckInDTO);
+        return ResponseEntity.ok(codeCheckOutDTO);
+    }
 }
