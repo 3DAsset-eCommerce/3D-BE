@@ -54,14 +54,14 @@ public class UserOutDTO {
     @Setter
     public static class SignupOutDTO {
         private Long id;
-        private String firstname;
-        private String lastname;
+        private String firstName;
+        private String lastName;
         private String email;
 
         public SignupOutDTO(User user) {
             this.id = user.getId();
-            this.firstname=user.getFirstname();
-            this.lastname=user.getLastname();
+            this.firstName=user.getFirstName();
+            this.lastName=user.getLastName();
             this.email = user.getEmail();
         }
     }

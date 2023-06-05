@@ -41,6 +41,10 @@ public class UserService {
 
 
     public String loginService(UserInDTO.LoginInDTO loginInDTO) {
+        Optional<User> userOP = userRepository.findByEmail(loginInDTO.getEmail());
+        if(userOP.isPresent()&&!userOP.get().isEmailVerified()){
+            throw new Exception400("verified","이메일 인증이 필요합니다.");
+        }
         try {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                     = new UsernamePasswordAuthenticationToken(loginInDTO.getEmail(), loginInDTO.getPassword());
@@ -48,7 +52,7 @@ public class UserService {
             MyUserDetails myUserDetails = (MyUserDetails) authentication.getPrincipal();
             return MyJwtProvider.create(myUserDetails.getUser());
         }catch (Exception e){
-            throw new Exception401("인증되지 않았습니다");
+            throw new Exception401("아이디 혹은 비밀번호를 확인해주세요.");
         }
     }
 
@@ -60,7 +64,7 @@ public class UserService {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(userPS.getEmail());
-        mailMessage.setSubject("3D 에셋 스토어, 회원 가입 인증");
+        mailMessage.setSubject("3D 에셋 스토어, 비밀번호 재설정을 위한 이메일 인증");
         mailMessage.setText(userPS.getEmailCheckToken());
         javaMailSender.send(mailMessage);
         return new CodeOutDTO(userPS);
@@ -108,7 +112,7 @@ public class UserService {
         Optional<User> userOP =userRepository.findByEmail(signupInDTO.getEmail());
         if(userOP.isPresent()){
             // 이 부분이 try catch 안에 있으면 Exception500에게 제어권을 뺏긴다.
-            throw new Exception400("email", "이메일이 존재합니다");
+            throw new Exception400("email", "이미 이메일이 존재합니다");
         }
         String encPassword = passwordEncoder.encode(signupInDTO.getPassword()); // 60Byte
         signupInDTO.setPassword(encPassword);
@@ -116,10 +120,14 @@ public class UserService {
 
         // 디비 save 되는 쪽만 try catch로 처리하자.
         try {
-            if(!userOP.get().isEmailVerified()){
-                throw new Exception400("emailCheck","이메일 인증이 필요합니다.");
-            }
             User userPS = userRepository.save(signupInDTO.toEntity());
+            userPS.generateEmailCheckToken();
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(userPS.getEmail());
+            mailMessage.setSubject("3D 에셋 스토어, 회원 가입 인증");
+            mailMessage.setText("/check-email-token?token=" + userPS.getEmailCheckToken() + "&email=" + userPS.getEmail());
+            javaMailSender.send(mailMessage);
+
             return new SignupOutDTO(userPS);
         }catch (Exception e){
             throw new Exception500("회원가입 실패 : "+e.getMessage());

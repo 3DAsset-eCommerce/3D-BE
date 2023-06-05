@@ -10,13 +10,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.time.LocalDateTime;
 
 public class DummyEntity {
-    public User newUser(String firstname, String lastname){
+    public User newUser(String firstName, String lastName){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return User.builder()
-                .firstname(firstname)
-                .lastname(lastname)
+                .firstName(firstName)
+                .lastName(lastName)
                 .password(passwordEncoder.encode("1234"))
-                .email(firstname + lastname +"@nate.com")
+                .email(firstName + lastName +"@nate.com")
                 .provider(SocialType.COMMON)
                 .role(Role.USER)
                 .status(Status.ACTIVE)
@@ -25,14 +25,14 @@ public class DummyEntity {
                 .build();
     }
 
-    public User newMockUser(String firstname, String lastname){
+    public User newMockUser(String firstName, String lastName){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return User.builder()
-                .firstname(firstname)
-                .lastname(lastname)
+                .firstName(firstName)
+                .lastName(lastName)
                 .password(passwordEncoder.encode("1234"))
                 .provider(SocialType.COMMON)
-                .email(firstname + lastname +"@nate.com")
+                .email(firstName + lastName +"@nate.com")
                 .role(Role.USER)
                 .status(Status.ACTIVE)
                 .emailVerified(true)

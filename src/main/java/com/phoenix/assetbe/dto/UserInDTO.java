@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -75,33 +76,31 @@ public class UserInDTO {
     @Getter
     @Setter
     public static class SignupInDTO {
+        @NotEmpty
+        private String firstName;
 
         @NotEmpty
-        private String firstname;
-
-        @NotEmpty
-        private String lastname;
+        private String lastName;
 
         @NotEmpty
         @Size(min = 8, max = 20)
-        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,20}$", message = "영문/숫자/특수문자를 조합하여 8~20자 이내로 작성해주세요")
         private String password;
 
         @NotEmpty
-        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
+        @Email(message = "이메일 형식으로 작성해주세요")
         private String email;
 
 
         public User toEntity() {
             return User.builder()
-                    .firstname(firstname)
-                    .lastname(lastname)
+                    .firstName(firstName)
+                    .lastName(lastName)
                     .password(password)
                     .email(email)
                     .role(Role.USER)
                     .provider(SocialType.COMMON)
                     .status(Status.ACTIVE)
-                    .emailCheckToken(null)
+                    .emailVerified(false)
                     .build();
         }
     }

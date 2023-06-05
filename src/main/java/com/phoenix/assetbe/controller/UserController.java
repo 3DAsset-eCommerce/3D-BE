@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestPart @Valid UserInDTO.SignupInDTO signupInDTO, Errors errors) throws IOException {
+    public ResponseEntity<?> signup(@RequestBody @Valid UserInDTO.SignupInDTO signupInDTO, Errors errors) {
         UserOutDTO.SignupOutDTO signupOutDTO = userService.signupService(signupInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(signupOutDTO));
     }

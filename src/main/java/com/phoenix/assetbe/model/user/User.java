@@ -19,9 +19,9 @@ public class User extends MyTimeBaseUtil {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String lastname;
+    private String lastName;
 
-    private String firstname;
+    private String firstName;
 
     private String email;
 
@@ -67,10 +67,10 @@ public class User extends MyTimeBaseUtil {
 
 
     @Builder
-    public User(Long id, String lastname, String firstname, String email, String password, Status status, Role role, SocialType provider, String reason, LocalDateTime updatedAt, boolean emailVerified, String emailCheckToken, LocalDateTime tokenCreatedAt) {
+    public User(Long id, String lastName, String firstName, String email, String password, Status status, Role role, SocialType provider, String reason, LocalDateTime updatedAt, boolean emailVerified, String emailCheckToken, LocalDateTime tokenCreatedAt) {
         this.id = id;
-        this.lastname = lastname;
-        this.firstname = firstname;
+        this.lastName = lastName;
+        this.firstName = firstName;
         this.email = email;
         this.password = password;
         this.status = status;
@@ -82,6 +82,8 @@ public class User extends MyTimeBaseUtil {
         this.emailCheckToken = emailCheckToken;
         this.tokenCreatedAt = tokenCreatedAt;
     }
+
+
 
     public void generateEmailCheckToken() {
         this.emailCheckToken= UUID.randomUUID().toString();
