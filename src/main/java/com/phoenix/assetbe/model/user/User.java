@@ -41,13 +41,15 @@ public class User extends MyTimeBaseUtil {
 
     private LocalDateTime updatedAt;
 
+    private boolean emailVerified;
+
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
     @Builder
-    public User(Long id, String lastname, String firstname, String email, String password, Status status, Role role, SocialType provider, String reason, LocalDateTime updatedAt) {
+    public User(Long id, String lastname, String firstname, String email, String password, Status status, Role role, SocialType provider, String reason, LocalDateTime updatedAt, boolean emailVerified) {
         this.id = id;
         this.lastname = lastname;
         this.firstname = firstname;
@@ -58,5 +60,6 @@ public class User extends MyTimeBaseUtil {
         this.provider = provider;
         this.reason = reason;
         this.updatedAt = updatedAt;
+        this.emailVerified = emailVerified;
     }
 }

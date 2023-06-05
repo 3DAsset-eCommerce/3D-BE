@@ -49,6 +49,9 @@ dependencies {
     // 테스트에서 lombok 사용
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor'org.projectlombok:lombok'
+
+    //메일 전송을 위한 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 // Querydsl 추가, 자동 생성된 Q클래스 gradle clean으로 제거
