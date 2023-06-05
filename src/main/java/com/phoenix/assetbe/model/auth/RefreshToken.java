@@ -1,4 +1,4 @@
-package com.phoenix.assetbe.model.auth;
+package com.phoenix.assetbe.model.auth.jwt;
 
 import lombok.*;
 
