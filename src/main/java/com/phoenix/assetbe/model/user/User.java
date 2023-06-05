@@ -43,10 +43,15 @@ public class User extends MyTimeBaseUtil {
 
     private boolean emailVerified;
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
 
     @Builder
     public User(Long id, String lastname, String firstname, String email, String password, Status status, Role role, SocialType provider, String reason, LocalDateTime updatedAt, boolean emailVerified) {

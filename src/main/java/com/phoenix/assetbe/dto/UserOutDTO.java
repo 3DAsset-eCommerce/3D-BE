@@ -34,4 +34,15 @@ public class UserOutDTO {
             this.verified = verified;
         }
     }
+
+    @Setter
+    @Getter
+    public static class PasswordChangeOutDTO{
+        private String email;
+
+        public PasswordChangeOutDTO(String email) {
+            this.email = email;
+        }
+    }
+
 }
