@@ -3,10 +3,7 @@ package com.phoenix.assetbe.model.cart;
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
 import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.user.User;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -29,4 +26,10 @@ public class Cart extends MyTimeBaseUtil {
     @JoinColumn(name = "asset_id")
     private Asset asset;
 
+    @Builder
+    public Cart(Long id, User user, Asset asset) {
+        this.id = id;
+        this.user = user;
+        this.asset = asset;
+    }
 }
