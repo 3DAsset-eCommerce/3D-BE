@@ -1,10 +1,7 @@
 package com.phoenix.assetbe.model.asset;
 
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -47,4 +44,21 @@ public class Asset extends MyTimeBaseUtil{
 
     private String thumbnailUrl;
 
+    @Builder
+    public Asset(Long id, String assetName, double price, double size, LocalDate releaseDate, String extension, double rating, Long wishCount, Long visitCount, Long reviewCount, boolean status, LocalDateTime updatedAt, String fileUrl, String thumbnailUrl) {
+        this.id = id;
+        this.assetName = assetName;
+        this.price = price;
+        this.size = size;
+        this.releaseDate = releaseDate;
+        this.extension = extension;
+        this.rating = rating;
+        this.wishCount = wishCount;
+        this.visitCount = visitCount;
+        this.reviewCount = reviewCount;
+        this.status = status;
+        this.updatedAt = updatedAt;
+        this.fileUrl = fileUrl;
+        this.thumbnailUrl = thumbnailUrl;
+    }
 }
