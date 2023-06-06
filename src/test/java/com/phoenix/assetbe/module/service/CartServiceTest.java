@@ -1,4 +1,4 @@
-package com.phoenix.assetbe.service;
+package com.phoenix.assetbe.module.service;
 
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
@@ -10,6 +10,7 @@ import com.phoenix.assetbe.model.cart.CartRepository;
 import com.phoenix.assetbe.model.user.Role;
 import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
+import com.phoenix.assetbe.service.CartService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
