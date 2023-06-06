@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.core.dummy;
 
+import com.phoenix.assetbe.model.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
