@@ -53,7 +53,7 @@ public class CartControllerTest {
 
     @Test
     public void testAddCart() throws Exception {
-        // Prepare test data
+        // given
         CartRequest.AddCartDTO addCartDto = new CartRequest.AddCartDTO();
         addCartDto.setUserId(1L);
         addCartDto.setAssets(Collections.singletonList(1L));
@@ -69,16 +69,15 @@ public class CartControllerTest {
                 );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Mock service method
+        // when
         doNothing().when(cartService).addCart(addCartDto.getUserId(), addCartDto.getAssets(), (MyUserDetails) authentication.getPrincipal());
 
-        // Perform the POST request
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/s/cart/add")
                 .content(new ObjectMapper().writeValueAsString(addCartDto))
                 .contentType(MediaType.APPLICATION_JSON);
 
-        // Perform the request and assert the response
+        // then
         mockMvc.perform(requestBuilder)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("{}"));
