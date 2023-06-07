@@ -8,10 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.UUID;
 
 public class UserInDTO {
@@ -103,5 +100,16 @@ public class UserInDTO {
                     .emailVerified(false)
                     .build();
         }
+    }
+
+    @Getter
+    @Setter
+    public static class CheckPasswordInDTO {
+        @NotNull
+        private Long id;
+
+        @Size(min = 8, max = 20)
+        @NotNull(message = "패스워드를 입력해주세요.")
+        private String password;
     }
 }

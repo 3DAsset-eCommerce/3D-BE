@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.controller;
 
 import com.phoenix.assetbe.core.auth.jwt.MyJwtProvider;
+import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.UserInDTO;
 import com.phoenix.assetbe.dto.UserOutDTO;
@@ -11,6 +12,7 @@ import com.phoenix.assetbe.dto.UserOutDTO.PasswordChangeOutDTO;
 import com.phoenix.assetbe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,5 +63,11 @@ public class UserController {
     public ResponseEntity<?> signup(@RequestBody @Valid UserInDTO.SignupInDTO signupInDTO, Errors errors) {
         UserOutDTO.SignupOutDTO signupOutDTO = userService.signupService(signupInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(signupOutDTO));
+    }
+
+    @PostMapping("/s/user/check")
+    public ResponseEntity<?> checkPassword(@RequestBody @Valid UserInDTO.CheckPasswordInDTO checkPasswordInDTO, Errors errors, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        userService.checkPassword(checkPasswordInDTO, myUserDetails.getUser().getId());
+        return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 }

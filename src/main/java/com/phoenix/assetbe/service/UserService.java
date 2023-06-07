@@ -143,4 +143,18 @@ public class UserService {
             throw new Exception500("회원가입 실패 : "+e.getMessage());
         }
     }
+
+    public void checkPassword(UserInDTO.CheckPasswordInDTO checkPasswordInDTO, Long userId) {
+        if (checkPasswordInDTO.getId().longValue() != userId) {
+            throw new Exception400("id", "아이디가 일치하지 않습니다.");
+        }
+
+        User userPS = userRepository.findById(userId).orElseThrow(
+                () -> new Exception400("id", "해당 유저를 찾을 수 없습니다.")
+        );
+
+        if (!passwordEncoder.matches(checkPasswordInDTO.getPassword(), userPS.getPassword())) {
+            throw new Exception400("password", "비밀번호가 일치하지 않습니다.");
+        }
+    }
 }
