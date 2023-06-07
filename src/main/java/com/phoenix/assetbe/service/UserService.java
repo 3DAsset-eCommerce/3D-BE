@@ -39,17 +39,26 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    public User findUserById(Long userId){
+
+        User userPS = userRepository.findById(userId).orElseThrow(
+                () -> new Exception400("id", "존재하지 않는 사용자입니다. "));
+
+        return userPS;
+    }
 
     public String loginService(UserInDTO.LoginInDTO loginInDTO) {
         Optional<User> userOP = userRepository.findByEmail(loginInDTO.getEmail());
         if(userOP.isPresent()&&!userOP.get().isEmailVerified()){
             throw new Exception400("verified","이메일 인증이 필요합니다.");
         }
+
         try {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                     = new UsernamePasswordAuthenticationToken(loginInDTO.getEmail(), loginInDTO.getPassword());
             Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             MyUserDetails myUserDetails = (MyUserDetails) authentication.getPrincipal();
+
             return MyJwtProvider.create(myUserDetails.getUser());
         }catch (Exception e){
             throw new Exception401("아이디 혹은 비밀번호를 확인해주세요.");
@@ -67,6 +76,7 @@ public class UserService {
         mailMessage.setSubject("3D 에셋 스토어, 비밀번호 재설정을 위한 이메일 인증");
         mailMessage.setText(userPS.getEmailCheckToken());
         javaMailSender.send(mailMessage);
+
         return new CodeOutDTO(userPS);
     }
 

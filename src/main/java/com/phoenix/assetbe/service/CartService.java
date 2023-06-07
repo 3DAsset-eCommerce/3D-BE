@@ -3,6 +3,7 @@ package com.phoenix.assetbe.service;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception403;
+import com.phoenix.assetbe.dto.CartRequest;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.asset.AssetRepository;
@@ -24,24 +25,23 @@ import java.util.List;
 public class CartService {
 
     private final CartRepository cartRepository;
-    private final UserRepository userRepository;
-    private final AssetRepository assetRepository;
+    private final UserService userService;
+    private final AssetService assetService;
 
     @Transactional
-    public void addCart(Long userId, List<Long> assets, MyUserDetails myUserDetails) {
-        // 요청한 사용자가 id의 주인인지 확인 -> UserService로
-        // 담기를 요청한 에셋이 있는지 확인 -> AsserService로
+    public void addCart(CartRequest.AddCartDTO addCartDTO, MyUserDetails myUserDetails) {
+
+        Long userId = addCartDTO.getUserId();
+        List<Long> assets = addCartDTO.getAssets();
 
         if (!myUserDetails.getUser().getId().equals(userId)) {
             throw new Exception403("장바구니에 접근할 권한이 없습니다. ");
         }
 
-        User userPS = userRepository.findById(userId).orElseThrow(
-                () -> new Exception400("id", "존재하지 않는 사용자입니다. "));
+        User userPS = userService.findUserById(userId);
 
         for (Long assetId : assets) {
-            Asset assetPS = assetRepository.findById(assetId).orElseThrow(
-                    () -> new Exception400("id", "존재하지 않는 에셋입니다. "));
+            Asset assetPS = assetService.findAssetById(assetId);
             Cart cart = Cart.builder().user(userPS).asset(assetPS).build();
             cartRepository.save(cart);
         }

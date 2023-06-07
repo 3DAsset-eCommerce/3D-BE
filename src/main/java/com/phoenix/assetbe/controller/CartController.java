@@ -21,7 +21,7 @@ public class CartController {
 
     @PostMapping("/s/cart/add")
     public ResponseEntity<?> addCart(@RequestBody CartRequest.AddCartDTO addCartDto, @AuthenticationPrincipal MyUserDetails myUserDetails){
-        cartService.addCart(addCartDto.getUserId(), addCartDto.getAssets(), myUserDetails);
+        cartService.addCart(addCartDto, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
