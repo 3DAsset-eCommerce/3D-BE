@@ -70,7 +70,7 @@ public class CartControllerTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // when
-        doNothing().when(cartService).addCart(addCartDto.getUserId(), addCartDto.getAssets(), (MyUserDetails) authentication.getPrincipal());
+        doNothing().when(cartService).addCart(addCartDto, (MyUserDetails) authentication.getPrincipal());
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/s/cart/add")
