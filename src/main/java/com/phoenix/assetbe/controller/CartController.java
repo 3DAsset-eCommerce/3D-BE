@@ -20,8 +20,8 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/s/cart/add")
-    public ResponseEntity<?> addCart(@RequestBody CartRequest.AddCartDTO addCartDto, @AuthenticationPrincipal MyUserDetails myUserDetails){
-        cartService.addCart(addCartDto, myUserDetails);
+    public ResponseEntity<?> addCart(@RequestBody CartRequest.AddCartInDTO addCartInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails){
+        cartService.addCart(addCartInDTO, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }

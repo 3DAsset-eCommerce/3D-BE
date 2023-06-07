@@ -54,9 +54,9 @@ public class CartControllerTest {
     @Test
     public void testAddCart() throws Exception {
         // given
-        CartRequest.AddCartDTO addCartDto = new CartRequest.AddCartDTO();
-        addCartDto.setUserId(1L);
-        addCartDto.setAssets(Collections.singletonList(1L));
+        CartRequest.AddCartInDTO addCartInDTO = new CartRequest.AddCartInDTO();
+        addCartInDTO.setUserId(1L);
+        addCartInDTO.setAssets(Collections.singletonList(1L));
 
         User user  = User.builder().id(1L).role(Role.USER).build();
         MyUserDetails myUserDetails = new MyUserDetails(user);
@@ -70,11 +70,11 @@ public class CartControllerTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // when
-        doNothing().when(cartService).addCart(addCartDto, (MyUserDetails) authentication.getPrincipal());
+        doNothing().when(cartService).addCart(addCartInDTO, (MyUserDetails) authentication.getPrincipal());
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/s/cart/add")
-                .content(new ObjectMapper().writeValueAsString(addCartDto))
+                .content(new ObjectMapper().writeValueAsString(addCartInDTO))
                 .contentType(MediaType.APPLICATION_JSON);
 
         // then

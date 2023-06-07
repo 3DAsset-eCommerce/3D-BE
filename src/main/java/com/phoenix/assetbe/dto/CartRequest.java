@@ -9,7 +9,7 @@ public class CartRequest {
 
     @Getter
     @Setter
-    public static class AddCartDTO{
+    public static class AddCartInDTO{
 
         private Long userId;
 

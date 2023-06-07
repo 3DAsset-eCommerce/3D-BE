@@ -52,14 +52,14 @@ public class CartControllerTest {
         Long userId = 1L;
         List<Long> assets = Arrays.asList(1L, 2L);
 
-        CartRequest.AddCartDTO addCartDto = new CartRequest.AddCartDTO();
-        addCartDto.setUserId(userId);
-        addCartDto.setAssets(assets);
+        CartRequest.AddCartInDTO addCartInDTO = new CartRequest.AddCartInDTO();
+        addCartInDTO.setUserId(userId);
+        addCartInDTO.setAssets(assets);
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/cart/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(addCartDto)));
+                        .content(objectMapper.writeValueAsString(addCartInDTO)));
 
         //then
         resultActions.andExpect(status().isOk())

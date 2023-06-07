@@ -29,10 +29,10 @@ public class CartService {
     private final AssetService assetService;
 
     @Transactional
-    public void addCart(CartRequest.AddCartDTO addCartDTO, MyUserDetails myUserDetails) {
+    public void addCart(CartRequest.AddCartInDTO addCartInDTO, MyUserDetails myUserDetails) {
 
-        Long userId = addCartDTO.getUserId();
-        List<Long> assets = addCartDTO.getAssets();
+        Long userId = addCartInDTO.getUserId();
+        List<Long> assets = addCartInDTO.getAssets();
 
         if (!myUserDetails.getUser().getId().equals(userId)) {
             throw new Exception403("장바구니에 접근할 권한이 없습니다. ");
