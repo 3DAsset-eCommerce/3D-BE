@@ -1,4 +1,4 @@
-package com.phoenix.assetbe.model.auth.code;
+package com.phoenix.assetbe.model.auth;
 
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
 import lombok.AccessLevel;

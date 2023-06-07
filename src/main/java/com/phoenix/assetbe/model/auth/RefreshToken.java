@@ -1,4 +1,4 @@
-package com.phoenix.assetbe.model.auth.jwt;
+package com.phoenix.assetbe.model.auth;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

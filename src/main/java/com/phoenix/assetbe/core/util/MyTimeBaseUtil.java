@@ -18,4 +18,5 @@ public class MyTimeBaseUtil {
     @CreatedDate
     @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
+
 }
