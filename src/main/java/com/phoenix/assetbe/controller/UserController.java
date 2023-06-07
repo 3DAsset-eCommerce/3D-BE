@@ -14,9 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,13 +33,13 @@ public class UserController {
         return ResponseEntity.ok().header(MyJwtProvider.HEADER, jwt).body(responseDTO);
     }
 
-    @PostMapping("/send")
+    @PostMapping("/login/send")
     public ResponseEntity<?> verifyingCodeSend(@RequestBody @Valid UserInDTO.CodeInDTO codeInDTO, Errors errors){
         CodeOutDTO codeOutDTO = userService.codeSending(codeInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(codeOutDTO));
     }
 
-    @PostMapping("/check")
+    @PostMapping("/login/check")
     public ResponseEntity<?> verifyingCodeCheck(@RequestBody @Valid UserInDTO.CodeCheckInDTO codeCheckInDTO, Errors errors){
         CodeCheckOutDTO codeCheckOutDTO = userService.codeChecking(codeCheckInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(codeCheckOutDTO));
@@ -52,5 +55,11 @@ public class UserController {
     public ResponseEntity<?> emailIsDuplicate(@RequestBody @Valid UserInDTO.EmailCheckInDTO emailCheckInDTO, Errors errors){
         EmailCheckOutDTO emailCheckOutDTO = userService.emailChecking(emailCheckInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(emailCheckOutDTO));
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestPart @Valid UserInDTO.SignupInDTO signupInDTO, Errors errors) throws IOException {
+        UserOutDTO.SignupOutDTO signupOutDTO = userService.signupService(signupInDTO);
+        return ResponseEntity.ok(new ResponseDTO<>(signupOutDTO));
     }
 }

@@ -1,13 +1,8 @@
 package com.phoenix.assetbe.dto;
 
-import com.phoenix.assetbe.model.auth.VerifiedCode;
 import com.phoenix.assetbe.model.user.User;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
 
 public class UserOutDTO {
     @Setter
@@ -17,10 +12,10 @@ public class UserOutDTO {
         private String email;
         private String emailCheckToken;
 
-        public CodeOutDTO(VerifiedCode verifiedCode) {
-            this.id = verifiedCode.getId();
-            this.email = verifiedCode.getEmail();
-            this.emailCheckToken = verifiedCode.getEmailCheckToken();
+        public CodeOutDTO(User user) {
+            this.id = user.getId();
+            this.email = user.getEmail();
+            this.emailCheckToken = user.getEmailCheckToken();
         }
     }
 
@@ -53,6 +48,21 @@ public class UserOutDTO {
 
         public EmailCheckOutDTO(String email) {
             this.email = email;
+        }
+    }
+    @Getter
+    @Setter
+    public static class SignupOutDTO {
+        private Long id;
+        private String firstname;
+        private String lastname;
+        private String email;
+
+        public SignupOutDTO(User user) {
+            this.id = user.getId();
+            this.firstname=user.getFirstname();
+            this.lastname=user.getLastname();
+            this.email = user.getEmail();
         }
     }
 }

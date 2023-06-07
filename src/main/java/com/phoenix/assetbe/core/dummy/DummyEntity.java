@@ -20,11 +20,8 @@ public class DummyEntity {
                 .provider(SocialType.COMMON)
                 .role(Role.USER)
                 .status(Status.ACTIVE)
-<<<<<<< HEAD
-                .provider(SocialType.COMMON)
-=======
                 .emailVerified(true)
->>>>>>> 63e7465 (feat #33 비밀번호 재설정 1차 구현 완료)
+                .emailCheckToken(null)
                 .build();
     }
 
@@ -39,6 +36,7 @@ public class DummyEntity {
                 .role(Role.USER)
                 .status(Status.ACTIVE)
                 .emailVerified(true)
+                .emailCheckToken(null)
                 .build();
     }
 

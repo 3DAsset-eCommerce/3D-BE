@@ -4,16 +4,17 @@ import com.phoenix.assetbe.core.auth.jwt.MyJwtProvider;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception401;
+import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.dto.UserInDTO;
 import com.phoenix.assetbe.dto.UserInDTO.CodeCheckInDTO;
 import com.phoenix.assetbe.dto.UserInDTO.EmailCheckInDTO;
 import com.phoenix.assetbe.dto.UserInDTO.PasswordChangeInDTO;
+import com.phoenix.assetbe.dto.UserOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.CodeCheckOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.CodeOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.EmailCheckOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.PasswordChangeOutDTO;
-import com.phoenix.assetbe.model.auth.VerifiedCode;
-import com.phoenix.assetbe.model.auth.VerifiedCodeRepository;
+import com.phoenix.assetbe.dto.UserOutDTO.SignupOutDTO;
 import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,6 @@ public class UserService {
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    private final VerifiedCodeRepository verifiedCodeRepository;
     private final UserRepository userRepository;
 
 
@@ -54,39 +54,44 @@ public class UserService {
 
     @Transactional
     public CodeOutDTO codeSending(UserInDTO.CodeInDTO codeInDTO){
-        VerifiedCode verifiedCode=codeInDTO.toEntity();
-        verifiedCodeRepository.save(verifiedCode);
+        User userPS = userRepository.findByEmail(codeInDTO.getEmail()).get();
+        userPS.generateEmailCheckToken();
+//        userRepository.save(userPS);
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(verifiedCode.getEmail());
+        mailMessage.setTo(userPS.getEmail());
         mailMessage.setSubject("3D 에셋 스토어, 회원 가입 인증");
-        mailMessage.setText(verifiedCode.getEmailCheckToken());
+        mailMessage.setText(userPS.getEmailCheckToken());
         javaMailSender.send(mailMessage);
-        return new CodeOutDTO(verifiedCode);
+        return new CodeOutDTO(userPS);
     }
 
     @Transactional
     public CodeCheckOutDTO codeChecking(CodeCheckInDTO codeCheckInDTO) {
-        Optional<VerifiedCode> verifiedCode = verifiedCodeRepository.findByEmail(codeCheckInDTO.getEmail());
-        if(!verifiedCode.isPresent()){
+        Optional<User> userPS = userRepository.findByEmail(codeCheckInDTO.getEmail());
+        if(!userPS.isPresent()){
             throw new Exception400("code", "먼저 이메일 인증코드를 전송해주세요.");
         }
-        if(verifiedCode.get().getEmailCheckToken().equals(codeCheckInDTO.getCode())){
-            return new CodeCheckOutDTO(verifiedCode.get().getEmail(), true);
+        if(userPS.get().getEmailCheckToken().equals(codeCheckInDTO.getCode())){
+            return new CodeCheckOutDTO(userPS.get().getEmail(), true);
         }
-
         throw new Exception400("code", "이메일 인증코드가 틀렸습니다.");
     }
 
     @Transactional
     public PasswordChangeOutDTO passwordChanging(PasswordChangeInDTO passwordChangeInDTO) {
-        Optional<User> user = userRepository.findByEmail(passwordChangeInDTO.getEmail());
-        if(user.isPresent()){
-            user.get().setPassword(passwordEncoder.encode(passwordChangeInDTO.getPassword()));
-
-            return new PasswordChangeOutDTO(user.get().getEmail());
+        Optional<User> userOP = userRepository.findByEmail(passwordChangeInDTO.getEmail());
+        if(userOP.isPresent()&&userOP.get().getEmailCheckToken()==null){
+            throw new Exception400("email","이메일 인증을 먼저 해야 합니다.");
         }
-        throw new Exception400("none","패스워드 재설정 실패");
+        if(userOP.isPresent()&&userOP.get().getEmailCheckToken().equals(passwordChangeInDTO.getCode())){
+            userOP.get().setPassword(passwordEncoder.encode(passwordChangeInDTO.getPassword()));
+            userOP.get().setEmailCheckToken("");
+            userOP.get().setTokenCreatedAt();
+
+            return new PasswordChangeOutDTO(userOP.get().getEmail());
+        }
+        throw new Exception400("code","이메일 인증 코드가 틀렸습니다.");
     }
 
     public EmailCheckOutDTO emailChecking(EmailCheckInDTO emailCheckInDTO) {
@@ -96,5 +101,28 @@ public class UserService {
         }
 
         return new EmailCheckOutDTO(emailCheckInDTO.getEmail());
+    }
+
+    @Transactional
+    public UserOutDTO.SignupOutDTO signupService(UserInDTO.SignupInDTO signupInDTO) {
+        Optional<User> userOP =userRepository.findByEmail(signupInDTO.getEmail());
+        if(userOP.isPresent()){
+            // 이 부분이 try catch 안에 있으면 Exception500에게 제어권을 뺏긴다.
+            throw new Exception400("email", "이메일이 존재합니다");
+        }
+        String encPassword = passwordEncoder.encode(signupInDTO.getPassword()); // 60Byte
+        signupInDTO.setPassword(encPassword);
+        System.out.println("encPassword : "+encPassword);
+
+        // 디비 save 되는 쪽만 try catch로 처리하자.
+        try {
+            if(!userOP.get().isEmailVerified()){
+                throw new Exception400("emailCheck","이메일 인증이 필요합니다.");
+            }
+            User userPS = userRepository.save(signupInDTO.toEntity());
+            return new SignupOutDTO(userPS);
+        }catch (Exception e){
+            throw new Exception500("회원가입 실패 : "+e.getMessage());
+        }
     }
 }

@@ -1,13 +1,12 @@
 package com.phoenix.assetbe.dto;
 
-import com.phoenix.assetbe.model.auth.VerifiedCode;
+import com.phoenix.assetbe.model.user.Role;
+import com.phoenix.assetbe.model.user.SocialType;
+import com.phoenix.assetbe.model.user.Status;
 import com.phoenix.assetbe.model.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -31,8 +30,8 @@ public class UserInDTO {
         @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
         @NotEmpty(message = "이메일을 입력해주세요.")
         private String email;
-        public VerifiedCode toEntity() {
-            return VerifiedCode.builder()
+        public User toEntity() {
+            return User.builder()
                     .email(email)
                     .emailCheckToken(UUID.randomUUID().toString())
                     .build();
@@ -71,5 +70,39 @@ public class UserInDTO {
         @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
         @NotEmpty(message = "이메일을 입력해주세요.")
         private String email;
+    }
+
+    @Getter
+    @Setter
+    public static class SignupInDTO {
+
+        @NotEmpty
+        private String firstname;
+
+        @NotEmpty
+        private String lastname;
+
+        @NotEmpty
+        @Size(min = 8, max = 20)
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,20}$", message = "영문/숫자/특수문자를 조합하여 8~20자 이내로 작성해주세요")
+        private String password;
+
+        @NotEmpty
+        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
+        private String email;
+
+
+        public User toEntity() {
+            return User.builder()
+                    .firstname(firstname)
+                    .lastname(lastname)
+                    .password(password)
+                    .email(email)
+                    .role(Role.USER)
+                    .provider(SocialType.COMMON)
+                    .status(Status.ACTIVE)
+                    .emailCheckToken(null)
+                    .build();
+        }
     }
 }
