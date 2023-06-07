@@ -165,6 +165,30 @@ public class UserService {
         );
 
         userPS.changeWithdrawalMassage(withdrawalInDTO.getMessage());
-        userRepository.save(userPS);
+        try {
+            userRepository.save(userPS);
+        } catch (Exception e) {
+            throw new Exception500("회원탈퇴 실패 : "+e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void update(UserInDTO.UpdateInDTO updateInDTO, Long userId) {
+        User userPS = userRepository.findById(userId).orElseThrow(
+                () -> new Exception400("id", "해당 유저를 찾을 수 없습니다.")
+        );
+
+        // 성과 이름 구분하지 않고 Exception
+        if (!updateInDTO.getFirstName().equals(userPS.getFirstName()) ||
+        !updateInDTO.getLastName().equals(userPS.getLastName())) {
+            throw new Exception400("name", "이름이 일치하지 않습니다.");
+        }
+
+        userPS.changePassword(passwordEncoder.encode(updateInDTO.getNewPassword()));
+        try {
+            userRepository.save(userPS);
+        } catch (Exception e) {
+            throw new Exception500("회원정보 수정 실패 : "+e.getMessage());
+        }
     }
 }

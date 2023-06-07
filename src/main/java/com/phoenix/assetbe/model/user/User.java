@@ -85,11 +85,8 @@ public class User extends MyTimeBaseUtil {
 
 
 
-    public void generateEmailCheckToken() {
-        this.emailCheckToken= UUID.randomUUID().toString();
-    }
-    public void setEmailCheckToken(String s) {
-        this.emailCheckToken=s;
-    }
+    public void generateEmailCheckToken() {this.emailCheckToken= UUID.randomUUID().toString();}
+    public void setEmailCheckToken(String s) {this.emailCheckToken=s;}
     public void changeWithdrawalMassage(String message) {this.reason = message;}
+    public void changePassword(String password) {this.password = password;}
 }

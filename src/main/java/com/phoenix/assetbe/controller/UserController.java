@@ -78,4 +78,14 @@ public class UserController {
         userService.withdrawal(withdrawalInDTO, myUserDetails.getUser().getId());
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
+
+    @PostMapping("/s/user/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UserInDTO.UpdateInDTO updateInDTO, Errors errors,
+                                    @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        if (id.longValue() != myUserDetails.getUser().getId().longValue()) {
+            throw new Exception403("권한이 없습니다.");
+        }
+        userService.update(updateInDTO, myUserDetails.getUser().getId());
+        return ResponseEntity.ok(new ResponseDTO<>(null));
+    }
 }
