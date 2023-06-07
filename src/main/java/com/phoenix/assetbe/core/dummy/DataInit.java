@@ -14,6 +14,7 @@ public class DataInit extends DummyEntity{
     @Bean
     CommandLineRunner init(UserRepository userRepository, AssetRepository assetRepository){
         return args -> {
+
             // User 더미 데이터
             userRepository.save(newUser("유", "현주"));
             userRepository.save(newUser("송", "재근"));
@@ -22,6 +23,7 @@ public class DataInit extends DummyEntity{
 
             assetRepository.save(newAsset("뛰는 사람"));
             assetRepository.save(newAsset("기어가는 사람"));
+
         };
     }
 }
