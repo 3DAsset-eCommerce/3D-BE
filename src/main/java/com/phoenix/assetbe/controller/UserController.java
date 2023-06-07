@@ -88,4 +88,13 @@ public class UserController {
         userService.update(updateInDTO, myUserDetails.getUser().getId());
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
+
+    @GetMapping("/s/user/{id}")
+    public ResponseEntity<?> findMyInfo(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        if (id.longValue() != myUserDetails.getUser().getId()) {
+            throw new Exception403("권한이 없습니다.");
+        }
+        UserOutDTO.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfo(myUserDetails.getUser().getId());
+        return ResponseEntity.ok(new ResponseDTO<>(findMyInfoOutDTO));
+    }
 }

@@ -191,4 +191,12 @@ public class UserService {
             throw new Exception500("회원정보 수정 실패 : "+e.getMessage());
         }
     }
+
+    public UserOutDTO.FindMyInfoOutDTO findMyInfo(Long userId) {
+        User userPS = userRepository.findById(userId).orElseThrow(
+                () -> new Exception400("id", "해당 유저를 찾을 수 없습니다.")
+        );
+
+        return new UserOutDTO.FindMyInfoOutDTO(new UserOutDTO.UserDTO(userPS));
+    }
 }
