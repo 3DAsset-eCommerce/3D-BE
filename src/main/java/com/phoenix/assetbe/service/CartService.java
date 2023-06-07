@@ -28,6 +28,9 @@ public class CartService {
     private final UserService userService;
     private final AssetService assetService;
 
+    private final AssetRepository assetRepository;
+
+
     @Transactional
     public void addCart(CartRequest.AddCartInDTO addCartInDTO, MyUserDetails myUserDetails) {
 

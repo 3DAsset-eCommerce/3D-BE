@@ -18,6 +18,7 @@ import com.phoenix.assetbe.dto.UserOutDTO.SignupOutDTO;
 import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -39,17 +41,9 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User findUserById(Long userId){
-
-        User userPS = userRepository.findById(userId).orElseThrow(
-                () -> new Exception400("id", "존재하지 않는 사용자입니다. "));
-
-        return userPS;
-    }
-
     public String loginService(UserInDTO.LoginInDTO loginInDTO) {
-        Optional<User> userOP = userRepository.findByEmail(loginInDTO.getEmail());
-        if(userOP.isPresent()&&!userOP.get().isEmailVerified()){
+        User userPS = findUserByEmail(loginInDTO.getEmail());
+        if(!userPS.isEmailVerified()){
             throw new Exception400("verified","이메일 인증이 필요합니다.");
         }
 
@@ -67,9 +61,8 @@ public class UserService {
 
     @Transactional
     public CodeOutDTO codeSending(UserInDTO.CodeInDTO codeInDTO){
-        User userPS = userRepository.findByEmail(codeInDTO.getEmail()).get();
+        User userPS = findUserByEmail(codeInDTO.getEmail());
         userPS.generateEmailCheckToken();
-//        userRepository.save(userPS);
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(userPS.getEmail());
@@ -94,36 +87,29 @@ public class UserService {
 
     @Transactional
     public PasswordChangeOutDTO passwordChanging(PasswordChangeInDTO passwordChangeInDTO) {
-        Optional<User> userOP = userRepository.findByEmail(passwordChangeInDTO.getEmail());
-        if(userOP.isPresent()&&userOP.get().getEmailCheckToken()==null){
+        User userPS = findUserByEmail(passwordChangeInDTO.getEmail());
+        if(userPS.getEmailCheckToken()==null){
             throw new Exception400("email","이메일 인증을 먼저 해야 합니다.");
         }
-        if(userOP.isPresent()&&userOP.get().getEmailCheckToken().equals(passwordChangeInDTO.getCode())){
-            userOP.get().setPassword(passwordEncoder.encode(passwordChangeInDTO.getPassword()));
-            userOP.get().setEmailCheckToken("");
-            userOP.get().setTokenCreatedAt();
+        if(userPS.getEmailCheckToken().equals(passwordChangeInDTO.getCode())){
+            userPS.setPassword(passwordEncoder.encode(passwordChangeInDTO.getPassword()));
+            userPS.setEmailCheckToken("");
+            userPS.setTokenCreatedAt();
 
-            return new PasswordChangeOutDTO(userOP.get().getEmail());
+            return new PasswordChangeOutDTO(userPS.getEmail());
         }
         throw new Exception400("code","이메일 인증 코드가 틀렸습니다.");
     }
 
     public EmailCheckOutDTO emailChecking(EmailCheckInDTO emailCheckInDTO) {
-        Optional<User> user = userRepository.existsByEmail(emailCheckInDTO.getEmail());
-        if(user.isPresent()){
-            throw new Exception400("email","이미 존재하는 이메일입니다.");
-        }
-
+        existsUserByEmail(emailCheckInDTO.getEmail());
         return new EmailCheckOutDTO(emailCheckInDTO.getEmail());
     }
 
     @Transactional
     public UserOutDTO.SignupOutDTO signupService(UserInDTO.SignupInDTO signupInDTO) {
-        Optional<User> userOP =userRepository.findByEmail(signupInDTO.getEmail());
-        if(userOP.isPresent()){
-            // 이 부분이 try catch 안에 있으면 Exception500에게 제어권을 뺏긴다.
-            throw new Exception400("email", "이미 이메일이 존재합니다");
-        }
+        existsUserByEmail(signupInDTO.getEmail());
+
         String encPassword = passwordEncoder.encode(signupInDTO.getPassword()); // 60Byte
         signupInDTO.setPassword(encPassword);
         System.out.println("encPassword : "+encPassword);
@@ -148,11 +134,7 @@ public class UserService {
         if (checkPasswordInDTO.getId().longValue() != userId) {
             throw new Exception400("id", "아이디가 일치하지 않습니다.");
         }
-
-        User userPS = userRepository.findById(userId).orElseThrow(
-                () -> new Exception400("id", "해당 유저를 찾을 수 없습니다.")
-        );
-
+        User userPS = findUserById(userId);
         if (!passwordEncoder.matches(checkPasswordInDTO.getPassword(), userPS.getPassword())) {
             throw new Exception400("password", "비밀번호가 일치하지 않습니다.");
         }
@@ -160,10 +142,7 @@ public class UserService {
 
     @Transactional
     public void withdrawal(UserInDTO.WithdrawalInDTO withdrawalInDTO, Long userId) {
-        User userPS = userRepository.findById(userId).orElseThrow(
-                () -> new Exception400("id", "해당 유저를 찾을 수 없습니다.")
-        );
-
+        User userPS = findUserById(userId);
         userPS.changeWithdrawalMassage(withdrawalInDTO.getMessage());
         try {
             userRepository.save(userPS);
@@ -174,13 +153,8 @@ public class UserService {
 
     @Transactional
     public void update(UserInDTO.UpdateInDTO updateInDTO, Long userId) {
-        User userPS = userRepository.findById(userId).orElseThrow(
-                () -> new Exception400("id", "해당 유저를 찾을 수 없습니다.")
-        );
-
-        // 성과 이름 구분하지 않고 Exception
-        if (!updateInDTO.getFirstName().equals(userPS.getFirstName()) ||
-        !updateInDTO.getLastName().equals(userPS.getLastName())) {
+        User userPS = findUserById(userId);
+        if (!updateInDTO.getFirstName().equals(userPS.getFirstName()) || !updateInDTO.getLastName().equals(userPS.getLastName())) {
             throw new Exception400("name", "이름이 일치하지 않습니다.");
         }
 
@@ -193,10 +167,37 @@ public class UserService {
     }
 
     public UserOutDTO.FindMyInfoOutDTO findMyInfo(Long userId) {
+        User userPS = findUserById(userId);
+        return new UserOutDTO.FindMyInfoOutDTO(new UserOutDTO.UserDTO(userPS));
+    }
+
+    /**
+     * 요청한 사용자가 id의 주인인지 확인하는 공통 메소드
+     */
+    public User findUserById(Long userId) {
         User userPS = userRepository.findById(userId).orElseThrow(
                 () -> new Exception400("id", "해당 유저를 찾을 수 없습니다.")
         );
+        return userPS;
+    }
 
-        return new UserOutDTO.FindMyInfoOutDTO(new UserOutDTO.UserDTO(userPS));
+    /**
+     * 요청한 사용자가 email의 주인인지 확인하는 공통 메소드
+     */
+    public User findUserByEmail(String email) {
+        User userPS = userRepository.findByEmail(email).orElseThrow(
+                () -> new Exception400("email", "해당 유저를 찾을 수 없습니다.")
+        );
+        return userPS;
+    }
+
+    /**
+     * 요청한 사용자 email이 존재하는지 확인하는 공통 메소드
+     */
+    public void existsUserByEmail(String email) {
+        boolean userCheck = userRepository.existsByEmail(email);
+        if(userCheck){
+            throw new Exception400("email","이미 존재하는 이메일입니다.");
+        }
     }
 }
