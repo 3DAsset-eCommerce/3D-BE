@@ -157,4 +157,14 @@ public class UserService {
             throw new Exception400("password", "비밀번호가 일치하지 않습니다.");
         }
     }
+
+    @Transactional
+    public void withdrawal(UserInDTO.WithdrawalInDTO withdrawalInDTO, Long userId) {
+        User userPS = userRepository.findById(userId).orElseThrow(
+                () -> new Exception400("id", "해당 유저를 찾을 수 없습니다.")
+        );
+
+        userPS.changeWithdrawalMassage(withdrawalInDTO.getMessage());
+        userRepository.save(userPS);
+    }
 }

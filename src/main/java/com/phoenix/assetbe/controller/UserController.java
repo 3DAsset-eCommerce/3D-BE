@@ -2,6 +2,7 @@ package com.phoenix.assetbe.controller;
 
 import com.phoenix.assetbe.core.auth.jwt.MyJwtProvider;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
+import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.UserInDTO;
 import com.phoenix.assetbe.dto.UserOutDTO;
@@ -14,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -68,6 +66,16 @@ public class UserController {
     @PostMapping("/s/user/check")
     public ResponseEntity<?> checkPassword(@RequestBody @Valid UserInDTO.CheckPasswordInDTO checkPasswordInDTO, Errors errors, @AuthenticationPrincipal MyUserDetails myUserDetails) {
         userService.checkPassword(checkPasswordInDTO, myUserDetails.getUser().getId());
+        return ResponseEntity.ok(new ResponseDTO<>(null));
+    }
+
+    @PostMapping("/s/user/{id}/withdrawal")
+    public ResponseEntity<?> withdrawal(@PathVariable Long id, @RequestBody @Valid UserInDTO.WithdrawalInDTO withdrawalInDTO, Errors errors,
+                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        if (id.longValue() != myUserDetails.getUser().getId().longValue()) {
+            throw new Exception403("권한이 없습니다.");
+        }
+        userService.withdrawal(withdrawalInDTO, myUserDetails.getUser().getId());
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 }

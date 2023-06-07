@@ -112,4 +112,11 @@ public class UserInDTO {
         @NotNull(message = "패스워드를 입력해주세요.")
         private String password;
     }
+
+    @Getter
+    @Setter
+    public static class WithdrawalInDTO {
+        @NotNull(message = "탈퇴 사유를 적어주세요.")
+        private String message;
+    }
 }

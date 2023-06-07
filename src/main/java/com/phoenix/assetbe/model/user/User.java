@@ -91,4 +91,5 @@ public class User extends MyTimeBaseUtil {
     public void setEmailCheckToken(String s) {
         this.emailCheckToken=s;
     }
+    public void changeWithdrawalMassage(String message) {this.reason = message;}
 }
