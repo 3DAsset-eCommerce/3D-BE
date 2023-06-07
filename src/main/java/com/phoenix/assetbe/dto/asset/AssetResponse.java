@@ -1,6 +1,5 @@
 package com.phoenix.assetbe.dto.asset;
 
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -55,7 +54,6 @@ public class AssetResponse {
             private String categoryName;
             private Long categoryCount;
 
-            @QueryProjection
             public CountCategory(String categoryName, Long categoryCount) {
                 this.categoryName = categoryName;
                 this.categoryCount = categoryCount;
@@ -68,7 +66,6 @@ public class AssetResponse {
             private String subCategoryName;
             private Long subCategoryCount;
 
-            @QueryProjection
             public CountSubCategory(String categoryName, String subCategoryName, Long subCategoryCount) {
                 this.categoryName = categoryName;
                 this.subCategoryName = subCategoryName;

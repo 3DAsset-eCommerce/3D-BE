@@ -8,11 +8,10 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
+public class CategoryQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    @Override
     public List<AssetResponse.CountOutDTO.CountCategory> countByCategory() {
         QCategory c = QCategory.category;
         return queryFactory
@@ -22,7 +21,6 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
                 .fetch();
     }
 
-    @Override
     public List<AssetResponse.CountOutDTO.CountSubCategory> countBySubCategory() {
         QCategory c = QCategory.category;
         return queryFactory
