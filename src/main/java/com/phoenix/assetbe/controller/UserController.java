@@ -2,7 +2,6 @@ package com.phoenix.assetbe.controller;
 
 import com.phoenix.assetbe.core.auth.jwt.MyJwtProvider;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
-import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.UserInDTO;
 import com.phoenix.assetbe.dto.UserOutDTO;
@@ -63,27 +62,27 @@ public class UserController {
 
     @PostMapping("/s/user/check")
     public ResponseEntity<?> checkPassword(@RequestBody @Valid UserInDTO.CheckPasswordInDTO checkPasswordInDTO, Errors errors, @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        userService.checkPasswordService(checkPasswordInDTO, myUserDetails.getUser().getId());
+        userService.checkPasswordService(checkPasswordInDTO, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
     @PostMapping("/s/user/{id}/withdrawal")
-    public ResponseEntity<?> withdrawal(@PathVariable Long id, @RequestBody @Valid UserInDTO.WithdrawalInDTO withdrawalInDTO, Errors errors,
-                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        userService.withdrawalService(id, withdrawalInDTO, myUserDetails.getUser().getId());
+    public ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody @Valid UserInDTO.WithdrawInDTO withdrawInDTO, Errors errors,
+                                      @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        userService.withdrawService(id, withdrawInDTO, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
     @PostMapping("/s/user/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UserInDTO.UpdateInDTO updateInDTO, Errors errors,
                                     @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        userService.updateService(id, updateInDTO, myUserDetails.getUser().getId());
+        userService.updateService(id, updateInDTO, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
     @GetMapping("/s/user/{id}")
     public ResponseEntity<?> findMyInfo(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        UserOutDTO.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(id, myUserDetails.getUser().getId());
+        UserOutDTO.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(id, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(findMyInfoOutDTO));
     }
 }

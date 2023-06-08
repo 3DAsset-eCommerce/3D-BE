@@ -115,7 +115,7 @@ public class UserInDTO {
 
     @Getter
     @Setter
-    public static class WithdrawalInDTO {
+    public static class WithdrawInDTO {
         @NotNull(message = "탈퇴 사유를 적어주세요.")
         private String message;
     }

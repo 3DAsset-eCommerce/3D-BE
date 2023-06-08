@@ -25,6 +25,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -131,25 +132,29 @@ public class UserService {
         }
     }
 
-    public void checkPasswordService(UserInDTO.CheckPasswordInDTO checkPasswordInDTO, Long userId) {
-        if (checkPasswordInDTO.getId().longValue() != userId) {
+    public void checkPasswordService(UserInDTO.CheckPasswordInDTO checkPasswordInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        Long userId = checkPasswordInDTO.getId();
+
+        if (!myUserDetails.getUser().getId().equals(userId)) {
             throw new Exception400("id", "아이디가 일치하지 않습니다.");
         }
         User userPS = findUserById(userId);
+
         if (!passwordEncoder.matches(checkPasswordInDTO.getPassword(), userPS.getPassword())) {
             throw new Exception400("password", "비밀번호가 일치하지 않습니다.");
         }
     }
 
     @Transactional
-    public void withdrawalService(Long id, UserInDTO.WithdrawalInDTO withdrawalInDTO, Long userId) {
-        if (id != userId) {
+    public void withdrawService(Long userId, UserInDTO.WithdrawInDTO withdrawInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        if (!myUserDetails.getUser().getId().equals(userId)) {
             throw new Exception403("권한이 없습니다.");
         }
         User userPS = findUserById(userId);
 
         userPS.changeStatus();
-        userPS.changeWithdrawalMassage(withdrawalInDTO.getMessage());
+        userPS.changeWithdrawalMassage(withdrawInDTO.getMessage());
+
         try {
             userRepository.save(userPS);
         } catch (Exception e) {
@@ -158,13 +163,14 @@ public class UserService {
     }
 
     @Transactional
-    public void updateService(Long id, UserInDTO.UpdateInDTO updateInDTO, Long userId) {
-        if (id != userId) {
+    public void updateService(Long userId, UserInDTO.UpdateInDTO updateInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        if (!myUserDetails.getUser().getId().equals(userId)) {
             throw new Exception403("권한이 없습니다.");
         }
         User userPS = findUserById(userId);
 
-        if (!updateInDTO.getFirstName().equals(userPS.getFirstName()) || !updateInDTO.getLastName().equals(userPS.getLastName())) {
+        if (!updateInDTO.getFirstName().equals(userPS.getFirstName()) ||
+                !updateInDTO.getLastName().equals(userPS.getLastName())) {
             throw new Exception400("name", "이름이 일치하지 않습니다.");
         }
 
@@ -176,8 +182,8 @@ public class UserService {
         }
     }
 
-    public UserOutDTO.FindMyInfoOutDTO findMyInfoService(Long id, Long userId) {
-        if (id != userId) {
+    public UserOutDTO.FindMyInfoOutDTO findMyInfoService(Long userId, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        if (!myUserDetails.getUser().getId().equals(userId)) {
             throw new Exception403("권한이 없습니다.");
         }
         User userPS = findUserById(userId);
