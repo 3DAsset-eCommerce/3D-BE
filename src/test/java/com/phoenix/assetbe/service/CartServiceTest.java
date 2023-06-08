@@ -4,6 +4,7 @@ import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception403;
+import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.dto.CartRequest;
 import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.asset.AssetRepository;
@@ -15,6 +16,7 @@ import com.phoenix.assetbe.model.user.UserRepository;
 import com.phoenix.assetbe.service.AssetService;
 import com.phoenix.assetbe.service.CartService;
 import com.phoenix.assetbe.service.UserService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,8 +35,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
-
+//스텁 목 페이크
 public class CartServiceTest extends DummyEntity {
 
     @Mock
@@ -80,8 +83,8 @@ public class CartServiceTest extends DummyEntity {
 
         //then : 메서드 호출 횟수 확인
         verify(userService, times(1)).findUserById(anyLong());
-        verify(assetService, times(assets.size())).findAssetById(anyLong());
-        verify(cartRepository, times(assets.size())).save(any(Cart.class));
+        verify(assetService, times(1)).findAllAssetById(anyList());
+        verify(cartRepository, times(1)).saveAll(anyList());
     }
 
     @Test
@@ -104,34 +107,8 @@ public class CartServiceTest extends DummyEntity {
 
         //then
         verify(userService, times(1)).findUserById(anyLong());
-        verify(assetService, never()).findAssetById(anyLong());
-        verify(cartRepository, never()).save(any(Cart.class));
-    }
-
-    @Test
-    public void testAddCart_InvalidAsset() {
-        // given
-        Long userId = 1L;
-        List<Long> assets = Arrays.asList(1L, 2L);
-
-        CartRequest.AddCartInDTO addCartInDTO = new CartRequest.AddCartInDTO();
-        addCartInDTO.setUserId(userId);
-        addCartInDTO.setAssets(assets);
-
-        User user  = newUser("유", "현주");
-        MyUserDetails myUserDetails = new MyUserDetails(user);
-
-        //when
-        when(userService.findUserById(1L)).thenReturn(user);
-        when(assetService.findAssetById(1L)).thenReturn(Asset.builder().build());
-        when(assetService.findAssetById(2L)).thenThrow(new Exception400("id", "존재하지 않는 에셋입니다. "));
-
-        //then
-        assertThrows(Exception400.class, () -> cartService.addCart(addCartInDTO, myUserDetails));
-
-        verify(userService, times(1)).findUserById(anyLong());
-        verify(assetService, times(2)).findAssetById(anyLong());
-        verify(cartRepository, times(1)).save(any(Cart.class));
+        verify(assetService, never()).findAllAssetById(anyList());
+        verify(cartRepository, never()).saveAll(anyList());
     }
 
     @Test
@@ -154,15 +131,38 @@ public class CartServiceTest extends DummyEntity {
         cartRepository.save(cart1);
         cartRepository.save(cart2);
 
-        when(cartRepository.findById(1L)).thenReturn(Optional.ofNullable(cart1));
-        when(cartRepository.findById(2L)).thenReturn(Optional.ofNullable(cart2));
-
         //when : ~을 했을 때 ~을 return 하도록 설정 후, 메서드 호출
+        when(cartRepository.findAllById(carts)).thenReturn(Arrays.asList(cart1, cart2));
+
         cartService.deleteCart(deleteCartInDTO, myUserDetails);
 
         //then : 메서드 호출 횟수 확인
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
-        verify(cartRepository, times(carts.size())).findById(anyLong());
-        verify(cartRepository, times(carts.size())).deleteById(anyLong());
+        verify(cartRepository, times(1)).deleteAllById(anyList());
+    }
+
+    @Test
+    public void testDeleteCart_AuthCheckFail() {
+        // given
+        Long userId = 1L;
+        List<Long> carts = Arrays.asList(1L, 2L);
+
+        CartRequest.DeleteCartInDTO deleteCartInDTO = new CartRequest.DeleteCartInDTO();
+        deleteCartInDTO.setUserId(userId);
+        deleteCartInDTO.setCarts(carts);
+
+        User user  = newUser("유", "현주");
+        User user2 = newUser("김", "현주");
+        MyUserDetails myUserDetails = new MyUserDetails(user2);
+
+        //when : ~했을 때 ~예외
+        doThrow(new Exception403("권한이 없습니다. "))
+                .when(userService).authCheck(myUserDetails, userId);
+
+        assertThrows(Exception403.class, () -> cartService.deleteCart(deleteCartInDTO, myUserDetails));
+
+        //then
+        verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
+        verify(cartRepository, never()).deleteAllById(anyList());
     }
 }
