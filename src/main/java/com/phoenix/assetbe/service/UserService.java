@@ -60,7 +60,7 @@ public class UserService {
     }
 
     @Transactional
-    public CodeOutDTO codeSendingService(UserInDTO.CodeInDTO codeInDTO){
+    public CodeOutDTO codeSendService(UserInDTO.CodeInDTO codeInDTO){
         User userPS = findUserByEmail(codeInDTO.getEmail());
         userPS.generateEmailCheckToken();
 
@@ -74,7 +74,7 @@ public class UserService {
     }
 
     @Transactional
-    public CodeCheckOutDTO codeCheckingService(CodeCheckInDTO codeCheckInDTO) {
+    public CodeCheckOutDTO codeCheckService(CodeCheckInDTO codeCheckInDTO) {
         Optional<User> userPS = userRepository.findByEmail(codeCheckInDTO.getEmail());
         if(!userPS.isPresent()){
             throw new Exception400("code", "먼저 이메일 인증코드를 전송해주세요.");
@@ -86,7 +86,7 @@ public class UserService {
     }
 
     @Transactional
-    public PasswordChangeOutDTO passwordChangingService(PasswordChangeInDTO passwordChangeInDTO) {
+    public PasswordChangeOutDTO passwordChangeService(PasswordChangeInDTO passwordChangeInDTO) {
         User userPS = findUserByEmail(passwordChangeInDTO.getEmail());
         if(userPS.getEmailCheckToken()==null){
             throw new Exception400("email","이메일 인증을 먼저 해야 합니다.");
@@ -101,7 +101,7 @@ public class UserService {
         throw new Exception400("code","이메일 인증 코드가 틀렸습니다.");
     }
 
-    public EmailCheckOutDTO emailCheckingService(EmailCheckInDTO emailCheckInDTO) {
+    public EmailCheckOutDTO emailCheckService(EmailCheckInDTO emailCheckInDTO) {
         existsUserByEmail(emailCheckInDTO.getEmail());
         return new EmailCheckOutDTO(emailCheckInDTO.getEmail());
     }

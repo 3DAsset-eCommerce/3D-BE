@@ -33,25 +33,25 @@ public class UserController {
 
     @PostMapping("/login/send")
     public ResponseEntity<?> verifyingCodeSend(@RequestBody @Valid UserInDTO.CodeInDTO codeInDTO, Errors errors){
-        CodeOutDTO codeOutDTO = userService.codeSendingService(codeInDTO);
+        CodeOutDTO codeOutDTO = userService.codeSendService(codeInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(codeOutDTO));
     }
 
     @PostMapping("/login/check")
     public ResponseEntity<?> verifyingCodeCheck(@RequestBody @Valid UserInDTO.CodeCheckInDTO codeCheckInDTO, Errors errors){
-        CodeCheckOutDTO codeCheckOutDTO = userService.codeCheckingService(codeCheckInDTO);
+        CodeCheckOutDTO codeCheckOutDTO = userService.codeCheckService(codeCheckInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(codeCheckOutDTO));
     }
 
     @PostMapping("/login/change")
     public ResponseEntity<?> passwordChange(@RequestBody @Valid UserInDTO.PasswordChangeInDTO passwordChangeInDTO, Errors errors){
-        PasswordChangeOutDTO passwordChangeOutDTO = userService.passwordChangingService(passwordChangeInDTO);
+        PasswordChangeOutDTO passwordChangeOutDTO = userService.passwordChangeService(passwordChangeInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(passwordChangeOutDTO));
     }
 
     @PostMapping("/signup/duplicate")
     public ResponseEntity<?> emailIsDuplicate(@RequestBody @Valid UserInDTO.EmailCheckInDTO emailCheckInDTO, Errors errors){
-        EmailCheckOutDTO emailCheckOutDTO = userService.emailCheckingService(emailCheckInDTO);
+        EmailCheckOutDTO emailCheckOutDTO = userService.emailCheckService(emailCheckInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(emailCheckOutDTO));
     }
 
