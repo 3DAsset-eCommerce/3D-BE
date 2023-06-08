@@ -2,21 +2,18 @@ package com.phoenix.assetbe.service;
 
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
-import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.dto.CartRequest;
-import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.model.asset.Asset;
-import com.phoenix.assetbe.model.asset.AssetRepository;
 import com.phoenix.assetbe.model.cart.Cart;
 import com.phoenix.assetbe.model.cart.CartRepository;
 import com.phoenix.assetbe.model.user.User;
-import com.phoenix.assetbe.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -38,14 +35,18 @@ public class CartService {
         userService.authCheck(myUserDetails, userId);
         User userPS = userService.findUserById(userId);
 
-        for (Long assetId : assets) {
-            Asset assetPS = assetService.findAssetById(assetId);
-            Cart cart = Cart.builder().user(userPS).asset(assetPS).build();
-            try {
-                cartRepository.save(cart);
-            } catch (Exception e) {
-                throw new Exception500("장바구니 담기 실패 : "+e.getMessage());
-            }
+        List<Asset> assetList = assetService.findAllAssetById(assets);
+        List<Cart> cartList = new ArrayList<>();
+
+        for (Asset asset : assetList) {
+            Cart cart = Cart.builder().user(userPS).asset(asset).build();
+            cartList.add(cart);
+        }
+
+        try {
+            cartRepository.saveAll(cartList);
+        } catch (Exception e) {
+            throw new Exception500("장바구니 담기 실패 : "+e.getMessage());
         }
     }
 
@@ -56,18 +57,20 @@ public class CartService {
 
         userService.authCheck(myUserDetails, userId);
 
-        for (Long cartId : carts) {
-            findCartById(cartId);
-            try {
-                cartRepository.deleteById(cartId);
-            } catch (Exception e) {
-                throw new Exception500("장바구니 삭제 실패 : "+e.getMessage());
-            }
+        try {
+            cartRepository.deleteAllById(carts);
+        } catch (Exception e) {
+            throw new Exception500("장바구니 삭제 실패 : "+e.getMessage());
         }
     }
 
-    private void findCartById(Long cartId){
+    public void findCartById(Long cartId){
         cartRepository.findById(cartId).orElseThrow(
                 () -> new Exception400("id", "존재하지 않는 장바구니입니다. "));
+    }
+
+    public List<Cart> findAllCartById(List<Long> cartIds){
+        List<Cart> cartList = cartRepository.findAllById(cartIds);
+        return cartList;
     }
 }
