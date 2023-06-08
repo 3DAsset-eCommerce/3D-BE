@@ -2,14 +2,13 @@ package com.phoenix.assetbe.model.asset;
 
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
 import com.phoenix.assetbe.model.user.User;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Table(name = "my_asset_tb")
 @Entity

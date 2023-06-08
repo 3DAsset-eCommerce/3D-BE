@@ -8,6 +8,8 @@ import lombok.*;
 import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Table(name = "cart_tb")
 @Entity
@@ -25,11 +27,4 @@ public class Cart extends MyTimeBaseUtil {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asset_id")
     private Asset asset;
-
-    @Builder
-    public Cart(Long id, User user, Asset asset) {
-        this.id = id;
-        this.user = user;
-        this.asset = asset;
-    }
 }
