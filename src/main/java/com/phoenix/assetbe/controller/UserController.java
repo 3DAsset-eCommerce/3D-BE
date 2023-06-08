@@ -16,10 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,25 +33,25 @@ public class UserController {
 
     @PostMapping("/login/send")
     public ResponseEntity<?> verifyingCodeSend(@RequestBody @Valid UserInDTO.CodeInDTO codeInDTO, Errors errors){
-        CodeOutDTO codeOutDTO = userService.codeSending(codeInDTO);
+        CodeOutDTO codeOutDTO = userService.codeSendingService(codeInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(codeOutDTO));
     }
 
     @PostMapping("/login/check")
     public ResponseEntity<?> verifyingCodeCheck(@RequestBody @Valid UserInDTO.CodeCheckInDTO codeCheckInDTO, Errors errors){
-        CodeCheckOutDTO codeCheckOutDTO = userService.codeChecking(codeCheckInDTO);
+        CodeCheckOutDTO codeCheckOutDTO = userService.codeCheckingService(codeCheckInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(codeCheckOutDTO));
     }
 
     @PostMapping("/login/change")
     public ResponseEntity<?> passwordChange(@RequestBody @Valid UserInDTO.PasswordChangeInDTO passwordChangeInDTO, Errors errors){
-        PasswordChangeOutDTO passwordChangeOutDTO = userService.passwordChanging(passwordChangeInDTO);
+        PasswordChangeOutDTO passwordChangeOutDTO = userService.passwordChangingService(passwordChangeInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(passwordChangeOutDTO));
     }
 
     @PostMapping("/signup/duplicate")
     public ResponseEntity<?> emailIsDuplicate(@RequestBody @Valid UserInDTO.EmailCheckInDTO emailCheckInDTO, Errors errors){
-        EmailCheckOutDTO emailCheckOutDTO = userService.emailChecking(emailCheckInDTO);
+        EmailCheckOutDTO emailCheckOutDTO = userService.emailCheckingService(emailCheckInDTO);
         return ResponseEntity.ok(new ResponseDTO<>(emailCheckOutDTO));
     }
 
@@ -65,7 +63,7 @@ public class UserController {
 
     @PostMapping("/s/user/check")
     public ResponseEntity<?> checkPassword(@RequestBody @Valid UserInDTO.CheckPasswordInDTO checkPasswordInDTO, Errors errors, @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        userService.checkPassword(checkPasswordInDTO, myUserDetails.getUser().getId());
+        userService.checkPasswordService(checkPasswordInDTO, myUserDetails.getUser().getId());
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
@@ -75,7 +73,7 @@ public class UserController {
         if (id.longValue() != myUserDetails.getUser().getId().longValue()) {
             throw new Exception403("권한이 없습니다.");
         }
-        userService.withdrawal(withdrawalInDTO, myUserDetails.getUser().getId());
+        userService.withdrawalService(withdrawalInDTO, myUserDetails.getUser().getId());
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
@@ -85,7 +83,7 @@ public class UserController {
         if (id.longValue() != myUserDetails.getUser().getId().longValue()) {
             throw new Exception403("권한이 없습니다.");
         }
-        userService.update(updateInDTO, myUserDetails.getUser().getId());
+        userService.updateService(updateInDTO, myUserDetails.getUser().getId());
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
@@ -94,7 +92,7 @@ public class UserController {
         if (id.longValue() != myUserDetails.getUser().getId()) {
             throw new Exception403("권한이 없습니다.");
         }
-        UserOutDTO.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfo(myUserDetails.getUser().getId());
+        UserOutDTO.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(myUserDetails.getUser().getId());
         return ResponseEntity.ok(new ResponseDTO<>(findMyInfoOutDTO));
     }
 }

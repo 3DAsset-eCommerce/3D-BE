@@ -60,7 +60,7 @@ public class UserService {
     }
 
     @Transactional
-    public CodeOutDTO codeSending(UserInDTO.CodeInDTO codeInDTO){
+    public CodeOutDTO codeSendingService(UserInDTO.CodeInDTO codeInDTO){
         User userPS = findUserByEmail(codeInDTO.getEmail());
         userPS.generateEmailCheckToken();
 
@@ -74,7 +74,7 @@ public class UserService {
     }
 
     @Transactional
-    public CodeCheckOutDTO codeChecking(CodeCheckInDTO codeCheckInDTO) {
+    public CodeCheckOutDTO codeCheckingService(CodeCheckInDTO codeCheckInDTO) {
         Optional<User> userPS = userRepository.findByEmail(codeCheckInDTO.getEmail());
         if(!userPS.isPresent()){
             throw new Exception400("code", "먼저 이메일 인증코드를 전송해주세요.");
@@ -86,7 +86,7 @@ public class UserService {
     }
 
     @Transactional
-    public PasswordChangeOutDTO passwordChanging(PasswordChangeInDTO passwordChangeInDTO) {
+    public PasswordChangeOutDTO passwordChangingService(PasswordChangeInDTO passwordChangeInDTO) {
         User userPS = findUserByEmail(passwordChangeInDTO.getEmail());
         if(userPS.getEmailCheckToken()==null){
             throw new Exception400("email","이메일 인증을 먼저 해야 합니다.");
@@ -101,7 +101,7 @@ public class UserService {
         throw new Exception400("code","이메일 인증 코드가 틀렸습니다.");
     }
 
-    public EmailCheckOutDTO emailChecking(EmailCheckInDTO emailCheckInDTO) {
+    public EmailCheckOutDTO emailCheckingService(EmailCheckInDTO emailCheckInDTO) {
         existsUserByEmail(emailCheckInDTO.getEmail());
         return new EmailCheckOutDTO(emailCheckInDTO.getEmail());
     }
@@ -130,7 +130,7 @@ public class UserService {
         }
     }
 
-    public void checkPassword(UserInDTO.CheckPasswordInDTO checkPasswordInDTO, Long userId) {
+    public void checkPasswordService(UserInDTO.CheckPasswordInDTO checkPasswordInDTO, Long userId) {
         if (checkPasswordInDTO.getId().longValue() != userId) {
             throw new Exception400("id", "아이디가 일치하지 않습니다.");
         }
@@ -141,8 +141,10 @@ public class UserService {
     }
 
     @Transactional
-    public void withdrawal(UserInDTO.WithdrawalInDTO withdrawalInDTO, Long userId) {
+    public void withdrawalService(UserInDTO.WithdrawalInDTO withdrawalInDTO, Long userId) {
         User userPS = findUserById(userId);
+
+        userPS.changeStatus();
         userPS.changeWithdrawalMassage(withdrawalInDTO.getMessage());
         try {
             userRepository.save(userPS);
@@ -152,7 +154,7 @@ public class UserService {
     }
 
     @Transactional
-    public void update(UserInDTO.UpdateInDTO updateInDTO, Long userId) {
+    public void updateService(UserInDTO.UpdateInDTO updateInDTO, Long userId) {
         User userPS = findUserById(userId);
         if (!updateInDTO.getFirstName().equals(userPS.getFirstName()) || !updateInDTO.getLastName().equals(userPS.getLastName())) {
             throw new Exception400("name", "이름이 일치하지 않습니다.");
@@ -166,7 +168,7 @@ public class UserService {
         }
     }
 
-    public UserOutDTO.FindMyInfoOutDTO findMyInfo(Long userId) {
+    public UserOutDTO.FindMyInfoOutDTO findMyInfoService(Long userId) {
         User userPS = findUserById(userId);
         return new UserOutDTO.FindMyInfoOutDTO(new UserOutDTO.UserDTO(userPS));
     }
