@@ -69,29 +69,19 @@ public class UserOutDTO {
 
     @Getter
     @Setter
-    public static class UserDTO { // FindMyInfoOutDTO 사용
+    public static class FindMyInfoOutDTO {
         private Long id;
         private String firstName;
         private String lastName;
         private String email;
         private String createdAt;
 
-        public UserDTO(User user) {
+        public FindMyInfoOutDTO(User user) {
             this.id = user.getId();
             this.firstName = user.getFirstName();
             this.lastName = user.getLastName();
             this.email = user.getEmail();
             this.createdAt = user.getCreatedAt().toLocalDate().toString();
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class FindMyInfoOutDTO {
-        private UserDTO user;
-
-        public FindMyInfoOutDTO(UserDTO user) {
-            this.user = user;
         }
     }
 }
