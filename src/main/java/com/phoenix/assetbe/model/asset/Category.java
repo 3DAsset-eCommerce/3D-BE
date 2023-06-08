@@ -1,13 +1,12 @@
 package com.phoenix.assetbe.model.asset;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Table(name = "category_tb")
 @Entity
@@ -20,10 +19,5 @@ public class Category {
 
     private String categoryName;
 
-    private String subCategoryName;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_id")
-    private Asset asset;
-
+    private Long categoryCount;
 }

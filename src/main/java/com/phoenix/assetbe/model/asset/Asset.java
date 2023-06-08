@@ -8,11 +8,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Table(name = "asset_tb")
 @Entity
-@EqualsAndHashCode(of="id")
-public class Asset extends MyTimeBaseUtil{
+@EqualsAndHashCode(of = "id")
+public class Asset extends MyTimeBaseUtil {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,15 +22,17 @@ public class Asset extends MyTimeBaseUtil{
 
     private String assetName;
 
-    private double price;
+    private Double price;
 
-    private double size;
+    private Double size;
 
     private LocalDate releaseDate;
 
     private String extension;
 
-    private double rating;
+    private String creator;
+
+    private Double rating;
 
     private Long wishCount;
 
@@ -44,21 +48,4 @@ public class Asset extends MyTimeBaseUtil{
 
     private String thumbnailUrl;
 
-    @Builder
-    public Asset(Long id, String assetName, double price, double size, LocalDate releaseDate, String extension, double rating, Long wishCount, Long visitCount, Long reviewCount, boolean status, LocalDateTime updatedAt, String fileUrl, String thumbnailUrl) {
-        this.id = id;
-        this.assetName = assetName;
-        this.price = price;
-        this.size = size;
-        this.releaseDate = releaseDate;
-        this.extension = extension;
-        this.rating = rating;
-        this.wishCount = wishCount;
-        this.visitCount = visitCount;
-        this.reviewCount = reviewCount;
-        this.status = status;
-        this.updatedAt = updatedAt;
-        this.fileUrl = fileUrl;
-        this.thumbnailUrl = thumbnailUrl;
-    }
 }

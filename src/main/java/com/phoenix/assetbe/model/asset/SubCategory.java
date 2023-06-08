@@ -1,4 +1,4 @@
-package com.phoenix.assetbe.model.auth;
+package com.phoenix.assetbe.model.asset;
 
 import lombok.*;
 
@@ -8,16 +8,16 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Getter
-@Table(name = "refresh_token_tb")
+@Table(name = "sub_category_tb")
 @Entity
 @EqualsAndHashCode(of="id")
-public class RefreshToken {
+public class SubCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //user 1:1
+    private String SubCategoryName;
 
-    private String refreshToken;
+    private Long SubCategoryCount;
 }
