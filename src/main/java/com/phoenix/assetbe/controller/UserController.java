@@ -70,29 +70,20 @@ public class UserController {
     @PostMapping("/s/user/{id}/withdrawal")
     public ResponseEntity<?> withdrawal(@PathVariable Long id, @RequestBody @Valid UserInDTO.WithdrawalInDTO withdrawalInDTO, Errors errors,
                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        if (id.longValue() != myUserDetails.getUser().getId().longValue()) {
-            throw new Exception403("권한이 없습니다.");
-        }
-        userService.withdrawalService(withdrawalInDTO, myUserDetails.getUser().getId());
+        userService.withdrawalService(id, withdrawalInDTO, myUserDetails.getUser().getId());
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
     @PostMapping("/s/user/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UserInDTO.UpdateInDTO updateInDTO, Errors errors,
                                     @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        if (id.longValue() != myUserDetails.getUser().getId().longValue()) {
-            throw new Exception403("권한이 없습니다.");
-        }
-        userService.updateService(updateInDTO, myUserDetails.getUser().getId());
+        userService.updateService(id, updateInDTO, myUserDetails.getUser().getId());
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
     @GetMapping("/s/user/{id}")
     public ResponseEntity<?> findMyInfo(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        if (id.longValue() != myUserDetails.getUser().getId()) {
-            throw new Exception403("권한이 없습니다.");
-        }
-        UserOutDTO.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(myUserDetails.getUser().getId());
+        UserOutDTO.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(id, myUserDetails.getUser().getId());
         return ResponseEntity.ok(new ResponseDTO<>(findMyInfoOutDTO));
     }
 }

@@ -4,6 +4,7 @@ import com.phoenix.assetbe.core.auth.jwt.MyJwtProvider;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception401;
+import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.dto.UserInDTO;
 import com.phoenix.assetbe.dto.UserInDTO.CodeCheckInDTO;
@@ -141,7 +142,10 @@ public class UserService {
     }
 
     @Transactional
-    public void withdrawalService(UserInDTO.WithdrawalInDTO withdrawalInDTO, Long userId) {
+    public void withdrawalService(Long id, UserInDTO.WithdrawalInDTO withdrawalInDTO, Long userId) {
+        if (id != userId) {
+            throw new Exception403("권한이 없습니다.");
+        }
         User userPS = findUserById(userId);
 
         userPS.changeStatus();
@@ -154,8 +158,12 @@ public class UserService {
     }
 
     @Transactional
-    public void updateService(UserInDTO.UpdateInDTO updateInDTO, Long userId) {
+    public void updateService(Long id, UserInDTO.UpdateInDTO updateInDTO, Long userId) {
+        if (id != userId) {
+            throw new Exception403("권한이 없습니다.");
+        }
         User userPS = findUserById(userId);
+
         if (!updateInDTO.getFirstName().equals(userPS.getFirstName()) || !updateInDTO.getLastName().equals(userPS.getLastName())) {
             throw new Exception400("name", "이름이 일치하지 않습니다.");
         }
@@ -168,8 +176,12 @@ public class UserService {
         }
     }
 
-    public UserOutDTO.FindMyInfoOutDTO findMyInfoService(Long userId) {
+    public UserOutDTO.FindMyInfoOutDTO findMyInfoService(Long id, Long userId) {
+        if (id != userId) {
+            throw new Exception403("권한이 없습니다.");
+        }
         User userPS = findUserById(userId);
+
         return new UserOutDTO.FindMyInfoOutDTO(new UserOutDTO.UserDTO(userPS));
     }
 
