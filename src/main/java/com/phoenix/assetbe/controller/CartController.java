@@ -25,4 +25,11 @@ public class CartController {
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @PostMapping("/s/cart/delete")
+    public ResponseEntity<?> deleteCart(@RequestBody CartRequest.DeleteCartInDTO deleteCartInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails){
+        cartService.deleteCart(deleteCartInDTO, myUserDetails);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>();
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }
