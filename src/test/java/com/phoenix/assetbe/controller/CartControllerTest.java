@@ -1,15 +1,9 @@
-package com.phoenix.assetbe.integration;
+package com.phoenix.assetbe.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.assetbe.dto.CartRequest;
-import com.phoenix.assetbe.model.asset.Asset;
-import com.phoenix.assetbe.model.asset.AssetRepository;
 import com.phoenix.assetbe.model.cart.Cart;
 import com.phoenix.assetbe.model.cart.CartRepository;
-import com.phoenix.assetbe.model.user.Role;
-import com.phoenix.assetbe.model.user.User;
-import com.phoenix.assetbe.model.user.UserRepository;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @Transactional
 public class CartControllerTest {
@@ -46,7 +40,7 @@ public class CartControllerTest {
     private CartRepository cartRepository;
 
     @Test
-    @WithUserDetails(value = "ssar쌀@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void testAddCart() throws Exception {
         //given
         Long userId = 1L;
@@ -68,6 +62,35 @@ public class CartControllerTest {
 
         List<Cart> cartItems = cartRepository.findAll();
         assertEquals(2, cartItems.size());
+    }
+
+    @Test
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    public void testDeleteCart() throws Exception {
+        //given
+        Long userId = 1L;
+        List<Long> carts = Arrays.asList(1L);
+        Cart cart1 = Cart.builder().id(1L).build();
+        Cart cart2 = Cart.builder().id(2L).build();
+        cartRepository.save(cart1);
+        cartRepository.save(cart2);
+
+        CartRequest.DeleteCartInDTO deleteCartInDTO = new CartRequest.DeleteCartInDTO();
+        deleteCartInDTO.setUserId(userId);
+        deleteCartInDTO.setCarts(carts);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/cart/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(deleteCartInDTO)));
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200));
+
+        List<Cart> cartItems = cartRepository.findAll();
+        assertEquals(1, cartItems.size());
     }
 }
 
