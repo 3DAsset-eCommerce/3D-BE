@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Table(name = "user_tb")
 @Entity
@@ -64,26 +66,6 @@ public class User extends MyTimeBaseUtil {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-
-    @Builder
-    public User(Long id, String lastName, String firstName, String email, String password, Status status, Role role, SocialType provider, String reason, LocalDateTime updatedAt, boolean emailVerified, String emailCheckToken, LocalDateTime tokenCreatedAt) {
-        this.id = id;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.email = email;
-        this.password = password;
-        this.status = status;
-        this.role = role;
-        this.provider = provider;
-        this.reason = reason;
-        this.updatedAt = updatedAt;
-        this.emailVerified = emailVerified;
-        this.emailCheckToken = emailCheckToken;
-        this.tokenCreatedAt = tokenCreatedAt;
-    }
-
-
 
     public void generateEmailCheckToken() {this.emailCheckToken= UUID.randomUUID().toString();}
     public void setEmailCheckToken(String s) {this.emailCheckToken=s;}
