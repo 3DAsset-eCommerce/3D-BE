@@ -18,8 +18,10 @@ public class CartQueryRepository {
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
         QCart cart = QCart.cart;
 
-        return queryFactory.selectFrom(cart)
+        return queryFactory
+                .select(cart.count())
+                .from(cart)
                 .where(cart.user.id.eq(userId))
-                .fetchCount();
+                .fetchOne();
     }
 }
