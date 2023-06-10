@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,6 +36,7 @@ public class CategoryService {
             List<String> tagList = categoryAssetTags.stream()
                     .map(assetTag -> assetTag.getTag().getTagName())
                     .distinct()
+                    .sorted()
                     .collect(Collectors.toList());
 
             Map<SubCategory, List<AssetTag>> subCategoryMap = categoryAssetTags.stream()
@@ -49,6 +51,7 @@ public class CategoryService {
                 List<String> subCategoryTagList = subCategoryAssetTags.stream()
                         .map(assetTag -> assetTag.getTag().getTagName())
                         .distinct()
+                        .sorted()
                         .collect(Collectors.toList());
 
                 AssetResponse.CategoryOutDTO.SubCategoryDTO subCategoryDTO = new AssetResponse.CategoryOutDTO.SubCategoryDTO(
@@ -63,6 +66,14 @@ public class CategoryService {
             );
 
             categoryDTOList.add(categoryDTO);
+        }
+
+        // categoryName을 기준으로 카테고리 정렬
+        categoryDTOList.sort(Comparator.comparing(AssetResponse.CategoryOutDTO.CategoryDTO::getCategoryName));
+
+        // subCategoryName을 기준으로 서브카테고리 정렬
+        for (AssetResponse.CategoryOutDTO.CategoryDTO categoryDTO : categoryDTOList) {
+            categoryDTO.getSubCategoryList().sort(Comparator.comparing(AssetResponse.CategoryOutDTO.SubCategoryDTO::getSubCategoryName));
         }
 
         return new AssetResponse.CategoryOutDTO(categoryDTOList);
