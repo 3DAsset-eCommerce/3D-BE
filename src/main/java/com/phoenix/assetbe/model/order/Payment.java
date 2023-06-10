@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "payment_tb")
 @Entity
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="id", callSuper=false)
 public class Payment extends MyTimeBaseUtil {
 
     @Id

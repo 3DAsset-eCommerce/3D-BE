@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "review_tb")
 @Entity
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="id", callSuper=false)
 public class Review extends MyTimeBaseUtil {
 
     @Id

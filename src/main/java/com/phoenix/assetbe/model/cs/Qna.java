@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "qna_tb")
 @Entity
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="id", callSuper=false)
 public class Qna extends MyTimeBaseUtil {
 
     @Id

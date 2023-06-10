@@ -17,7 +17,7 @@ public class SubCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String SubCategoryName;
+    private String subCategoryName;
 
-    private Long SubCategoryCount;
+    private Long subCategoryCount;
 }

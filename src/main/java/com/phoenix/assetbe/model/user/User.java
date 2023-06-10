@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Table(name = "user_tb")
 @Entity
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="id", callSuper=false)
 public class User extends MyTimeBaseUtil {
 
     @Id

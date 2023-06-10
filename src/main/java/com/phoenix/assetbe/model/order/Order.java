@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "order_tb")
 @Entity
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="id", callSuper=false)
 public class Order extends MyTimeBaseUtil {
 
     @Id

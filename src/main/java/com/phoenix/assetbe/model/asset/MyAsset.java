@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "my_asset_tb")
 @Entity
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="id", callSuper=false)
 public class MyAsset extends MyTimeBaseUtil {
 
     @Id

@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "wishlist_tb")
 @Entity
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="id", callSuper=false)
 public class WishList extends MyTimeBaseUtil {
 
     @Id
