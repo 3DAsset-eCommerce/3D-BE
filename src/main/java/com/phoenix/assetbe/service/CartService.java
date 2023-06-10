@@ -4,8 +4,10 @@ import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.dto.CartRequest;
+import com.phoenix.assetbe.dto.CartResponse;
 import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.cart.Cart;
+import com.phoenix.assetbe.model.cart.CartQueryRepository;
 import com.phoenix.assetbe.model.cart.CartRepository;
 import com.phoenix.assetbe.model.user.User;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ import java.util.List;
 public class CartService {
 
     private final CartRepository cartRepository;
+
+    private final CartQueryRepository cartQueryRepository;
     private final UserService userService;
     private final AssetService assetService;
 
@@ -63,6 +67,19 @@ public class CartService {
             throw new Exception500("장바구니 삭제 실패 : "+e.getMessage());
         }
     }
+
+    public CartResponse.CountCartOutDTO countCartService(Long id, MyUserDetails myUserDetails) {
+        userService.authCheck(myUserDetails, id);
+        try {
+            Long cartCount = cartQueryRepository.countByUserId(id);
+
+            CartResponse.CountCartOutDTO countCartOutDTO = new CartResponse.CountCartOutDTO(cartCount);
+            return countCartOutDTO;
+        } catch (Exception e) {
+            throw new Exception500("장바구니 조회 실패 : "+e.getMessage());
+        }
+    }
+
 
     public void findCartById(Long cartId){
         cartRepository.findById(cartId).orElseThrow(
