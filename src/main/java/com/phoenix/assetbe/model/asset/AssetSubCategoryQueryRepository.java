@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class CategoryQueryRepository {
+public class AssetSubCategoryQueryRepository {
 
 }
+
+

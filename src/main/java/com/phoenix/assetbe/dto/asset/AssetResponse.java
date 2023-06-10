@@ -8,68 +8,41 @@ import java.util.List;
 public class AssetResponse {
 
     @Getter @Setter
-    public static class CountOutDTO {
+    public static class CategoryOutDTO {
 
-        private List<Category> categoryList;
+        private List<AssetResponse.CategoryOutDTO.CategoryDTO> categoryList;
 
-        public CountOutDTO(List<Category> categoryList) {
+        public CategoryOutDTO(List<AssetResponse.CategoryOutDTO.CategoryDTO> categoryList) {
             this.categoryList = categoryList;
         }
 
-        @Getter @Setter
-        public static class Category {
+        @Getter
+        @Setter
+        public static class CategoryDTO {
             private String categoryName;
             private Long categoryCount;
-            private List<SubCategory> subCategoryList;
+            private List<String> tagList;
+            private List<SubCategoryDTO> subCategoryList;
 
-            public Category(String categoryName, Long categoryCount, List<SubCategory> subCategoryList) {
+            public CategoryDTO(String categoryName, Long categoryCount, List<String> tagList, List<SubCategoryDTO> subCategoryList) {
                 this.categoryName = categoryName;
                 this.categoryCount = categoryCount;
+                this.tagList = tagList;
                 this.subCategoryList = subCategoryList;
             }
         }
 
-        @Getter @Setter
-        public static class SubCategoryList{
-            private List<SubCategory> subCategoryList;
-
-            public SubCategoryList(List<SubCategory> subCategoryList) {
-                this.subCategoryList = subCategoryList;
-            }
-        }
-
-        @Getter @Setter
-        public static class SubCategory {
+        @Getter
+        @Setter
+        public static class SubCategoryDTO {
             private String subCategoryName;
             private Long subCategoryCount;
+            private List<String> tagList;
 
-            public SubCategory(String subCategoryName, Long subCategoryCount) {
+            public SubCategoryDTO(String subCategoryName, Long subCategoryCount, List<String> tagList) {
                 this.subCategoryName = subCategoryName;
                 this.subCategoryCount = subCategoryCount;
-            }
-        }
-
-        @Getter @Setter
-        public static class CountCategory {
-            private String categoryName;
-            private Long categoryCount;
-
-            public CountCategory(String categoryName, Long categoryCount) {
-                this.categoryName = categoryName;
-                this.categoryCount = categoryCount;
-            }
-        }
-
-        @Getter @Setter
-        public static class CountSubCategory {
-            private String categoryName;
-            private String subCategoryName;
-            private Long subCategoryCount;
-
-            public CountSubCategory(String categoryName, String subCategoryName, Long subCategoryCount) {
-                this.categoryName = categoryName;
-                this.subCategoryName = subCategoryName;
-                this.subCategoryCount = subCategoryCount;
+                this.tagList = tagList;
             }
         }
     }

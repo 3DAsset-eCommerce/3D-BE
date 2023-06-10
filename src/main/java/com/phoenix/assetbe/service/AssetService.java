@@ -25,8 +25,6 @@ import java.util.stream.IntStream;
 @Service
 public class AssetService {
 
-    private final CategoryRepository categoryRepository;
-    private final CategoryQueryRepository categoryQueryRepository;
     private final AssetRepository assetRepository;
 
     public Asset findAssetById(Long assetId){
@@ -40,52 +38,52 @@ public class AssetService {
         return assetList;
     }
 
-    public AssetResponse.CountOutDTO countByCategory() {
-        List<AssetResponse.CountOutDTO.CountCategory> listByCategory = categoryQueryRepository.countByCategory();
-        if(listByCategory == null) {
-            throw new Exception404("존재하지 않습니다.");
-        }
-
-        List<AssetResponse.CountOutDTO.CountSubCategory> listBySubCategory = categoryQueryRepository.countBySubCategory();
-        if(listBySubCategory == null) {
-            throw new Exception404("존재하지 않습니다.");
-        }
-
-        int[] intArray = new int[listByCategory.size()];
-        IntStream.range(0, listByCategory.size())
-                .forEach(i -> {
-                    intArray[i] = (int) listBySubCategory.stream()
-                            .filter(subCategory -> listByCategory.get(i).getCategoryName().equals(subCategory.getCategoryName()))
-                            .count();
-                });
-
-        List<AssetResponse.CountOutDTO.SubCategory> temp = listBySubCategory.stream()
-                .map(subCategory -> new AssetResponse.CountOutDTO.SubCategory(
-                        subCategory.getSubCategoryName(), subCategory.getSubCategoryCount()))
-                .collect(Collectors.toList());
-
-        List<List<AssetResponse.CountOutDTO.SubCategory>> subCategory = new ArrayList<>();
-        int index = 0;
-        for (int count : intArray) {
-            List<AssetResponse.CountOutDTO.SubCategory> subList = temp.stream()
-                    .skip(index)
-                    .limit(count)
-                    .collect(Collectors.toList());
-
-            subCategory.add(subList);
-            index += count;
-        }
-
-        List<AssetResponse.CountOutDTO.Category> categoryList = IntStream.range(0, listByCategory.size())
-                .mapToObj(m -> {
-                    String categoryName = listByCategory.get(m).getCategoryName();
-                    Long categoryCount = listByCategory.get(m).getCategoryCount();
-                    List<AssetResponse.CountOutDTO.SubCategory> subCategoryList = subCategory.get(m);
-                    return new AssetResponse.CountOutDTO.Category(categoryName, categoryCount, subCategoryList);
-                })
-                .collect(Collectors.toList());
-
-        return new AssetResponse.CountOutDTO(categoryList);
-    }
+//    public AssetResponse.CountOutDTO countByCategory() {
+//        List<AssetResponse.CountOutDTO.CountCategory> listByCategory = categoryQueryRepository.countByCategory();
+//        if(listByCategory == null) {
+//            throw new Exception404("존재하지 않습니다.");
+//        }
+//
+//        List<AssetResponse.CountOutDTO.CountSubCategory> listBySubCategory = categoryQueryRepository.countBySubCategory();
+//        if(listBySubCategory == null) {
+//            throw new Exception404("존재하지 않습니다.");
+//        }
+//
+//        int[] intArray = new int[listByCategory.size()];
+//        IntStream.range(0, listByCategory.size())
+//                .forEach(i -> {
+//                    intArray[i] = (int) listBySubCategory.stream()
+//                            .filter(subCategory -> listByCategory.get(i).getCategoryName().equals(subCategory.getCategoryName()))
+//                            .count();
+//                });
+//
+//        List<AssetResponse.CountOutDTO.SubCategory> temp = listBySubCategory.stream()
+//                .map(subCategory -> new AssetResponse.CountOutDTO.SubCategory(
+//                        subCategory.getSubCategoryName(), subCategory.getSubCategoryCount()))
+//                .collect(Collectors.toList());
+//
+//        List<List<AssetResponse.CountOutDTO.SubCategory>> subCategory = new ArrayList<>();
+//        int index = 0;
+//        for (int count : intArray) {
+//            List<AssetResponse.CountOutDTO.SubCategory> subList = temp.stream()
+//                    .skip(index)
+//                    .limit(count)
+//                    .collect(Collectors.toList());
+//
+//            subCategory.add(subList);
+//            index += count;
+//        }
+//
+//        List<AssetResponse.CountOutDTO.Category> categoryList = IntStream.range(0, listByCategory.size())
+//                .mapToObj(m -> {
+//                    String categoryName = listByCategory.get(m).getCategoryName();
+//                    Long categoryCount = listByCategory.get(m).getCategoryCount();
+//                    List<AssetResponse.CountOutDTO.SubCategory> subCategoryList = subCategory.get(m);
+//                    return new AssetResponse.CountOutDTO.Category(categoryName, categoryCount, subCategoryList);
+//                })
+//                .collect(Collectors.toList());
+//
+//        return new AssetResponse.CountOutDTO(categoryList);
+//    }
 }
 
