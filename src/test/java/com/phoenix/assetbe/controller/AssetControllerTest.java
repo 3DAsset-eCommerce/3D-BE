@@ -169,7 +169,8 @@ public class AssetControllerTest {
         // Then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
-                .andExpect(jsonPath("$.status").value(200));
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.visitCount").value(10001L));
     }
 
     @Test
@@ -188,6 +189,7 @@ public class AssetControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.wishlistId").value(1L));
+                .andExpect(jsonPath("$.data.wishlistId").value(1L))
+                .andExpect(jsonPath("$.data.visitCount").value(10001L));
     }
 }

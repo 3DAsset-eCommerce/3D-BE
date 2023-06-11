@@ -48,4 +48,7 @@ public class Asset extends MyTimeBaseUtil {
 
     private String thumbnailUrl;
 
+    public void increaseVisitCount(){
+        this.visitCount ++;
+    }
 }
