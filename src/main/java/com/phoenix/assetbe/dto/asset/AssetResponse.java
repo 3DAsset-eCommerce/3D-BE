@@ -46,4 +46,38 @@ public class AssetResponse {
             }
         }
     }
+
+    @Getter @Setter
+    public static class AssetDetailsOutDTO {
+        private Long assetId;
+        private String assetName;
+        private Double price;
+        private Double fileSize;
+        private String fileUrl;
+        private String creator;
+        private Double rating;
+        private Long reviewCount;
+        private Long wishCount;
+        private Long visitCount;
+        private Long wishlistId;
+        private List<String> tagList;
+
+        public AssetDetailsOutDTO(Long assetId, String assetName, Double price,
+                                  Double fileSize, String fileUrl, String creator, Double rating,
+                                  Long reviewCount, Long wishCount, Long visitCount,
+                                  Long wishlistId, List<String> tagList) {
+            this.assetId = assetId;
+            this.assetName = assetName;
+            this.price = price;
+            this.fileSize = fileSize;
+            this.fileUrl = fileUrl;
+            this.creator = creator;
+            this.rating = rating;
+            this.reviewCount = reviewCount;
+            this.wishCount = wishCount;
+            this.visitCount = visitCount;
+            this.wishlistId = wishlistId;
+            this.tagList = tagList;
+        }
+    }
 }
