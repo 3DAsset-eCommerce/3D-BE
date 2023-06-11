@@ -25,24 +25,20 @@ public class ReviewResponse {
         @Getter @Setter
         public static class Reviews {
             private Long reviewId;
-            private Integer rating;
+            private Double rating;
             private String content;
             private Long userId;
             private String firstName;
             private String lastName;
-            @JsonIgnore
-            private LocalDateTime createdAt;
 
-            public Reviews(Long reviewId, Integer rating, String content,
-                           Long userId, String firstName, String lastName,
-                           LocalDateTime createdAt) {
+            public Reviews(Long reviewId, Double rating, String content,
+                           Long userId, String firstName, String lastName) {
                 this.reviewId = reviewId;
                 this.rating = rating;
                 this.content = content;
                 this.userId = userId;
                 this.firstName = firstName;
                 this.lastName = lastName;
-                this.createdAt = createdAt;
             }
         }
     }

@@ -2,6 +2,7 @@ package com.phoenix.assetbe.controller;
 
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.asset.ReviewResponse;
+import com.phoenix.assetbe.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
