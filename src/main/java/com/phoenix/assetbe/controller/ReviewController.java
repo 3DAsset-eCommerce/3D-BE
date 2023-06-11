@@ -1,7 +1,7 @@
 package com.phoenix.assetbe.controller;
 
 import com.phoenix.assetbe.dto.ResponseDTO;
-import com.phoenix.assetbe.dto.asset.AssetResponse;
+import com.phoenix.assetbe.dto.asset.ReviewResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class ReviewController {
     @GetMapping("/assets/{id}/reviews")
     public ResponseEntity<?> getReviews(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        AssetResponse.ReviewsOutDTO reviewsOutDTO;
+        ReviewResponse.ReviewsOutDTO reviewsOutDTO;
 
         if (authentication.getPrincipal() == "anonymousUser" || authentication.getPrincipal() == "anonymous"
                 || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
