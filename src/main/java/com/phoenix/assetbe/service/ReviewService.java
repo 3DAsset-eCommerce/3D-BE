@@ -26,11 +26,12 @@ public class ReviewService {
     private final MyAssetQueryRepository myAssetQueryRepository;
 
     public ReviewResponse.ReviewsOutDTO getReviewsService(Long assetId) {
-        Long id = assetRepository.findIdByAssetId(assetId).orElseThrow(
-                () -> new Exception400("id", "존재하지 않는 에셋입니다. ")
-        );
+        boolean existAsset = assetRepository.existsById(assetId);
+        if (!existAsset) {
+            throw new Exception400("id", "존재하지 않는 에셋입니다. ");
+        }
 
-        List<Review> reviewList = reviewRepository.findByAssetId(id);
+        List<Review> reviewList = reviewRepository.findByAssetId(assetId);
         List<ReviewResponse.ReviewsOutDTO.Reviews> reviewsList = reviewList.stream()
                 .sorted(Comparator.comparing(Review::getCreatedAt, Comparator.reverseOrder())
                         .thenComparing(Review::getUpdatedAt, Comparator.reverseOrder()))
