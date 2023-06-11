@@ -4,6 +4,7 @@ import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.dto.asset.ReviewResponse;
 import com.phoenix.assetbe.model.asset.*;
 import com.phoenix.assetbe.model.user.UserRepository;
+import com.phoenix.assetbe.model.wish.WishListQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,11 @@ import java.util.Optional;
 @Service
 public class ReviewService {
 
-    private final ReviewRepository reviewRepository;
     private final AssetRepository assetRepository;
     private final UserRepository userRepository;
     private final MyAssetQueryRepository myAssetQueryRepository;
     private final ReviewQueryRepository reviewQueryRepository;
+    private final WishListQueryRepository wishListQueryRepository;
 
     public ReviewResponse.ReviewsOutDTO getReviewsService(Long assetId) {
         boolean existAsset = assetRepository.existsById(assetId);
@@ -33,7 +34,7 @@ public class ReviewService {
         List<ReviewResponse.ReviewsOutDTO.Reviews> reviewsList =
                 reviewQueryRepository.findReviewsByAssetId(assetId);
 
-        return new ReviewResponse.ReviewsOutDTO(false, false, reviewsList);
+        return new ReviewResponse.ReviewsOutDTO(false, false, false, reviewsList);
     }
 
     public ReviewResponse.ReviewsOutDTO getReviewsWithUserService(Long assetId, String userEmail) {
@@ -46,6 +47,7 @@ public class ReviewService {
         );
 
         boolean hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(id, userId);
+        boolean hasWishlist = wishListQueryRepository.existsAssetIdAndUserId(id, userId);
 
         List<ReviewResponse.ReviewsOutDTO.Reviews> reviewsList =
                 reviewQueryRepository.findReviewsByAssetId(assetId);
@@ -56,6 +58,6 @@ public class ReviewService {
 
         boolean hasReview = foundReview.isPresent();
 
-        return new ReviewResponse.ReviewsOutDTO(hasAsset, hasReview, reviewsList);
+        return new ReviewResponse.ReviewsOutDTO(hasAsset, hasReview, hasWishlist, reviewsList);
     }
 }

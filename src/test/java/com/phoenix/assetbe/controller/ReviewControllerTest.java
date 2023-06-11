@@ -156,7 +156,7 @@ public class ReviewControllerTest {
         WishList w6 = WishList.builder().asset(a7).user(u2).build();
         WishList w7 = WishList.builder().asset(a7).user(u3).build();
         WishList w8 = WishList.builder().asset(a8).user(u3).build();
-        WishList w9 = WishList.builder().asset(a9).user(u3).build();
+        WishList w9 = WishList.builder().asset(a1).user(u4).build();
         wishListRepository.saveAll(Arrays.asList(w1, w2, w3, w4, w5, w6, w7, w8, w9));
 
         MyAsset m1 = MyAsset.builder().asset(a1).user(u1).build();

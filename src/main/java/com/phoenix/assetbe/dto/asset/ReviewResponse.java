@@ -14,11 +14,13 @@ public class ReviewResponse {
     public static class ReviewsOutDTO {
         private boolean hasAsset;
         private boolean hasReview;
+        private boolean hasWishlist;
         private List<Reviews> reviewList;
 
-        public ReviewsOutDTO(boolean hasAsset, boolean hasReview, List<Reviews> reviewList) {
+        public ReviewsOutDTO(boolean hasAsset, boolean hasReview, boolean hasWishlist, List<Reviews> reviewList) {
             this.hasAsset = hasAsset;
             this.hasReview = hasReview;
+            this.hasWishlist = hasWishlist;
             this.reviewList = reviewList;
         }
 
