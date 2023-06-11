@@ -9,6 +9,7 @@ import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.model.asset.AssetTagQueryRepository;
 import com.phoenix.assetbe.model.user.UserRepository;
 import com.phoenix.assetbe.model.wish.WishListRepository;
+import com.phoenix.assetbe.model.asset.AssetTagRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
 @Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
@@ -25,9 +25,8 @@ import java.util.List;
 public class AssetService {
 
     private final AssetRepository assetRepository;
-
-    private final AssetTagQueryRepository assetTagQueryRepository;
     private final WishListRepository wishListRepository;
+    private final AssetTagQueryRepository assetTagQueryRepository;
 
     @Transactional
     public AssetResponse.AssetDetailsOutDTO getAssetDetailsService(Long assetId, MyUserDetails myUserDetails) {
