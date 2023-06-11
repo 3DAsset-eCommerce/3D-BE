@@ -13,8 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.test.context.support.TestExecutionEvent;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -23,6 +21,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -31,14 +30,14 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("에셋 컨트롤러 TEST")
+@DisplayName("리뷰 컨트롤러 TEST")
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @Transactional
-public class AssetControllerTest {
+public class ReviewControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -67,14 +66,21 @@ public class AssetControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private MyAssetRepository myAssetRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
     @BeforeEach
     public void setUp() throws Exception {
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User u1 = User.builder().email("user1@gmail.com").firstName("일").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
-        User u2 = User.builder().email("user2@gamil.com").firstName("이").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
-        User u3 = User.builder().email("user3@gamil.com").firstName("삼").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
-        userRepository.saveAll(Arrays.asList(u1, u2, u3));
+        User u2 = User.builder().email("user2@gmail.com").firstName("이").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
+        User u3 = User.builder().email("user3@gmail.com").firstName("삼").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
+        User u4 = User.builder().email("user4@gmail.com").firstName("사").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
+        userRepository.saveAll(Arrays.asList(u1, u2, u3, u4));
 
         Asset a1 = Asset.builder().assetName("a").size(4.0).fileUrl("address-asset1.FBX").extension(".FBX").price(10000D).rating(4.0).releaseDate(LocalDate.parse("2023-05-01")).reviewCount(100L).visitCount(10000L).wishCount(1000L).creator("NationA").build();
         Asset a2 = Asset.builder().assetName("b").size(4.1).fileUrl("address-asset2.FBX").extension(".FBX").price(10001D).rating(4.1).releaseDate(LocalDate.parse("2023-05-02")).reviewCount(101L).visitCount(10001L).wishCount(1001L).creator("NationA").build();
@@ -153,38 +159,52 @@ public class AssetControllerTest {
         WishList w9 = WishList.builder().asset(a9).user(u3).build();
         wishListRepository.saveAll(Arrays.asList(w1, w2, w3, w4, w5, w6, w7, w8, w9));
 
+        MyAsset m1 = MyAsset.builder().asset(a1).user(u1).build();
+        MyAsset m2 = MyAsset.builder().asset(a3).user(u1).build();
+        MyAsset m3 = MyAsset.builder().asset(a5).user(u1).build();
+        MyAsset m4 = MyAsset.builder().asset(a7).user(u1).build();
+        MyAsset m5 = MyAsset.builder().asset(a1).user(u2).build();
+        MyAsset m6 = MyAsset.builder().asset(a3).user(u2).build();
+        MyAsset m7 = MyAsset.builder().asset(a1).user(u3).build();
+        MyAsset m8 = MyAsset.builder().asset(a1).user(u4).build();
+        myAssetRepository.saveAll(Arrays.asList(m1, m2, m3, m4, m5, m6, m7, m8));
+
+        Review r1 = Review.builder().rating(4D).content("만족").asset(a1).user(u1).build();
+        Review r2 = Review.builder().rating(3D).content("평범").asset(a1).user(u2).build();
+        Review r3 = Review.builder().rating(5D).content("완전만족").asset(a1).user(u3).build();
+        Review r4 = Review.builder().rating(5D).content("완전만족").asset(a3).user(u2).build();
+        reviewRepository.saveAll(Arrays.asList(r1, r2, r3, r4));
+
         em.clear();
     }
 
+    @DisplayName("리뷰보기 비로그인유저 성공")
     @Test
-    @DisplayName("에셋 상세정보 비로그인 성공")
-    public void get_asset_details() throws Exception {
+    public void get_reviews_test() throws Exception {
         // given
-        Long id = 1L;
+        Long id = 1L; // 에셋 id
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/assets/{id}",id).with(anonymous()));
+                .get("/assets/{id}/reviews",id).with(anonymous()));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
         // Then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
-                .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.visitCount").value(10001L));
+                .andExpect(jsonPath("$.status").value(200));
     }
 
-    @DisplayName("에셋 상세정보 로그인 성공")
-    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @DisplayName("리뷰보기 로그인유저 성공")
     @Test
-    public void get_asset_details_with_user() throws Exception {
+    public void get_reviews_with_user_test() throws Exception {
         // given
-        Long id = 1L;
+        Long id = 1L; // 에셋 id
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/assets/{id}",id));
+                .get("/assets/{id}/reviews",id).with(user("user4@gmail.com")));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
@@ -192,7 +212,7 @@ public class AssetControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.wishlistId").value(1L))
-                .andExpect(jsonPath("$.data.visitCount").value(10001L));
+                .andExpect(jsonPath("$.data.hasAsset").value(true))
+                .andExpect(jsonPath("$.data.hasReview").value(false));
     }
 }

@@ -9,10 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Slf4j
@@ -24,6 +22,7 @@ public class ReviewService {
     private final AssetRepository assetRepository;
     private final UserRepository userRepository;
     private final MyAssetQueryRepository myAssetQueryRepository;
+    private final ReviewQueryRepository reviewQueryRepository;
 
     public ReviewResponse.ReviewsOutDTO getReviewsService(Long assetId) {
         boolean existAsset = assetRepository.existsById(assetId);
@@ -31,19 +30,9 @@ public class ReviewService {
             throw new Exception400("id", "존재하지 않는 에셋입니다. ");
         }
 
-        List<Review> reviewList = reviewRepository.findByAssetId(assetId);
-        List<ReviewResponse.ReviewsOutDTO.Reviews> reviewsList = reviewList.stream()
-                .sorted(Comparator.comparing(Review::getCreatedAt, Comparator.reverseOrder())
-                        .thenComparing(Review::getUpdatedAt, Comparator.reverseOrder()))
-                .map(review -> new ReviewResponse.ReviewsOutDTO.Reviews(
-                    review.getId(),
-                    review.getRating(),
-                    review.getContent(),
-                    review.getUser().getId(),
-                    review.getUser().getFirstName(),
-                    review.getUser().getLastName()
-                ))
-                .collect(Collectors.toList());
+        List<ReviewResponse.ReviewsOutDTO.Reviews> reviewsList =
+                reviewQueryRepository.findReviewsByAssetId(assetId);
+
         return new ReviewResponse.ReviewsOutDTO(false, false, reviewsList);
     }
 
@@ -56,30 +45,17 @@ public class ReviewService {
                 () -> new Exception400("id", "존재하지 않는 에셋입니다. ")
         );
 
-        //이 에셋이 구매한 에셋인지 확인 -> hasAsset
-        //이 에셋에 리뷰를 썼는지 확인 -> hasReview
         boolean hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(id, userId);
 
-        List<Review> reviewList = reviewRepository.findByAssetId(id);
+        List<ReviewResponse.ReviewsOutDTO.Reviews> reviewsList =
+                reviewQueryRepository.findReviewsByAssetId(assetId);
 
-        Optional<Review> foundReview = reviewList.stream()
-                .filter(review -> review.getUser().getId().equals(userId) && review.getAsset().getId().equals(id))
+        Optional<ReviewResponse.ReviewsOutDTO.Reviews> foundReview = reviewsList.stream()
+                .filter(reviews -> reviews.getUserId().equals(userId))
                 .findFirst();
 
         boolean hasReview = foundReview.isPresent();
 
-        List<ReviewResponse.ReviewsOutDTO.Reviews> reviewsList = reviewList.stream()
-                .sorted(Comparator.comparing(Review::getCreatedAt, Comparator.reverseOrder())
-                        .thenComparing(Review::getUpdatedAt, Comparator.reverseOrder()))
-                .map(review -> new ReviewResponse.ReviewsOutDTO.Reviews(
-                        review.getId(),
-                        review.getRating(),
-                        review.getContent(),
-                        review.getUser().getId(),
-                        review.getUser().getFirstName(),
-                        review.getUser().getLastName()
-                ))
-                .collect(Collectors.toList());
         return new ReviewResponse.ReviewsOutDTO(hasAsset, hasReview, reviewsList);
     }
 }
