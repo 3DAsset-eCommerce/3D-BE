@@ -52,7 +52,7 @@ public class ReviewService {
             throw new Exception500("리뷰 작성 실패 : "+e.getMessage());
         }
 
-        return reviewQueryRepository.findReviewByUserIdAndAssetId(Long userId, Long assetId);
+        return reviewQueryRepository.findReviewByUserIdAndAssetId(userId, assetId);
     }
 
     public ReviewResponse.ReviewsOutDTO getReviewsService(Long assetId) {

@@ -25,4 +25,12 @@ public class ReviewQueryRepository {
                 .orderBy(review.createdAt.desc(), review.updatedAt.desc())
                 .fetch();
     }
+
+    public ReviewResponse.AddReviewOutDTO findReviewByUserIdAndAssetId(Long userId, Long assetId) {
+        return queryFactory.select(Projections.constructor(ReviewResponse.AddReviewOutDTO.class,
+                review.user.id, review.asset.id, review.id, review.rating, review.content))
+                .from(review)
+                .where(review.user.id.eq(userId).and(review.asset.id.eq(assetId)))
+                .fetchOne();
+    }
 }
