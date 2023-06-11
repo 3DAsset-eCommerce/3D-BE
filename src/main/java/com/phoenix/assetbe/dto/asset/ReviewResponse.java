@@ -44,4 +44,21 @@ public class ReviewResponse {
             }
         }
     }
+
+    @Getter @Setter
+    public static class AddReviewOutDTO {
+        private Long userId;
+        private Long assetId;
+        private Long reviewId;
+        private Double rating;
+        private String content;
+
+        public AddReviewOutDTO(Long userId, Long assetId, Long reviewId, Double rating, String content) {
+            this.userId = userId;
+            this.assetId = assetId;
+            this.reviewId = reviewId;
+            this.rating = rating;
+            this.content = content;
+        }
+    }
 }

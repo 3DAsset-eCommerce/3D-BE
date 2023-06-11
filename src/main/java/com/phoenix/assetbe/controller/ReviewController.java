@@ -1,17 +1,19 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.auth.session.MyUserDetails;
+import com.phoenix.assetbe.dto.CartRequest;
 import com.phoenix.assetbe.dto.ResponseDTO;
+import com.phoenix.assetbe.dto.asset.ReviewRequest;
 import com.phoenix.assetbe.dto.asset.ReviewResponse;
 import com.phoenix.assetbe.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,6 +40,16 @@ public class ReviewController {
         }
 
         ResponseDTO<?> responseDTO = new ResponseDTO<>(reviewsOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PostMapping("/s/assets/{id}/reviews")
+    public ResponseEntity<?> addReview(@PathVariable Long id,
+                                       @RequestBody ReviewRequest.AddReviewInDTO addReviewInDTO,
+                                       @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        Long userId = myUserDetails.getUser().getId();
+        ReviewResponse.AddReviewOutDTO addReviewOutDTO = reviewService.addReview(id, userId, addReviewInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(addReviewOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 }
