@@ -47,8 +47,9 @@ public class ReviewController {
     public ResponseEntity<?> addReview(@PathVariable Long id,
                                        @RequestBody ReviewRequest.AddReviewInDTO addReviewInDTO,
                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        Long userId = myUserDetails.getUser().getId();
-        ReviewResponse.AddReviewOutDTO addReviewOutDTO = reviewService.addReview(id, userId, addReviewInDTO);
+
+        ReviewResponse.AddReviewOutDTO addReviewOutDTO =
+                reviewService.addReviewService(id, myUserDetails, addReviewInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(addReviewOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
