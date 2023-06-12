@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.core.dummy;
 
 import com.phoenix.assetbe.model.user.Role;
+import com.phoenix.assetbe.model.user.SocialType;
 import com.phoenix.assetbe.model.user.Status;
 import com.phoenix.assetbe.model.user.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +18,7 @@ public class DummyEntity {
                 .email(firstname + lastname +"@nate.com")
                 .role(Role.USER)
                 .status(Status.ACTIVE)
+                .provider(SocialType.COMMON)
                 .build();
     }
 

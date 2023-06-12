@@ -26,7 +26,7 @@ spring:
       fail-on-empty-beans: false
 logging:
   level:
-    '[shop.mtcoding.restend]': INFO # DEBUG 레벨부터 에러 확인할 수 있게 설정하기
+    '[com.phoenix.assetbe]': INFO # DEBUG 레벨부터 에러 확인할 수 있게 설정하기
 
 file:
   path: ./upload/ # UPLOAD 폴더 상대경로 / AWS에 S3 사용하는게 좋음
