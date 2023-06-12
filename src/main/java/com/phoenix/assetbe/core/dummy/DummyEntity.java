@@ -25,9 +25,10 @@ public class DummyEntity {
                 .build();
     }
 
-    public User newMockUser(String firstName, String lastName){
+    public User newMockUser(Long id, String firstName, String lastName){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return User.builder()
+                .id(id)
                 .firstName(firstName)
                 .lastName(lastName)
                 .password(passwordEncoder.encode("1234"))
