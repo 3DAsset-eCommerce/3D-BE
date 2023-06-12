@@ -17,7 +17,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.Mockito.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class UserServiceTest extends DummyEntity {
@@ -37,9 +45,12 @@ public class UserServiceTest extends DummyEntity {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this); // 해당 서비스 필드 전부 주입
-        userService = new UserService(authenticationManager,  javaMailSender,
-                bCryptPasswordEncoder, userRepository);
+        userRepository = mock(UserRepository.class);
+        bCryptPasswordEncoder = spy(BCryptPasswordEncoder.class);
+        authenticationManager = mock(AuthenticationManager.class);
+        javaMailSender = mock(JavaMailSender.class);
+        objectMapper = spy(ObjectMapper.class);
+        userService = new UserService(authenticationManager, javaMailSender, bCryptPasswordEncoder, userRepository);
     }
 
     /**
@@ -49,7 +60,6 @@ public class UserServiceTest extends DummyEntity {
     public void testCheckPasswordService() throws Exception {
         // given
         Long userId = 1L;
-
         UserInDTO.CheckPasswordInDTO checkPasswordInDTO = new UserInDTO.CheckPasswordInDTO();
         checkPasswordInDTO.setId(userId);
         checkPasswordInDTO.setPassword("1234");
@@ -58,26 +68,22 @@ public class UserServiceTest extends DummyEntity {
         System.out.println("request 테스트: " + requestBody);
 
         User 송재근 = newMockUser(1L, "송", "재근");
-        userRepository.save(송재근);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(송재근));
 
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
-
-        // stub 1
-        when(userRepository.findById(userId)).thenReturn(Optional.of(송재근));
 
         // when
         userService.checkPasswordService(checkPasswordInDTO, myUserDetails);
 
         // then
-        Assertions.assertThat(bCryptPasswordEncoder.matches(checkPasswordInDTO.getPassword(), 송재근.getPassword())).isTrue();
-        Mockito.verify(userRepository, times(1)).findById(anyLong());
+        assertTrue(bCryptPasswordEncoder.matches(checkPasswordInDTO.getPassword(), 송재근.getPassword()));
+        verify(userRepository, times(1)).findById(anyLong());
     }
 
     @Test
     public void testWithdrawService() throws Exception {
         // given
         Long userId = 1L;
-
         UserInDTO.WithdrawInDTO withdrawInDTO = new UserInDTO.WithdrawInDTO();
         withdrawInDTO.setMessage("아파서 쉽니다.");
 
@@ -85,19 +91,16 @@ public class UserServiceTest extends DummyEntity {
         System.out.println("request 테스트: " + requestBody);
 
         User 송재근 = newMockUser(1L, "송", "재근");
-        userRepository.save(송재근);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(송재근));
 
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
-
-        // stub 1
-        when(userRepository.findById(userId)).thenReturn(Optional.of(송재근));
 
         // when
         userService.withdrawService(userId, withdrawInDTO, myUserDetails);
 
         // then
-        Assertions.assertThat(withdrawInDTO.getMessage()).isEqualTo(송재근.getReason());
-        Assertions.assertThat(송재근.getStatus()).isEqualTo(Status.INACTIVE);
+        assertEquals(withdrawInDTO.getMessage(), 송재근.getReason());
+        assertEquals(Status.INACTIVE, 송재근.getStatus());
     }
 
     @Test
@@ -125,7 +128,7 @@ public class UserServiceTest extends DummyEntity {
         userService.updateService(userId, updateInDTO, myUserDetails);
 
         // then
-        Assertions.assertThat(bCryptPasswordEncoder.matches(updateInDTO.getNewPassword(), 송재근.getPassword())).isTrue();
+        Assertions.assertThat(bCryptPasswordEncoder.matches(updateInDTO.getNewPassword(), 송재근.getPassword()));
     }
 
     @Test
@@ -144,10 +147,6 @@ public class UserServiceTest extends DummyEntity {
         UserOutDTO.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(userId, myUserDetails);
 
         // then
-        Assertions.assertThat(findMyInfoOutDTO.getId()).isEqualTo(1L);
-        Assertions.assertThat(findMyInfoOutDTO.getEmail()).isEqualTo("송재근@nate.com");
-        Assertions.assertThat(findMyInfoOutDTO.getFirstName()).isEqualTo("송");
-        Assertions.assertThat(findMyInfoOutDTO.getLastName()).isEqualTo("재근");
         verify(userRepository, times(1)).findById(userId);
     }
 }

@@ -25,13 +25,16 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
@@ -83,15 +86,17 @@ public class UserControllerTest extends MyRestDoc {
         System.out.println("request 테스트: " + requestBody);
 
         // when
-        ResultActions resultActions = mockMvc.perform(post("/s/user/check").content(requestBody).contentType(MediaType.APPLICATION_JSON));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("response 테스트: " + responseBody);
+        ResultActions resultActions = mockMvc.perform(post("/s/user/check")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
 
         // then
-        resultActions.andExpect(jsonPath("$.status").value(200));
-        resultActions.andExpect(jsonPath("$.msg").value("성공"));
-        resultActions.andExpect(jsonPath("$.data").isEmpty());
-        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.data").isEmpty());
+        //.andDo(MockMvcResultHandlers.print())
+        //.andDo(document);
     }
 
     @DisplayName("비밀번호 확인 실패") // 비밀번호 일치 X
@@ -109,17 +114,18 @@ public class UserControllerTest extends MyRestDoc {
         System.out.println("request 테스트: " + requestBody);
 
         // when
-        ResultActions resultActions = mockMvc.perform(post("/s/user/check").content(requestBody).contentType(MediaType.APPLICATION_JSON));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("response 테스트: " + responseBody);
-
+        ResultActions resultActions = mockMvc.perform(post("/s/user/check")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
 
         // then
-        resultActions.andExpect(jsonPath("$.status").value(400));
-        resultActions.andExpect(jsonPath("$.msg").value("badRequest"));
-        resultActions.andExpect(jsonPath("$.data.key").value("password"));
-        resultActions.andExpect(jsonPath("$.data.value").value("비밀번호가 일치하지 않습니다. "));
-        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.msg").value("badRequest"))
+                .andExpect(jsonPath("$.data.key").value("password"))
+                .andExpect(jsonPath("$.data.value").value("비밀번호가 일치하지 않습니다. "));
+        //.andDo(MockMvcResultHandlers.print())
+        //.andDo(document);
     }
 
     @DisplayName("회원탈퇴 성공")
@@ -136,15 +142,17 @@ public class UserControllerTest extends MyRestDoc {
         System.out.println("request 테스트: " + requestBody);
 
         // when
-        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId + "/withdraw").content(requestBody).contentType(MediaType.APPLICATION_JSON));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("response 테스트: " + responseBody);
+        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId + "/withdraw")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
 
         // then
-        resultActions.andExpect(jsonPath("$.status").value(200));
-        resultActions.andExpect(jsonPath("$.msg").value("성공"));
-        resultActions.andExpect(jsonPath("$.data").isEmpty());
-        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.data").isEmpty());
+        //.andDo(MockMvcResultHandlers.print())
+        //.andDo(document);
     }
 
     @DisplayName("회원탈퇴 실패") // id 다른 경우
@@ -161,15 +169,17 @@ public class UserControllerTest extends MyRestDoc {
         System.out.println("request 테스트: " + requestBody);
 
         // when
-        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId + "/withdraw").content(requestBody).contentType(MediaType.APPLICATION_JSON));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("response 테스트: " + responseBody);
+        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId + "/withdraw")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
 
         // then
-        resultActions.andExpect(jsonPath("$.status").value(403));
-        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
-        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
-        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+        resultActions.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.msg").value("forbidden"))
+                .andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+        //.andDo(MockMvcResultHandlers.print())
+        //.andDo(document);
     }
 
     @DisplayName("회원정보 수정 성공")
@@ -188,15 +198,15 @@ public class UserControllerTest extends MyRestDoc {
         System.out.println("request 테스트: " + requestBody);
 
         // when
-        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId).content(requestBody).contentType(MediaType.APPLICATION_JSON));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("response 테스트: " + responseBody);
+        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId)
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
+
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(200));
         resultActions.andExpect(jsonPath("$.msg").value("성공"));
         resultActions.andExpect(jsonPath("$.data").isEmpty());
-        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @DisplayName("회원정보 수정 실패") // id 다른 경우
@@ -215,9 +225,9 @@ public class UserControllerTest extends MyRestDoc {
         System.out.println("request 테스트: " + requestBody);
 
         // when
-        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId).content(requestBody).contentType(MediaType.APPLICATION_JSON));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("response 테스트: " + responseBody);
+        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId)
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(403));
@@ -235,8 +245,6 @@ public class UserControllerTest extends MyRestDoc {
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/s/user/" + userId));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("response 테스트: " + responseBody);
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(200));
@@ -257,8 +265,6 @@ public class UserControllerTest extends MyRestDoc {
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/s/user/" + userId));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("response 테스트: " + responseBody);
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(403));
