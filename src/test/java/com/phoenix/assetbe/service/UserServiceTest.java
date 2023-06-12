@@ -99,4 +99,33 @@ public class UserServiceTest extends DummyEntity {
         Assertions.assertThat(withdrawInDTO.getMessage()).isEqualTo(송재근.getReason());
         Assertions.assertThat(송재근.getStatus()).isEqualTo(Status.INACTIVE);
     }
+
+    @Test
+    public void testUpdateService() throws Exception {
+        // given
+        Long userId = 1L;
+
+        UserInDTO.UpdateInDTO updateInDTO = new UserInDTO.UpdateInDTO();
+        updateInDTO.setFirstName("송");
+        updateInDTO.setLastName("재근");
+        updateInDTO.setNewPassword("5678");
+
+        String requestBody = objectMapper.writeValueAsString(updateInDTO);
+        System.out.println("request 테스트: " + requestBody);
+
+        User 송재근 = newMockUser(1L, "송", "재근");
+        userRepository.save(송재근);
+
+        MyUserDetails myUserDetails = new MyUserDetails(송재근);
+
+        // stub 1
+        when(userRepository.findById(userId)).thenReturn(Optional.of(송재근));
+
+        // when
+        userService.updateService(userId, updateInDTO, myUserDetails);
+
+        // then
+        Assertions.assertThat(bCryptPasswordEncoder.matches(updateInDTO.getNewPassword(), 송재근.getPassword())).isTrue();
+    }
+
 }
