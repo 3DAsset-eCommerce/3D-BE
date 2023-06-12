@@ -128,4 +128,27 @@ public class UserServiceTest extends DummyEntity {
         Assertions.assertThat(bCryptPasswordEncoder.matches(updateInDTO.getNewPassword(), 송재근.getPassword())).isTrue();
     }
 
+    @Test
+    public void testFindMyInfoService() throws Exception {
+        // given
+        Long userId = 1L;
+
+        User 송재근 = newMockUser(1L, "송", "재근");
+
+
+        when(userRepository.findById(any())).thenReturn(Optional.of(송재근));
+
+        MyUserDetails myUserDetails = new MyUserDetails(송재근);
+
+        // when
+        UserOutDTO.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(userId, myUserDetails);
+
+        // then
+        Assertions.assertThat(findMyInfoOutDTO.getId()).isEqualTo(1L);
+        Assertions.assertThat(findMyInfoOutDTO.getEmail()).isEqualTo("송재근@nate.com");
+        Assertions.assertThat(findMyInfoOutDTO.getFirstName()).isEqualTo("송");
+        Assertions.assertThat(findMyInfoOutDTO.getLastName()).isEqualTo("재근");
+        // 날짜 체크 어떻게 할까여? createdAt
+        verify(userRepository, times(1)).findById(userId);
+    }
 }

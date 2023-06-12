@@ -81,7 +81,7 @@ public class UserOutDTO {
             this.firstName = user.getFirstName();
             this.lastName = user.getLastName();
             this.email = user.getEmail();
-            this.createdAt = user.getCreatedAt().toLocalDate().toString();
+            this.createdAt = String.valueOf(user.getCreatedAt());
         }
     }
 }
