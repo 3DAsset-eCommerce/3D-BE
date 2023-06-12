@@ -6,16 +6,13 @@ import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.dto.asset.ReviewRequest;
 import com.phoenix.assetbe.dto.asset.ReviewResponse;
 import com.phoenix.assetbe.model.asset.*;
-import com.phoenix.assetbe.model.cart.Cart;
 import com.phoenix.assetbe.model.user.User;
-import com.phoenix.assetbe.model.user.UserRepository;
 import com.phoenix.assetbe.model.wish.WishListQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
