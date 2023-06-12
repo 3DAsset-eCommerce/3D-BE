@@ -113,4 +113,4 @@ jobs:
            sudo systemctl start docker
            sudo usermod -a -G docker ec2-user
            fi
-           sudo docker run -d --name springapp -p 8080:80 ${{ secrets.DOCKER_IMAGE }}
+           sudo docker run -d --name springapp -p 8080:80 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE }}
