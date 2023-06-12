@@ -21,7 +21,7 @@ public class CategoryService {
 
     private final AssetTagRepository assetTagRepository;
 
-    public AssetResponse.CategoryOutDTO getCategoryList() {
+    public AssetResponse.CategoryOutDTO getCategoryListService() {
         List<AssetTag> assetTags = assetTagRepository.findAll(); // 모든 AssetTag 레코드를 가져옴
 
         Map<Category, List<AssetTag>> categoryMap = assetTags.stream()

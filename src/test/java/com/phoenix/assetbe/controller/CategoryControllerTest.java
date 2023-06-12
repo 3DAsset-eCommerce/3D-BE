@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
+import java.util.Arrays;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -67,21 +69,13 @@ public class CategoryControllerTest {
         Asset asset7 = Asset.builder().assetName("g").build();
         Asset asset8 = Asset.builder().assetName("h").build();
         Asset asset9 = Asset.builder().assetName("i").build();
-        assetRepository.save(asset1);
-        assetRepository.save(asset2);
-        assetRepository.save(asset3);
-        assetRepository.save(asset4);
-        assetRepository.save(asset5);
-        assetRepository.save(asset6);
-        assetRepository.save(asset7);
-        assetRepository.save(asset8);
-        assetRepository.save(asset9);
+        assetRepository.saveAll(Arrays.asList(asset1,asset2,asset3,asset4,asset5,asset6,asset7,asset8,asset9));
+
         Category category1 = Category.builder().categoryName("A").categoryCount(500L).build();
         Category category2 = Category.builder().categoryName("B").categoryCount(600L).build();
         Category category3 = Category.builder().categoryName("C").categoryCount(700L).build();
-        categoryRepository.save(category1);
-        categoryRepository.save(category2);
-        categoryRepository.save(category3);
+        categoryRepository.saveAll(Arrays.asList(category1,category2,category3));
+
         SubCategory subCategory1 = SubCategory.builder().subCategoryName("AA").subCategoryCount(100L).build();
         SubCategory subCategory2 = SubCategory.builder().subCategoryName("AB").subCategoryCount(110L).build();
         SubCategory subCategory3 = SubCategory.builder().subCategoryName("AC").subCategoryCount(120L).build();
@@ -91,15 +85,8 @@ public class CategoryControllerTest {
         SubCategory subCategory7 = SubCategory.builder().subCategoryName("CA").subCategoryCount(160L).build();
         SubCategory subCategory8 = SubCategory.builder().subCategoryName("CB").subCategoryCount(170L).build();
         SubCategory subCategory9 = SubCategory.builder().subCategoryName("CC").subCategoryCount(180L).build();
-        subCategoryRepository.save(subCategory1);
-        subCategoryRepository.save(subCategory2);
-        subCategoryRepository.save(subCategory3);
-        subCategoryRepository.save(subCategory4);
-        subCategoryRepository.save(subCategory5);
-        subCategoryRepository.save(subCategory6);
-        subCategoryRepository.save(subCategory7);
-        subCategoryRepository.save(subCategory8);
-        subCategoryRepository.save(subCategory9);
+        subCategoryRepository.saveAll(Arrays.asList(subCategory1,subCategory2,subCategory3,subCategory4,subCategory5
+                ,subCategory6,subCategory7,subCategory8,subCategory9));
 
         Tag tag1 = Tag.builder().tagName("tag1").tagCount(300L).build();
         Tag tag2 = Tag.builder().tagName("tag2").tagCount(300L).build();
@@ -107,12 +94,7 @@ public class CategoryControllerTest {
         Tag tag4 = Tag.builder().tagName("tag4").tagCount(300L).build();
         Tag tag5 = Tag.builder().tagName("tag5").tagCount(300L).build();
         Tag tag6 = Tag.builder().tagName("tag6").tagCount(300L).build();
-        tagRepository.save(tag1);
-        tagRepository.save(tag2);
-        tagRepository.save(tag3);
-        tagRepository.save(tag4);
-        tagRepository.save(tag5);
-        tagRepository.save(tag6);
+        tagRepository.saveAll(Arrays.asList(tag1,tag2,tag3,tag4,tag5,tag6));
 
         AssetTag assetTag1 = AssetTag.builder().asset(asset1).category(category1).subCategory(subCategory1).tag(tag1).build();
         AssetTag assetTag2 = AssetTag.builder().asset(asset1).category(category1).subCategory(subCategory1).tag(tag2).build();
@@ -141,34 +123,9 @@ public class CategoryControllerTest {
         AssetTag assetTag25 = AssetTag.builder().asset(asset9).category(category3).subCategory(subCategory9).tag(tag1).build();
         AssetTag assetTag26 = AssetTag.builder().asset(asset9).category(category3).subCategory(subCategory9).tag(tag2).build();
         AssetTag assetTag27 = AssetTag.builder().asset(asset9).category(category3).subCategory(subCategory9).tag(tag3).build();
-        assetTagRepository.save(assetTag1);
-        assetTagRepository.save(assetTag2);
-        assetTagRepository.save(assetTag3);
-        assetTagRepository.save(assetTag4);
-        assetTagRepository.save(assetTag5);
-        assetTagRepository.save(assetTag6);
-        assetTagRepository.save(assetTag7);
-        assetTagRepository.save(assetTag8);
-        assetTagRepository.save(assetTag9);
-        assetTagRepository.save(assetTag10);
-        assetTagRepository.save(assetTag11);
-        assetTagRepository.save(assetTag12);
-        assetTagRepository.save(assetTag13);
-        assetTagRepository.save(assetTag14);
-        assetTagRepository.save(assetTag15);
-        assetTagRepository.save(assetTag16);
-        assetTagRepository.save(assetTag17);
-        assetTagRepository.save(assetTag18);
-        assetTagRepository.save(assetTag19);
-        assetTagRepository.save(assetTag20);
-        assetTagRepository.save(assetTag21);
-        assetTagRepository.save(assetTag22);
-        assetTagRepository.save(assetTag23);
-        assetTagRepository.save(assetTag24);
-        assetTagRepository.save(assetTag25);
-        assetTagRepository.save(assetTag26);
-        assetTagRepository.save(assetTag27);
-
+        assetTagRepository.saveAll(Arrays.asList(assetTag1,assetTag2,assetTag3,assetTag4,assetTag5,assetTag6,assetTag7,assetTag8,assetTag9
+        ,assetTag10,assetTag11,assetTag12,assetTag13,assetTag14,assetTag15,assetTag16,assetTag17,assetTag18,assetTag19
+        ,assetTag20,assetTag21,assetTag22,assetTag23,assetTag24,assetTag25,assetTag26,assetTag27));
 
         entityManager.clear();
 

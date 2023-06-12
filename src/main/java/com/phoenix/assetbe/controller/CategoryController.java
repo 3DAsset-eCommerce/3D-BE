@@ -18,7 +18,7 @@ public class CategoryController {
 
     @GetMapping("/assets/count")
     public ResponseEntity<?> getCategoryList() {
-        AssetResponse.CategoryOutDTO categoryOutDTO = categoryService.getCategoryList();
+        AssetResponse.CategoryOutDTO categoryOutDTO = categoryService.getCategoryListService();
         ResponseDTO<?> responseDTO = new ResponseDTO<>(categoryOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
