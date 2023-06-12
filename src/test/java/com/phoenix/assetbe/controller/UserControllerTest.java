@@ -65,4 +65,60 @@ public class UserControllerTest extends MyRestDoc {
         entityManager.clear();
     }
 
+    /**
+     * 마이페이지
+     */
+    @DisplayName("비밀번호 확인 성공")
+    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void check_password_test() throws Exception {
+        // given
+        Long userId = 2L;
+
+        UserInDTO.CheckPasswordInDTO checkPasswordInDTO = new UserInDTO.CheckPasswordInDTO();
+        checkPasswordInDTO.setId(userId);
+        checkPasswordInDTO.setPassword("1234");
+
+        String requestBody = objectMapper.writeValueAsString(checkPasswordInDTO);
+        System.out.println("request 테스트: " + requestBody);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/user/check").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("response 테스트: " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(200));
+        resultActions.andExpect(jsonPath("$.msg").value("성공"));
+        resultActions.andExpect(jsonPath("$.data").isEmpty());
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("비밀번호 확인 실패") // 비밀번호 일치 X
+    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void check_password_fail_test() throws Exception {
+        // given
+        Long userId = 2L;
+
+        UserInDTO.CheckPasswordInDTO checkPasswordInDTO = new UserInDTO.CheckPasswordInDTO();
+        checkPasswordInDTO.setId(userId);
+        checkPasswordInDTO.setPassword("5678");
+
+        String requestBody = objectMapper.writeValueAsString(checkPasswordInDTO);
+        System.out.println("request 테스트: " + requestBody);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/user/check").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("response 테스트: " + responseBody);
+
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(400));
+        resultActions.andExpect(jsonPath("$.msg").value("badRequest"));
+        resultActions.andExpect(jsonPath("$.data.key").value("password"));
+        resultActions.andExpect(jsonPath("$.data.value").value("비밀번호가 일치하지 않습니다. "));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
 }
