@@ -17,4 +17,13 @@ public class ReviewRequest {
             this.content = content;
         }
     }
+
+    @Getter @Setter
+    public static class DeleteReviewInDTO {
+        private Long userId;
+
+        public DeleteReviewInDTO(Long userId) {
+            this.userId = userId;
+        }
+    }
 }

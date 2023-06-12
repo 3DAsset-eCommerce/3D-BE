@@ -48,4 +48,14 @@ public class ReviewController {
         ResponseDTO<?> responseDTO = new ResponseDTO<>(updateReviewOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @PostMapping("/s/assets/{assetId}/reviews/{reviewId}/delete")
+    public ResponseEntity<?> deleteReview(@PathVariable Long assetId, @PathVariable Long reviewId,
+                                          @RequestBody ReviewRequest.DeleteReviewInDTO deleteReviewInDTO,
+                                          @AuthenticationPrincipal MyUserDetails myUserDetails) {
+
+        reviewService.deleteReviewService(assetId, reviewId, deleteReviewInDTO, myUserDetails);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>();
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

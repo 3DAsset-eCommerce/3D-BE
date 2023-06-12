@@ -130,4 +130,34 @@ public class ReviewService {
 
         return reviewQueryRepository.findReviewByUserIdAndAssetId(userId, assetId);
     }
+
+    @Transactional
+    public void deleteReviewService(Long assetId, Long reviewId, ReviewRequest.DeleteReviewInDTO deleteReviewInDTO,
+                                    MyUserDetails myUserDetails) {
+
+        Long userId = deleteReviewInDTO.getUserId();
+        userService.authCheck(myUserDetails, userId);
+
+        Review reviewPS = reviewQueryRepository.findReviewByUserIdAndAssetIdWithoutDTO(userId, assetId);
+        if(reviewPS.getId().equals(reviewId)) {
+            try {
+                reviewRepository.delete(reviewPS);
+            }catch (Exception e){
+                throw new Exception500("리뷰 삭제 실패");
+            }
+
+            Asset assetPS = assetService.findAssetById(assetId);
+
+            Double reviewRatingSum = reviewQueryRepository.findSumRatingByAssetId(assetId);
+            assetPS.calculateRatingOnDeleteReview(assetPS, reviewRatingSum);
+
+            try {
+                assetRepository.save(assetPS);
+            } catch (Exception e) {
+                throw new Exception500("에셋 수정 실패 : " + e.getMessage());
+            }
+        }else{
+            throw new Exception400("reviewId", "잘못된 요청입니다.");
+        }
+    }
 }
