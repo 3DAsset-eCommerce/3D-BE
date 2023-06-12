@@ -255,4 +255,56 @@ public class ReviewControllerTest {
         System.out.println("ReviewCount: "+assetPS.getReviewCount());
 
     }
+
+    @DisplayName("리뷰작성 실패 에셋구매X")
+    @WithUserDetails(value = "user4@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void add_review_fail_hasAsset_false_test() throws Exception {
+        // given
+        Long id = 2L; // 에셋 id
+        Long userId = 4L;
+        ReviewRequest.AddReviewInDTO addReviewInDTO =
+                new ReviewRequest.AddReviewInDTO(userId, 4D, "테스트입니다.");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
+                .post("/s/assets/{id}/reviews",id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(addReviewInDTO)));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // Then
+        resultActions.andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("$.status").value("500"))
+                .andExpect(jsonPath("$.msg").value("serverError"))
+                .andExpect(jsonPath("$.data").value("이 에셋을 구매하지 않았습니다."));
+
+
+    }
+
+    @DisplayName("리뷰작성 실패 이미 리뷰 쓴 경우")
+    @WithUserDetails(value = "user3@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void add_review_fail_hasReview_true_test() throws Exception {
+        // given
+        Long id = 1L; // 에셋 id
+        Long userId = 3L;
+        ReviewRequest.AddReviewInDTO addReviewInDTO =
+                new ReviewRequest.AddReviewInDTO(userId, 4D, "테스트입니다.");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
+                .post("/s/assets/{id}/reviews",id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(addReviewInDTO)));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // Then
+        resultActions.andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("$.status").value("500"))
+                .andExpect(jsonPath("$.msg").value("serverError"))
+                .andExpect(jsonPath("$.data").value("이미 이 에셋의 리뷰를 작성하셨습니다."));
+    }
 }

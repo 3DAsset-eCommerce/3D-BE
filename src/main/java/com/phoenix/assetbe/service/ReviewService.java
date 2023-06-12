@@ -42,18 +42,29 @@ public class ReviewService {
         Long userId = addReviewInDTO.getUserId();
         userService.authCheck(myUserDetails, userId);
 
+
         User userPS = userService.findUserById(userId);
         Asset assetPS = assetService.findAssetById(assetId);
-        Review review = Review.builder().user(userPS).asset(assetPS).rating(addReviewInDTO.getRating())
-                                        .content(addReviewInDTO.getContent()).build();
-        Double rating = (assetPS.getRating() * assetPS.getReviewCount() + addReviewInDTO.getRating())
-                        /(assetPS.getReviewCount() + 1);
-        try {
-            reviewRepository.save(review);
-            assetPS.calculateRating(assetPS.getRating(), assetPS.getReviewCount(), addReviewInDTO.getRating());
-            assetRepository.save(assetPS);
-        } catch (Exception e) {
-            throw new Exception500("리뷰 작성 실패 : "+e.getMessage());
+        boolean hasReview = reviewQueryRepository.existsReviewByAssetIdAndUserId(assetId, userId);
+        boolean hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(assetId, userId);
+        if(hasAsset) {
+            if (!hasReview) {
+                Review review = Review.builder().user(userPS).asset(assetPS).rating(addReviewInDTO.getRating())
+                        .content(addReviewInDTO.getContent()).build();
+                Double rating = (assetPS.getRating() * assetPS.getReviewCount() + addReviewInDTO.getRating())
+                        / (assetPS.getReviewCount() + 1);
+                try {
+                    reviewRepository.save(review);
+                    assetPS.calculateRating(assetPS.getRating(), assetPS.getReviewCount(), addReviewInDTO.getRating());
+                    assetRepository.save(assetPS);
+                } catch (Exception e) {
+                    throw new Exception500("리뷰 작성 실패 : " + e.getMessage());
+                }
+            }else {
+                throw new Exception500("이미 이 에셋의 리뷰를 작성하셨습니다.");
+            }
+        }else {
+            throw new Exception500("이 에셋을 구매하지 않았습니다.");
         }
 
         return reviewQueryRepository.findReviewByUserIdAndAssetId(userId, assetId);
