@@ -113,10 +113,9 @@ jobs:
            sudo systemctl start docker
            sudo usermod -a -G docker ec2-user
            fi
-           if sudo docker ps --format '{{.Names}}' | grep -q "^springapp$"; then
-           sudo docker stop springapp
-           sudo docker rm springapp
-           fi
-           sudo docker pull ${{ secrets.DOCKER_IMAGE }}
+           if sudo docker ps -a --format '{{.Names}}' | grep -q "^springapp$"; then
+           sudo docker restart springapp
+           else
            sudo docker run -d --name springapp -p 8080:80 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE }}
+           fi
 
