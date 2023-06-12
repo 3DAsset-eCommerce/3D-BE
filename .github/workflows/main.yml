@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-name: Main-CI
-=======
 name: CI
->>>>>>> da307bc (setting : #37 인프라 구축 테스트)
 
 on:
   push:
@@ -16,15 +12,6 @@ env:
   AWS_SECRET_KEY: ${{secrets.AWS_SECRET_KEY}}
   AWS_S3_BUCKET: ${{secrets.AWS_S3_BUCKET}}
   AWS_S3_BUCKET_URL: ${{secrets.AWS_S3_BUCKET_URL}}
-<<<<<<< HEAD
-  RDS_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
-  RDS_PORT: ${{ secrets.DB_PORT }}
-  RDS_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
-  RDS_USERNAME: ${{ secrets.DB_USERNAME }}
-  RDS_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
-=======
->>>>>>> da307bc (setting : #37 인프라 구축 테스트)
 
 jobs:
   build:
@@ -58,11 +45,7 @@ jobs:
         with:
           context: .
           push: true
-<<<<<<< HEAD
           tags: ${{ secrets.DOCKER_IMAGE }}
-=======
-          tags: ${{ secrets.IMAGE_NAME }}
->>>>>>> da307bc (setting : #37 인프라 구축 테스트)
           file: Dockerfile_spring
           registry: docker.io
           auth: |
@@ -108,25 +91,11 @@ jobs:
       - name: SSH to EC2 instance
         uses: appleboy/ssh-action@master
         with:
-          host:  54.180.100.104
+          host:  ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-           #  cd /home/ubuntu/myapp
-           # sudo docker-compose ps -q | xargs -r docker stop
-           # sudo docker-compose pull -v
-           # sudo docker-compose up -d
-           if ! command -v docker &> /dev/null; then
-           sudo yum update -y
-           sudo yum install -y docker
-           fi
-           if ! sudo systemctl is-active --quiet docker; then
-           sudo systemctl start docker
-           sudo usermod -a -G docker ec2-user
-           fi
-           if sudo docker ps -a --format '{{.Names}}' | grep -q "^springappProd$"; then
-           sudo docker restart springappProd
-           else
-           sudo docker run -d --name springappProd -p 8085:8085 -e SPRING_PROFILES_ACTIVE=prod ${{ secrets.DOCKER_IMAGE }}
-           fi
-
+            cd /home/ubuntu/myapp
+            sudo docker-compose ps -q | xargs -r docker stop
+            sudo docker-compose pull -v
+            sudo docker-compose up -d
