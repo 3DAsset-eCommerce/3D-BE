@@ -46,8 +46,12 @@ public class ReviewService {
         Asset assetPS = assetService.findAssetById(assetId);
         Review review = Review.builder().user(userPS).asset(assetPS).rating(addReviewInDTO.getRating())
                                         .content(addReviewInDTO.getContent()).build();
+        Double rating = (assetPS.getRating() * assetPS.getReviewCount() + addReviewInDTO.getRating())
+                        /(assetPS.getReviewCount() + 1);
         try {
             reviewRepository.save(review);
+            assetPS.calculateRating(assetPS.getRating(), assetPS.getReviewCount(), addReviewInDTO.getRating());
+            assetRepository.save(assetPS);
         } catch (Exception e) {
             throw new Exception500("리뷰 작성 실패 : "+e.getMessage());
         }

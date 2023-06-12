@@ -1,5 +1,8 @@
 package com.phoenix.assetbe.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phoenix.assetbe.core.exception.Exception400;
+import com.phoenix.assetbe.dto.asset.ReviewRequest;
 import com.phoenix.assetbe.model.asset.*;
 import com.phoenix.assetbe.model.user.*;
 import com.phoenix.assetbe.model.wish.WishList;
@@ -11,8 +14,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,6 +31,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -44,6 +51,8 @@ public class ReviewControllerTest {
 
     @Autowired
     private EntityManager em;
+    @Autowired
+    private ObjectMapper om;
 
     @Autowired
     private AssetRepository assetRepository;
@@ -214,5 +223,36 @@ public class ReviewControllerTest {
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data.hasAsset").value(true))
                 .andExpect(jsonPath("$.data.hasReview").value(false));
+    }
+
+    @DisplayName("리뷰작성 성공")
+    @WithUserDetails(value = "user4@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void add_review_test() throws Exception {
+        // given
+        Long id = 1L; // 에셋 id
+        Long userId = 4L;
+        ReviewRequest.AddReviewInDTO addReviewInDTO =
+                new ReviewRequest.AddReviewInDTO(userId, 4D, "테스트입니다.");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
+                .post("/s/assets/{id}/reviews",id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(addReviewInDTO)));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // Then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200));
+
+        Asset assetPS = assetRepository.findById(id).orElseThrow(
+                () -> new Exception400("id", "잘못된 요청")
+        );
+        assertEquals(101L, assetPS.getReviewCount());
+        System.out.println("ReviewCount: "+assetPS.getReviewCount());
+
     }
 }

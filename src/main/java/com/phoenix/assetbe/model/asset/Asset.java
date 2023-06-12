@@ -48,7 +48,8 @@ public class Asset extends MyTimeBaseUtil {
 
     private String thumbnailUrl;
 
-    public void increaseVisitCount(){
-        this.visitCount ++;
+    public void calculateRating(Double averageRating, Long reviewCount, Double rating){
+        this.rating = (averageRating * reviewCount + rating)/(reviewCount + 1);
+        this.reviewCount = reviewCount + 1;
     }
 }
