@@ -11,6 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,6 +23,7 @@ import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -38,7 +40,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @Transactional
@@ -95,8 +97,7 @@ public class UserControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.data").isEmpty());
-        //.andDo(MockMvcResultHandlers.print())
-        //.andDo(document);
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @DisplayName("비밀번호 확인 실패") // 비밀번호 일치 X
@@ -124,8 +125,7 @@ public class UserControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.msg").value("badRequest"))
                 .andExpect(jsonPath("$.data.key").value("password"))
                 .andExpect(jsonPath("$.data.value").value("비밀번호가 일치하지 않습니다. "));
-        //.andDo(MockMvcResultHandlers.print())
-        //.andDo(document);
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @DisplayName("회원탈퇴 성공")
@@ -133,7 +133,7 @@ public class UserControllerTest extends MyRestDoc {
     @Test
     public void withdraw_test() throws Exception {
         // given
-        Long userId = 2L;
+        Long id = 2L;
 
         UserInDTO.WithdrawInDTO withdrawInDTO = new UserInDTO.WithdrawInDTO();
         withdrawInDTO.setMessage("아파서 쉽니다.");
@@ -142,7 +142,7 @@ public class UserControllerTest extends MyRestDoc {
         System.out.println("request 테스트: " + requestBody);
 
         // when
-        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId + "/withdraw")
+        ResultActions resultActions = mockMvc.perform(post("/s/user/{id}/withdraw", id)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -151,8 +151,7 @@ public class UserControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.data").isEmpty());
-        //.andDo(MockMvcResultHandlers.print())
-        //.andDo(document);
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @DisplayName("회원탈퇴 실패") // id 다른 경우
@@ -160,7 +159,7 @@ public class UserControllerTest extends MyRestDoc {
     @Test
     public void withdraw_fail_test() throws Exception {
         // given
-        Long userId = 3L;
+        Long id = 3L;
 
         UserInDTO.WithdrawInDTO withdrawInDTO = new UserInDTO.WithdrawInDTO();
         withdrawInDTO.setMessage("아파서 쉽니다.");
@@ -169,7 +168,7 @@ public class UserControllerTest extends MyRestDoc {
         System.out.println("request 테스트: " + requestBody);
 
         // when
-        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId + "/withdraw")
+        ResultActions resultActions = mockMvc.perform(post("/s/user/{id}/withdraw", id)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -178,8 +177,7 @@ public class UserControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.status").value(403))
                 .andExpect(jsonPath("$.msg").value("forbidden"))
                 .andExpect(jsonPath("$.data").value("권한이 없습니다. "));
-        //.andDo(MockMvcResultHandlers.print())
-        //.andDo(document);
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @DisplayName("회원정보 수정 성공")
@@ -187,7 +185,7 @@ public class UserControllerTest extends MyRestDoc {
     @Test
     public void update_test() throws Exception {
         // given
-        Long userId = 2L;
+        Long id = 2L;
 
         UserInDTO.UpdateInDTO updateInDTO = new UserInDTO.UpdateInDTO();
         updateInDTO.setFirstName("송");
@@ -198,7 +196,7 @@ public class UserControllerTest extends MyRestDoc {
         System.out.println("request 테스트: " + requestBody);
 
         // when
-        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId)
+        ResultActions resultActions = mockMvc.perform(post("/s/user/{id}", id)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -207,6 +205,7 @@ public class UserControllerTest extends MyRestDoc {
         resultActions.andExpect(jsonPath("$.status").value(200));
         resultActions.andExpect(jsonPath("$.msg").value("성공"));
         resultActions.andExpect(jsonPath("$.data").isEmpty());
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @DisplayName("회원정보 수정 실패") // id 다른 경우
@@ -214,7 +213,7 @@ public class UserControllerTest extends MyRestDoc {
     @Test
     public void update_fail_test() throws Exception {
         // given
-        Long userId = 3L;
+        Long id = 3L;
 
         UserInDTO.UpdateInDTO updateInDTO = new UserInDTO.UpdateInDTO();
         updateInDTO.setFirstName("송");
@@ -225,7 +224,7 @@ public class UserControllerTest extends MyRestDoc {
         System.out.println("request 테스트: " + requestBody);
 
         // when
-        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId)
+        ResultActions resultActions = mockMvc.perform(post("/s/user/{id}", id)
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -241,10 +240,10 @@ public class UserControllerTest extends MyRestDoc {
     @Test
     public void find_my_info_test() throws Exception {
         // given
-        Long userId = 2L;
+        Long id = 2L;
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/s/user/" + userId));
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}", id));
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(200));
@@ -261,10 +260,10 @@ public class UserControllerTest extends MyRestDoc {
     @Test
     public void find_my_info_fail_test() throws Exception {
         // given
-        Long userId = 3L;
+        Long id = 3L;
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/s/user/" + userId));
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}", id));
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(403));
