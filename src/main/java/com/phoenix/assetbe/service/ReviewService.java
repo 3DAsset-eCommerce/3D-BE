@@ -29,7 +29,6 @@ public class ReviewService {
     private final AssetService assetService;
 
     private final AssetRepository assetRepository;
-    private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final MyAssetQueryRepository myAssetQueryRepository;
     private final ReviewQueryRepository reviewQueryRepository;
@@ -41,7 +40,6 @@ public class ReviewService {
 
         Long userId = addReviewInDTO.getUserId();
         userService.authCheck(myUserDetails, userId);
-
 
         User userPS = userService.findUserById(userId);
         Asset assetPS = assetService.findAssetById(assetId);
@@ -70,38 +68,27 @@ public class ReviewService {
         return reviewQueryRepository.findReviewByUserIdAndAssetId(userId, assetId);
     }
 
-    public ReviewResponse.ReviewsOutDTO getReviewsService(Long assetId) {
-        boolean existAsset = assetRepository.existsById(assetId);
-        if (!existAsset) {
-            throw new Exception400("id", "존재하지 않는 에셋입니다. ");
-        }
-
-        List<ReviewResponse.ReviewsOutDTO.Reviews> reviewsList =
-                reviewQueryRepository.findReviewsByAssetId(assetId);
-
-        return new ReviewResponse.ReviewsOutDTO(false, false, false, reviewsList);
-    }
-
-    public ReviewResponse.ReviewsOutDTO getReviewsWithUserService(Long assetId, String userEmail) {
-        Long userId = userRepository.findIdByEmail(userEmail).orElseThrow(
-                () -> new Exception400("email", "존재하지 않는 유저입니다. ")
-        );
-
+    public ReviewResponse.ReviewsOutDTO getReviewsService(Long assetId, MyUserDetails myUserDetails) {
         Long id = assetRepository.findIdByAssetId(assetId).orElseThrow(
                 () -> new Exception400("id", "존재하지 않는 에셋입니다. ")
         );
 
-        boolean hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(id, userId);
-        boolean hasWishlist = wishListQueryRepository.existsAssetIdAndUserId(id, userId);
+        boolean hasAsset = false;
+        boolean hasWishlist = false;
+        boolean hasReview = false;
 
         List<ReviewResponse.ReviewsOutDTO.Reviews> reviewsList =
                 reviewQueryRepository.findReviewsByAssetId(assetId);
 
-        Optional<ReviewResponse.ReviewsOutDTO.Reviews> foundReview = reviewsList.stream()
-                .filter(reviews -> reviews.getUserId().equals(userId))
-                .findFirst();
-
-        boolean hasReview = foundReview.isPresent();
+        if (myUserDetails != null) {
+            Long userId = myUserDetails.getUser().getId();
+            hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(id, userId);
+            hasWishlist = wishListQueryRepository.existsAssetIdAndUserId(id, userId);
+            Optional<ReviewResponse.ReviewsOutDTO.Reviews> foundReview = reviewsList.stream()
+                    .filter(reviews -> reviews.getUserId().equals(userId))
+                    .findFirst();
+            hasReview = foundReview.isPresent();
+        }
 
         return new ReviewResponse.ReviewsOutDTO(hasAsset, hasReview, hasWishlist, reviewsList);
     }

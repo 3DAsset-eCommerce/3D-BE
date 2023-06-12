@@ -22,23 +22,11 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping("/assets/{id}/reviews")
-    public ResponseEntity<?> getReviews(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        ReviewResponse.ReviewsOutDTO reviewsOutDTO;
+    @GetMapping("/assets/{assetId}/reviews")
+    public ResponseEntity<?> getReviews(@PathVariable Long assetId,
+                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
-        if (authentication.getPrincipal() == "anonymousUser" || authentication.getPrincipal() == "anonymous"
-                || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
-
-            reviewsOutDTO = reviewService.getReviewsService(id);
-
-        }else {
-
-            String userEmail = authentication.getName();
-            reviewsOutDTO = reviewService.getReviewsWithUserService(id, userEmail);
-
-        }
-
+        ReviewResponse.ReviewsOutDTO reviewsOutDTO = reviewService.getReviewsService(assetId, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(reviewsOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }

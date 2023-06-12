@@ -7,9 +7,7 @@ import com.phoenix.assetbe.model.asset.AssetRepository;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.model.asset.AssetTagQueryRepository;
-import com.phoenix.assetbe.model.user.UserRepository;
 import com.phoenix.assetbe.model.wish.WishListRepository;
-import com.phoenix.assetbe.model.asset.AssetTagRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
