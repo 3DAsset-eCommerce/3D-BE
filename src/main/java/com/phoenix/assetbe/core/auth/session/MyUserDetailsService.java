@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.core.auth.session;
 
 import com.phoenix.assetbe.model.user.User;
+import com.phoenix.assetbe.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UserDetails;
