@@ -31,21 +31,12 @@ public class AssetService {
 
     @Transactional
     public AssetResponse.AssetDetailsOutDTO getAssetDetailsService(Long assetId, MyUserDetails myUserDetails) {
-        if (myUserDetails == null) {
-            Asset assetPS = findAssetById(assetId);
-            List<String> tagNameList = assetTagQueryRepository.findTagNamesByAssetId(assetId);
-            assetPS.increaseVisitCount();
-            try {
-                assetRepository.save(assetPS);
-            } catch (Exception e) {
-                throw new Exception500("view 증가 실패");
-            }
-            return new AssetResponse.AssetDetailsOutDTO(assetPS, null, tagNameList);
+        Long wishListId = null;
+        if (myUserDetails != null) {
+            Long userId = myUserDetails.getUser().getId();
+            wishListId = wishListRepository.findIdByAssetIdAndUserId(assetId, userId);
         }
-
-        Long userId = myUserDetails.getUser().getId();
         Asset assetPS = findAssetById(assetId);
-        Long wishListId = wishListRepository.findIdByAssetIdAndUserId(assetId, userId);
         List<String> tagNameList = assetTagQueryRepository.findTagNamesByAssetId(assetId);
         assetPS.increaseVisitCount();
         try {
