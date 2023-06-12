@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.model.asset;
 
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
+import com.phoenix.assetbe.dto.asset.ReviewRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -52,8 +53,12 @@ public class Asset extends MyTimeBaseUtil {
         this.visitCount++;
     }
 
-    public void calculateRating(Double averageRating, Long reviewCount, Double rating){
-        this.rating = (averageRating * reviewCount + rating)/(reviewCount + 1);
-        this.reviewCount = reviewCount + 1;
+    public void calculateRatingAndIncreaseReviewCount(Asset asset, Double reviewRatingSum){
+        this.rating = (double) Math.round(reviewRatingSum * 10 / (asset.getReviewCount() + 1)) / 10;
+        this.reviewCount = asset.getReviewCount() + 1;
+    }
+
+    public void calculateRatingOnUpdateReview(Asset asset, Double reviewRatingSum){
+        this.rating = (double) Math.round(reviewRatingSum * 10 / asset.getReviewCount()) / 10;
     }
 }

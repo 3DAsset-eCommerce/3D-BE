@@ -29,12 +29,23 @@ public class ReviewController {
 
     @PostMapping("/s/assets/{id}/reviews")
     public ResponseEntity<?> addReview(@PathVariable Long id,
-                                       @RequestBody ReviewRequest.AddReviewInDTO addReviewInDTO,
+                                       @RequestBody ReviewRequest.ReviewInDTO reviewInDTO,
                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
-        ReviewResponse.AddReviewOutDTO addReviewOutDTO =
-                reviewService.addReviewService(id, myUserDetails, addReviewInDTO);
+        ReviewResponse.ReviewOutDTO addReviewOutDTO =
+                reviewService.addReviewService(id, myUserDetails, reviewInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(addReviewOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PostMapping("/s/assets/{assetId}/reviews/{reviewId}")
+    public ResponseEntity<?> addReview(@PathVariable Long assetId, @PathVariable Long reviewId,
+                                       @RequestBody ReviewRequest.ReviewInDTO reviewInDTO,
+                                       @AuthenticationPrincipal MyUserDetails myUserDetails) {
+
+        ReviewResponse.ReviewOutDTO updateReviewOutDTO =
+                reviewService.updateReviewService(assetId, reviewId, reviewInDTO, myUserDetails);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(updateReviewOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 }

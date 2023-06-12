@@ -27,10 +27,16 @@ public class ReviewQueryRepository {
                 .fetch();
     }
 
-    public ReviewResponse.AddReviewOutDTO findReviewByUserIdAndAssetId(Long userId, Long assetId) {
-        return queryFactory.select(Projections.constructor(ReviewResponse.AddReviewOutDTO.class,
+    public ReviewResponse.ReviewOutDTO findReviewByUserIdAndAssetId(Long userId, Long assetId) {
+        return queryFactory.select(Projections.constructor(ReviewResponse.ReviewOutDTO.class,
                 review.user.id, review.asset.id, review.id, review.rating, review.content))
                 .from(review)
+                .where(review.user.id.eq(userId).and(review.asset.id.eq(assetId)))
+                .fetchOne();
+    }
+
+    public Review findReviewByUserIdAndAssetIdWithoutDTO(Long userId, Long assetId) {
+        return queryFactory.selectFrom(review)
                 .where(review.user.id.eq(userId).and(review.asset.id.eq(assetId)))
                 .fetchOne();
     }
@@ -42,5 +48,13 @@ public class ReviewQueryRepository {
                 .where(review.asset.id.eq(assetId).and(review.user.id.eq(userId)))
                 .fetchFirst(); // limit 1
         return fetchOne != null; // 1개가 있는지 없는지 판단 (없으면 null 이므로 null 체크)
+    }
+
+    public Double findSumRatingByAssetId(Long assetId) {
+        return queryFactory
+                .select(review.rating.sum())
+                .from(review)
+                .where(review.asset.id.eq(assetId))
+                .fetchOne();
     }
 }

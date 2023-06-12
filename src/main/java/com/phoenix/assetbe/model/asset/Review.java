@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.model.asset;
 
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
+import com.phoenix.assetbe.dto.asset.ReviewRequest;
 import com.phoenix.assetbe.model.user.User;
 import lombok.*;
 
@@ -37,5 +38,10 @@ public class Review extends MyTimeBaseUtil {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void updatedReview(ReviewRequest.ReviewInDTO updateReviewInDTO) {
+        this.content = updateReviewInDTO.getContent();
+        this.rating = updateReviewInDTO.getRating();
     }
 }

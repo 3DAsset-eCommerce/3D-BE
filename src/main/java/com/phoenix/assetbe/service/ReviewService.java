@@ -33,8 +33,8 @@ public class ReviewService {
     private final WishListQueryRepository wishListQueryRepository;
 
     @Transactional
-    public ReviewResponse.AddReviewOutDTO addReviewService(Long assetId, MyUserDetails myUserDetails
-            , ReviewRequest.AddReviewInDTO addReviewInDTO) {
+    public ReviewResponse.ReviewOutDTO addReviewService(Long assetId, MyUserDetails myUserDetails
+            , ReviewRequest.ReviewInDTO addReviewInDTO) {
 
         Long userId = addReviewInDTO.getUserId();
         userService.authCheck(myUserDetails, userId);
@@ -47,14 +47,19 @@ public class ReviewService {
             if (!hasReview) {
                 Review review = Review.builder().user(userPS).asset(assetPS).rating(addReviewInDTO.getRating())
                         .content(addReviewInDTO.getContent()).build();
-                Double rating = (assetPS.getRating() * assetPS.getReviewCount() + addReviewInDTO.getRating())
-                        / (assetPS.getReviewCount() + 1);
                 try {
                     reviewRepository.save(review);
-                    assetPS.calculateRating(assetPS.getRating(), assetPS.getReviewCount(), addReviewInDTO.getRating());
-                    assetRepository.save(assetPS);
-                } catch (Exception e) {
+                }catch(Exception e) {
                     throw new Exception500("리뷰 작성 실패 : " + e.getMessage());
+                }
+
+                Double reviewRatingSum = reviewQueryRepository.findSumRatingByAssetId(assetId);
+                assetPS.calculateRatingAndIncreaseReviewCount(assetPS, reviewRatingSum);
+
+                try {
+                    assetRepository.save(assetPS);
+                }catch (Exception e) {
+                    throw new Exception500("에셋 수정 실패 : " + e.getMessage());
                 }
             }else {
                 throw new Exception403("이미 이 에셋의 리뷰를 작성하셨습니다.");
@@ -89,5 +94,40 @@ public class ReviewService {
         }
 
         return new ReviewResponse.ReviewsOutDTO(hasAsset, hasReview, hasWishlist, reviewsList);
+    }
+
+    @Transactional
+    public ReviewResponse.ReviewOutDTO updateReviewService(Long assetId, Long reviewId,
+                         ReviewRequest.ReviewInDTO updateReviewInDTO, MyUserDetails myUserDetails) {
+
+        Long userId = updateReviewInDTO.getUserId();
+        userService.authCheck(myUserDetails, userId);
+
+        Review reviewPS = reviewQueryRepository.findReviewByUserIdAndAssetIdWithoutDTO(userId, assetId);
+
+        if(reviewPS.getId().equals(reviewId)) {
+
+            reviewPS.updatedReview(updateReviewInDTO);
+            try {
+                reviewRepository.save(reviewPS);
+            }catch(Exception e) {
+                throw new Exception500("리뷰 수정 실패");
+            }
+
+            Asset assetPS = assetService.findAssetById(assetId);
+
+            Double reviewRatingSum = reviewQueryRepository.findSumRatingByAssetId(assetId);
+            assetPS.calculateRatingOnUpdateReview(assetPS, reviewRatingSum);
+
+            try {
+                assetRepository.save(assetPS);
+            } catch (Exception e) {
+                throw new Exception500("에셋 수정 실패 : " + e.getMessage());
+            }
+        }else{
+            throw new Exception400("reviewId", "잘못된 요청입니다.");
+        }
+
+        return reviewQueryRepository.findReviewByUserIdAndAssetId(userId, assetId);
     }
 }

@@ -91,7 +91,7 @@ public class ReviewControllerTest {
         User u4 = User.builder().email("user4@gmail.com").firstName("사").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
         userRepository.saveAll(Arrays.asList(u1, u2, u3, u4));
 
-        Asset a1 = Asset.builder().assetName("a").size(4.0).fileUrl("address-asset1.FBX").extension(".FBX").price(10000D).rating(4.0).releaseDate(LocalDate.parse("2023-05-01")).reviewCount(100L).visitCount(10000L).wishCount(1000L).creator("NationA").build();
+        Asset a1 = Asset.builder().assetName("a").size(4.0).fileUrl("address-asset1.FBX").extension(".FBX").price(10000D).rating(4.0).releaseDate(LocalDate.parse("2023-05-01")).reviewCount(3L).visitCount(10000L).wishCount(1000L).creator("NationA").build();
         Asset a2 = Asset.builder().assetName("b").size(4.1).fileUrl("address-asset2.FBX").extension(".FBX").price(10001D).rating(4.1).releaseDate(LocalDate.parse("2023-05-02")).reviewCount(101L).visitCount(10001L).wishCount(1001L).creator("NationA").build();
         Asset a3 = Asset.builder().assetName("c").size(4.2).fileUrl("address-asset3.FBX").extension(".FBX").price(10002D).rating(4.2).releaseDate(LocalDate.parse("2023-05-03")).reviewCount(102L).visitCount(10002L).wishCount(1002L).creator("NationA").build();
         Asset a4 = Asset.builder().assetName("d").size(4.3).fileUrl("address-asset4.FBX").extension(".FBX").price(10003D).rating(4.3).releaseDate(LocalDate.parse("2023-05-04")).reviewCount(103L).visitCount(10003L).wishCount(1003L).creator("NationA").build();
@@ -236,8 +236,8 @@ public class ReviewControllerTest {
         // given
         Long id = 1L; // 에셋 id
         Long userId = 4L;
-        ReviewRequest.AddReviewInDTO addReviewInDTO =
-                new ReviewRequest.AddReviewInDTO(userId, 4D, "테스트입니다.");
+        ReviewRequest.ReviewInDTO addReviewInDTO =
+                new ReviewRequest.ReviewInDTO(userId, 1D, "테스트입니다.");
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
@@ -255,8 +255,9 @@ public class ReviewControllerTest {
         Asset assetPS = assetRepository.findById(id).orElseThrow(
                 () -> new Exception400("id", "잘못된 요청")
         );
-        assertEquals(101L, assetPS.getReviewCount());
+        assertEquals(4L, assetPS.getReviewCount());
         System.out.println("ReviewCount: "+assetPS.getReviewCount());
+        System.out.println("Asset Rating: "+assetPS.getRating());
 
     }
 
@@ -267,8 +268,8 @@ public class ReviewControllerTest {
         // given
         Long id = 2L; // 에셋 id
         Long userId = 4L;
-        ReviewRequest.AddReviewInDTO addReviewInDTO =
-                new ReviewRequest.AddReviewInDTO(userId, 4D, "테스트입니다.");
+        ReviewRequest.ReviewInDTO addReviewInDTO =
+                new ReviewRequest.ReviewInDTO(userId, 4D, "테스트입니다.");
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
@@ -294,8 +295,8 @@ public class ReviewControllerTest {
         // given
         Long id = 1L; // 에셋 id
         Long userId = 3L;
-        ReviewRequest.AddReviewInDTO addReviewInDTO =
-                new ReviewRequest.AddReviewInDTO(userId, 4D, "테스트입니다.");
+        ReviewRequest.ReviewInDTO addReviewInDTO =
+                new ReviewRequest.ReviewInDTO(userId, 4D, "테스트입니다.");
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
@@ -310,5 +311,38 @@ public class ReviewControllerTest {
                 .andExpect(jsonPath("$.status").value("403"))
                 .andExpect(jsonPath("$.msg").value("forbidden"))
                 .andExpect(jsonPath("$.data").value("이미 이 에셋의 리뷰를 작성하셨습니다."));
+    }
+
+    @DisplayName("리뷰수정 성공")
+    @WithUserDetails(value = "user3@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void update_review_test() throws Exception {
+        // given
+        Long id = 1L; // 에셋 id
+        Long reviewId = 3L;
+        Long userId = 3L;
+        ReviewRequest.ReviewInDTO addReviewInDTO =
+                new ReviewRequest.ReviewInDTO(userId, 1D, "테스트입니다.");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
+                .post("/s/assets/{id}/reviews/{reviewId}", id, reviewId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(addReviewInDTO)));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // Then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200));
+
+        Asset assetPS = assetRepository.findById(id).orElseThrow(
+                () -> new Exception400("id", "잘못된 요청")
+        );
+        assertEquals(3L, assetPS.getReviewCount()); // 수정 후 ReviewCount는 변하지 않아야 한다.
+        System.out.println("ReviewCount: "+assetPS.getReviewCount());
+        System.out.println("Asset Rating: "+assetPS.getRating());
+
     }
 }
