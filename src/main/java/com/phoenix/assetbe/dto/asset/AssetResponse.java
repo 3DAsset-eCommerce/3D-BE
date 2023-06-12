@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.dto.asset;
 
+import com.phoenix.assetbe.model.asset.Asset;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -62,20 +63,17 @@ public class AssetResponse {
         private Long wishlistId;
         private List<String> tagList;
 
-        public AssetDetailsOutDTO(Long assetId, String assetName, Double price,
-                                  Double fileSize, String fileUrl, String creator, Double rating,
-                                  Long reviewCount, Long wishCount, Long visitCount,
-                                  Long wishlistId, List<String> tagList) {
-            this.assetId = assetId;
-            this.assetName = assetName;
-            this.price = price;
-            this.fileSize = fileSize;
-            this.fileUrl = fileUrl;
-            this.creator = creator;
-            this.rating = rating;
-            this.reviewCount = reviewCount;
-            this.wishCount = wishCount;
-            this.visitCount = visitCount;
+        public AssetDetailsOutDTO(Asset asset, Long wishlistId, List<String> tagList) {
+            this.assetId = asset.getId();
+            this.assetName = asset.getAssetName();
+            this.price = asset.getPrice();
+            this.fileSize = asset.getSize();
+            this.fileUrl = asset.getFileUrl();
+            this.creator = asset.getCreator();
+            this.rating = asset.getRating();
+            this.reviewCount = asset.getReviewCount();
+            this.wishCount = asset.getWishCount();
+            this.visitCount = asset.getVisitCount();
             this.wishlistId = wishlistId;
             this.tagList = tagList;
         }

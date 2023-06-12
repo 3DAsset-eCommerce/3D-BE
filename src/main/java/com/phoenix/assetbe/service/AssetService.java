@@ -6,7 +6,6 @@ import com.phoenix.assetbe.model.asset.AssetRepository;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.model.asset.AssetTagQueryRepository;
-import com.phoenix.assetbe.model.asset.AssetTagRepository;
 import com.phoenix.assetbe.model.user.UserRepository;
 import com.phoenix.assetbe.model.wish.WishListRepository;
 
@@ -40,13 +39,10 @@ public class AssetService {
         }catch (Exception e){
             throw new Exception500("view 증가 실패");
         }
-        return new AssetResponse.AssetDetailsOutDTO(
-                assetPS.getId(), assetPS.getAssetName(), assetPS.getPrice(), assetPS.getSize(),
-                assetPS.getFileUrl(), assetPS.getCreator(), assetPS.getRating(), assetPS.getReviewCount(),
-                assetPS.getWishCount(), assetPS.getVisitCount(), null, tagNameList
-        );
+        return new AssetResponse.AssetDetailsOutDTO(assetPS, null, tagNameList);
     }
 
+    @Transactional
     public AssetResponse.AssetDetailsOutDTO getAssetDetailsWithUserService(Long assetId, String userEmail) {
         Long userId = userRepository.findIdByEmail(userEmail).orElseThrow(
                 () -> new Exception400("email", "존재하지 않는 유저입니다. ")
@@ -61,11 +57,7 @@ public class AssetService {
         }catch (Exception e){
             throw new Exception500("view 증가 실패");
         }
-        return new AssetResponse.AssetDetailsOutDTO(
-                assetPS.getId(), assetPS.getAssetName(), assetPS.getPrice(), assetPS.getSize(),
-                assetPS.getFileUrl(), assetPS.getCreator(), assetPS.getRating(), assetPS.getReviewCount(),
-                assetPS.getWishCount(), assetPS.getVisitCount(), wishListId, tagNameList
-        );
+        return new AssetResponse.AssetDetailsOutDTO(assetPS, wishListId, tagNameList);
     }
 
     public Asset findAssetById(Long assetId){
