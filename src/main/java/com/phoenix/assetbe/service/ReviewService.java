@@ -2,6 +2,7 @@ package com.phoenix.assetbe.service;
 
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
+import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.dto.asset.ReviewRequest;
 import com.phoenix.assetbe.dto.asset.ReviewResponse;
@@ -56,10 +57,10 @@ public class ReviewService {
                     throw new Exception500("리뷰 작성 실패 : " + e.getMessage());
                 }
             }else {
-                throw new Exception500("이미 이 에셋의 리뷰를 작성하셨습니다.");
+                throw new Exception403("이미 이 에셋의 리뷰를 작성하셨습니다.");
             }
         }else {
-            throw new Exception500("이 에셋을 구매하지 않았습니다.");
+            throw new Exception403("이 에셋을 구매하지 않았습니다.");
         }
 
         return reviewQueryRepository.findReviewByUserIdAndAssetId(userId, assetId);

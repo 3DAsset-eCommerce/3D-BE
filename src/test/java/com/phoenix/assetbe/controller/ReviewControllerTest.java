@@ -202,10 +202,14 @@ public class ReviewControllerTest {
         // Then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
-                .andExpect(jsonPath("$.status").value(200));
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.hasAsset").value(false))
+                .andExpect(jsonPath("$.data.hasReview").value(false))
+                .andExpect(jsonPath("$.data.hasWishlist").value(false));
     }
 
     @DisplayName("리뷰보기 로그인유저 성공")
+    @WithUserDetails(value = "user4@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_reviews_with_user_test() throws Exception {
         // given
@@ -213,7 +217,7 @@ public class ReviewControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/assets/{id}/reviews",id).with(user("user4@gmail.com")));
+                .get("/assets/{id}/reviews",id));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
@@ -275,9 +279,9 @@ public class ReviewControllerTest {
         System.out.println("테스트 : " + responseBody);
 
         // Then
-        resultActions.andExpect(status().is5xxServerError())
-                .andExpect(jsonPath("$.status").value("500"))
-                .andExpect(jsonPath("$.msg").value("serverError"))
+        resultActions.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value("403"))
+                .andExpect(jsonPath("$.msg").value("forbidden"))
                 .andExpect(jsonPath("$.data").value("이 에셋을 구매하지 않았습니다."));
 
 
@@ -302,9 +306,9 @@ public class ReviewControllerTest {
         System.out.println("테스트 : " + responseBody);
 
         // Then
-        resultActions.andExpect(status().is5xxServerError())
-                .andExpect(jsonPath("$.status").value("500"))
-                .andExpect(jsonPath("$.msg").value("serverError"))
+        resultActions.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value("403"))
+                .andExpect(jsonPath("$.msg").value("forbidden"))
                 .andExpect(jsonPath("$.data").value("이미 이 에셋의 리뷰를 작성하셨습니다."));
     }
 }
