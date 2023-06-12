@@ -33,8 +33,8 @@ public class ReviewService {
     private final WishListQueryRepository wishListQueryRepository;
 
     @Transactional
-    public ReviewResponse.ReviewOutDTO addReviewService(Long assetId, MyUserDetails myUserDetails
-            , ReviewRequest.ReviewInDTO addReviewInDTO) {
+    public ReviewResponse.ReviewOutDTO addReviewService(Long assetId, ReviewRequest.ReviewInDTO addReviewInDTO,
+                                                        MyUserDetails myUserDetails) {
 
         Long userId = addReviewInDTO.getUserId();
         userService.authCheck(myUserDetails, userId);

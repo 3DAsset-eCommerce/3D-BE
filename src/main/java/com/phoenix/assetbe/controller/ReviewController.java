@@ -27,24 +27,24 @@ public class ReviewController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("/s/assets/{id}/reviews")
-    public ResponseEntity<?> addReview(@PathVariable Long id,
-                                       @RequestBody ReviewRequest.ReviewInDTO reviewInDTO,
+    @PostMapping("/s/assets/{assetId}/reviews")
+    public ResponseEntity<?> addReview(@PathVariable Long assetId,
+                                       @RequestBody ReviewRequest.ReviewInDTO addReviewInDTO,
                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         ReviewResponse.ReviewOutDTO addReviewOutDTO =
-                reviewService.addReviewService(id, myUserDetails, reviewInDTO);
+                reviewService.addReviewService(assetId, addReviewInDTO, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(addReviewOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/s/assets/{assetId}/reviews/{reviewId}")
-    public ResponseEntity<?> addReview(@PathVariable Long assetId, @PathVariable Long reviewId,
-                                       @RequestBody ReviewRequest.ReviewInDTO reviewInDTO,
+    public ResponseEntity<?> updateReview(@PathVariable Long assetId, @PathVariable Long reviewId,
+                                       @RequestBody ReviewRequest.ReviewInDTO updateReviewInDTO,
                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         ReviewResponse.ReviewOutDTO updateReviewOutDTO =
-                reviewService.updateReviewService(assetId, reviewId, reviewInDTO, myUserDetails);
+                reviewService.updateReviewService(assetId, reviewId, updateReviewInDTO, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(updateReviewOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
