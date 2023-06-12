@@ -12,6 +12,12 @@ env:
   AWS_SECRET_KEY: ${{secrets.AWS_SECRET_KEY}}
   AWS_S3_BUCKET: ${{secrets.AWS_S3_BUCKET}}
   AWS_S3_BUCKET_URL: ${{secrets.AWS_S3_BUCKET_URL}}
+  RDS_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
+  RDS_PORT: ${{ secrets.DB_PORT }}
+  RDS_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
+  RDS_USERNAME: ${{ secrets.DB_USERNAME }}
+  RDS_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 
 jobs:
   build:
@@ -95,7 +101,8 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/myapp
-            sudo docker-compose ps -q | xargs -r docker stop
-            sudo docker-compose pull -v
-            sudo docker-compose up -d
+           #  cd /home/ubuntu/myapp
+           # sudo docker-compose ps -q | xargs -r docker stop
+           # sudo docker-compose pull -v
+           # sudo docker-compose up -d
+           sudo docker run -d --name springapp -p 8080:80 ${{ secrets.DOCKER_IMAGE }}
