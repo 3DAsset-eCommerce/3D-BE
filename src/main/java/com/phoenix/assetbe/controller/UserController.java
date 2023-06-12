@@ -66,7 +66,7 @@ public class UserController {
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
-    @PostMapping("/s/user/{id}/withdrawal")
+    @PostMapping("/s/user/{id}/withdraw")
     public ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody @Valid UserInDTO.WithdrawInDTO withdrawInDTO, Errors errors,
                                       @AuthenticationPrincipal MyUserDetails myUserDetails) {
         userService.withdrawService(id, withdrawInDTO, myUserDetails);

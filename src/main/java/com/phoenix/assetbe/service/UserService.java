@@ -132,6 +132,9 @@ public class UserService {
         }
     }
 
+    /**
+     * 마이페이지
+     */
     public void checkPasswordService(UserInDTO.CheckPasswordInDTO checkPasswordInDTO, MyUserDetails myUserDetails) {
         Long userId = checkPasswordInDTO.getId();
         authCheck(myUserDetails, checkPasswordInDTO.getId());
@@ -186,6 +189,7 @@ public class UserService {
         User userPS = userRepository.findById(userId).orElseThrow(
                 () -> new Exception400("id", "존재하지 않는 유저입니다. ")
         );
+        System.out.println("출력됨: " + userPS.getEmail());
         return userPS;
     }
 

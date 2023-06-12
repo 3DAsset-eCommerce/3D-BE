@@ -121,4 +121,54 @@ public class UserControllerTest extends MyRestDoc {
         resultActions.andExpect(jsonPath("$.data.value").value("비밀번호가 일치하지 않습니다. "));
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
+
+    @DisplayName("회원탈퇴 성공")
+    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void withdraw_test() throws Exception {
+        // given
+        Long userId = 2L;
+
+        UserInDTO.WithdrawInDTO withdrawInDTO = new UserInDTO.WithdrawInDTO();
+        withdrawInDTO.setMessage("아파서 쉽니다.");
+
+        String requestBody = objectMapper.writeValueAsString(withdrawInDTO);
+        System.out.println("request 테스트: " + requestBody);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId + "/withdraw").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("response 테스트: " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(200));
+        resultActions.andExpect(jsonPath("$.msg").value("성공"));
+        resultActions.andExpect(jsonPath("$.data").isEmpty());
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("회원탈퇴 실패") // id 다른 경우
+    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void withdraw_fail_test() throws Exception {
+        // given
+        Long userId = 3L;
+
+        UserInDTO.WithdrawInDTO withdrawInDTO = new UserInDTO.WithdrawInDTO();
+        withdrawInDTO.setMessage("아파서 쉽니다.");
+
+        String requestBody = objectMapper.writeValueAsString(withdrawInDTO);
+        System.out.println("request 테스트: " + requestBody);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/user/" + userId + "/withdraw").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("response 테스트: " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(403));
+        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
+        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
 }
