@@ -13,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -173,15 +175,16 @@ public class AssetControllerTest {
                 .andExpect(jsonPath("$.data.visitCount").value(10001L));
     }
 
-    @Test
     @DisplayName("에셋 상세정보 로그인 성공")
+    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
     public void get_asset_details_with_user() throws Exception {
         // given
         Long id = 1L;
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/assets/{id}",id).with(user("user1@gmail.com")));
+                .get("/assets/{id}",id));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
