@@ -179,8 +179,9 @@ public class UserService {
     }
 
     /**
-     * 요청한 사용자가 id의 주인인지 확인하는 공통 메소드
+     * 공통 메소드
      */
+    // 요청한 사용자가 id의 주인인지 확인하는 공통 메소드
     public User findUserById(Long userId) {
         User userPS = userRepository.findById(userId).orElseThrow(
                 () -> new Exception400("id", "존재하지 않는 유저입니다. ")
@@ -188,9 +189,7 @@ public class UserService {
         return userPS;
     }
 
-    /**
-     * 요청한 사용자가 email의 주인인지 확인하는 공통 메소드
-     */
+    // 요청한 사용자가 email의 주인인지 확인하는 공통 메소드
     public User findUserByEmail(String email) {
         User userPS = userRepository.findByEmail(email).orElseThrow(
                 () -> new Exception400("email", "존재하지 않는 유저입니다. ")
@@ -198,9 +197,7 @@ public class UserService {
         return userPS;
     }
 
-    /**
-     * 요청한 사용자 email이 존재하는지 확인하는 공통 메소드
-     */
+    // 요청한 사용자 email이 존재하는지 확인하는 공통 메소드
     public void existsUserByEmail(String email) {
         boolean userCheck = userRepository.existsByEmail(email);
         if(userCheck){
@@ -208,9 +205,7 @@ public class UserService {
         }
     }
 
-    /**
-     * 요청한 사용자가 권한이 있는지 확인하는 공통 메소드
-     */
+    // 요청한 사용자가 권한이 있는지 확인하는 공통 메소드
     public void authCheck(MyUserDetails myUserDetails, Long userId){
         if (!myUserDetails.getUser().getId().equals(userId)) {
             throw new Exception403("권한이 없습니다. ");
