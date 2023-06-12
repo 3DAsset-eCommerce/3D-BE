@@ -182,6 +182,38 @@ public class UserService {
     }
 
     /**
+     * 나의 에셋
+     */
+    public UserOutDTO.FindMyAssetOutDTO findMyAssetService(Long userId, MyUserDetails myUserDetails) {
+        return null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
      * 공통 메소드
      */
     // 요청한 사용자가 id의 주인인지 확인하는 공통 메소드

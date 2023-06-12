@@ -62,6 +62,9 @@ public class UserResponse {
         }
     }
 
+    /**
+     * 마이페이지
+     */
     @Setter
     @Getter
     public static class EmailCheckOutDTO {
@@ -109,5 +112,14 @@ public class UserResponse {
                 this.createdAt = null;
             }
         }
+    }
+
+    /**
+     * 나의 에셋
+     */
+    @Getter
+    @Setter
+    public static class FindMyAssetOutDTO {
+
     }
 }

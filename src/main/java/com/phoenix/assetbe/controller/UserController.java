@@ -61,6 +61,9 @@ public class UserController {
         return ResponseEntity.ok(new ResponseDTO<>(signupOutDTO));
     }
 
+    /**
+     * 마이페이지
+     */
     @PostMapping("/s/user/check")
     public ResponseEntity<?> checkPassword(@RequestBody @Valid UserRequest.CheckPasswordInDTO checkPasswordInDTO, Errors errors, @AuthenticationPrincipal MyUserDetails myUserDetails) {
         userService.checkPasswordService(checkPasswordInDTO, myUserDetails);
@@ -85,5 +88,14 @@ public class UserController {
     public ResponseEntity<?> findMyInfo(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
         UserResponse.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(id, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(findMyInfoOutDTO));
+    }
+
+    /**
+     * 나의 에셋
+     */
+    @GetMapping("/s/user/{id}/assets")
+    public ResponseEntity<?> findMyAsset(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        UserOutDTO.FindMyAssetOutDTO findMyAssetOutDTO = userService.findMyAssetService(id, myUserDetails);
+        return ResponseEntity.ok(new ResponseDTO<>(findMyAssetOutDTO));
     }
 }
