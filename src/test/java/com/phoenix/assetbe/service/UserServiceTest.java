@@ -72,4 +72,31 @@ public class UserServiceTest extends DummyEntity {
         Assertions.assertThat(bCryptPasswordEncoder.matches(checkPasswordInDTO.getPassword(), 송재근.getPassword())).isTrue();
         Mockito.verify(userRepository, times(1)).findById(anyLong());
     }
+
+    @Test
+    public void testWithdrawService() throws Exception {
+        // given
+        Long userId = 1L;
+
+        UserInDTO.WithdrawInDTO withdrawInDTO = new UserInDTO.WithdrawInDTO();
+        withdrawInDTO.setMessage("아파서 쉽니다.");
+
+        String requestBody = objectMapper.writeValueAsString(withdrawInDTO);
+        System.out.println("request 테스트: " + requestBody);
+
+        User 송재근 = newMockUser(1L, "송", "재근");
+        userRepository.save(송재근);
+
+        MyUserDetails myUserDetails = new MyUserDetails(송재근);
+
+        // stub 1
+        when(userRepository.findById(userId)).thenReturn(Optional.of(송재근));
+
+        // when
+        userService.withdrawService(userId, withdrawInDTO, myUserDetails);
+
+        // then
+        Assertions.assertThat(withdrawInDTO.getMessage()).isEqualTo(송재근.getReason());
+        Assertions.assertThat(송재근.getStatus()).isEqualTo(Status.INACTIVE);
+    }
 }
