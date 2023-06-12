@@ -225,4 +225,45 @@ public class UserControllerTest extends MyRestDoc {
         resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
+
+    @DisplayName("내 회원정보 조회 성공")
+    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void find_my_info_test() throws Exception {
+        // given
+        Long userId = 2L;
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/s/user/" + userId));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("response 테스트: " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(200));
+        resultActions.andExpect(jsonPath("$.msg").value("성공"));
+        resultActions.andExpect(jsonPath("$.data.id").value(2));
+        resultActions.andExpect(jsonPath("$.data.firstName").value("송"));
+        resultActions.andExpect(jsonPath("$.data.lastName").value("재근"));
+        resultActions.andExpect(jsonPath("$.data.email").value("송재근@nate.com"));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("내 회원정보 조회 실패") // id 다른 경우
+    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void find_my_info_fail_test() throws Exception {
+        // given
+        Long userId = 3L;
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/s/user/" + userId));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("response 테스트: " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(403));
+        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
+        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
 }
