@@ -148,7 +148,6 @@ public class UserServiceTest extends DummyEntity {
         Assertions.assertThat(findMyInfoOutDTO.getEmail()).isEqualTo("송재근@nate.com");
         Assertions.assertThat(findMyInfoOutDTO.getFirstName()).isEqualTo("송");
         Assertions.assertThat(findMyInfoOutDTO.getLastName()).isEqualTo("재근");
-        // 날짜 체크 어떻게 할까여? createdAt
         verify(userRepository, times(1)).findById(userId);
     }
 }

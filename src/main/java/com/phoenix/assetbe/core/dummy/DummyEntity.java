@@ -7,8 +7,6 @@ import com.phoenix.assetbe.model.user.Status;
 import com.phoenix.assetbe.model.user.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.time.LocalDateTime;
-
 public class DummyEntity {
     public User newUser(String firstName, String lastName){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

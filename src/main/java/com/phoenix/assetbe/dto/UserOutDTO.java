@@ -4,6 +4,8 @@ import com.phoenix.assetbe.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.format.DateTimeFormatter;
+
 public class UserOutDTO {
     @Setter
     @Getter
@@ -81,7 +83,12 @@ public class UserOutDTO {
             this.firstName = user.getFirstName();
             this.lastName = user.getLastName();
             this.email = user.getEmail();
-            this.createdAt = String.valueOf(user.getCreatedAt());
+
+            if (user.getCreatedAt() != null) {
+                this.createdAt = user.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            } else {
+                this.createdAt = null;
+            }
         }
     }
 }
