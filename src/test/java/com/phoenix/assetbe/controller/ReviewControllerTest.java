@@ -351,7 +351,7 @@ public class ReviewControllerTest {
     @Test
     public void delete_review_test() throws Exception {
         // given
-        Long id = 1L; // 에셋 id
+        Long assetId = 1L; // 에셋 id
         Long reviewId = 3L;
         Long userId = 3L;
         ReviewRequest.DeleteReviewInDTO deleteReviewInDTO =
@@ -359,7 +359,7 @@ public class ReviewControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .post("/s/assets/{id}/reviews/{reviewId}/delete", id, reviewId)
+                .post("/s/assets/{assetId}/reviews/{reviewId}/delete", assetId, reviewId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(deleteReviewInDTO)));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -370,8 +370,8 @@ public class ReviewControllerTest {
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200));
 
-        Asset assetPS = assetRepository.findById(id).orElseThrow(
-                () -> new Exception400("id", "잘못된 요청")
+        Asset assetPS = assetRepository.findById(assetId).orElseThrow(
+                () -> new Exception400("assetId", "잘못된 요청입니다. ")
         );
         assertEquals(2L, assetPS.getReviewCount()); // 삭제 후 ReviewCount는 1 줄어든다.
         assertEquals(3.5D, assetPS.getRating());

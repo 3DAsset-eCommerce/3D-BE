@@ -157,7 +157,7 @@ public class ReviewService {
                 throw new Exception500("에셋 수정 실패 : " + e.getMessage());
             }
         }else{
-            throw new Exception400("reviewId", "잘못된 요청입니다.");
+            throw new Exception400("reviewId", "잘못된 요청입니다. ");
         }
     }
 }
