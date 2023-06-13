@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: Main-CI
+=======
+name: CI
+>>>>>>> da307bc (setting : #37 인프라 구축 테스트)
 
 on:
   push:
@@ -12,12 +16,15 @@ env:
   AWS_SECRET_KEY: ${{secrets.AWS_SECRET_KEY}}
   AWS_S3_BUCKET: ${{secrets.AWS_S3_BUCKET}}
   AWS_S3_BUCKET_URL: ${{secrets.AWS_S3_BUCKET_URL}}
+<<<<<<< HEAD
   RDS_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
   RDS_PORT: ${{ secrets.DB_PORT }}
   RDS_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
   RDS_USERNAME: ${{ secrets.DB_USERNAME }}
   RDS_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
+=======
+>>>>>>> da307bc (setting : #37 인프라 구축 테스트)
 
 jobs:
   build:
@@ -51,7 +58,11 @@ jobs:
         with:
           context: .
           push: true
+<<<<<<< HEAD
           tags: ${{ secrets.DOCKER_IMAGE }}
+=======
+          tags: ${{ secrets.IMAGE_NAME }}
+>>>>>>> da307bc (setting : #37 인프라 구축 테스트)
           file: Dockerfile_spring
           registry: docker.io
           auth: |
