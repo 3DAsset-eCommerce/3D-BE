@@ -4,6 +4,8 @@ import com.phoenix.assetbe.model.asset.Asset;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AssetResponse {
@@ -76,6 +78,50 @@ public class AssetResponse {
             this.visitCount = asset.getVisitCount();
             this.wishlistId = wishlistId;
             this.tagList = tagList;
+        }
+    }
+
+    @Getter @Setter
+    public static class AssetsOutDTO {
+        private List<AssetDetail> assetList;
+        private Long size;
+        private Long currentPage;
+        private Long totalPage;
+        private Long totalElement;
+
+        public AssetsOutDTO(List<AssetDetail> assetList, Long size, Long currentPage, Long totalPage, Long totalElement) {
+            this.assetList = assetList;
+            this.size = size;
+            this.currentPage = currentPage;
+            this.totalPage = totalPage;
+            this.totalElement = totalElement;
+        }
+
+        @Getter @Setter
+        public static class AssetDetail {
+            private Long assetId;
+            private String assetName;
+            private Double price;
+            private LocalDate releaseDate;
+            private Double rating;
+            private Long reviewCount;
+            private Long wishCount;
+            private Long wishlistId;
+            private Long cartId;
+
+            public AssetDetail(Long assetId, String assetName, Double price,
+                               LocalDate releaseDate, Double rating, Long reviewCount,
+                               Long wishCount, Long wishlistId, Long cartId) {
+                this.assetId = assetId;
+                this.assetName = assetName;
+                this.price = price;
+                this.releaseDate = releaseDate;
+                this.rating = rating;
+                this.reviewCount = reviewCount;
+                this.wishCount = wishCount;
+                this.wishlistId = wishlistId;
+                this.cartId = cartId;
+            }
         }
     }
 }
