@@ -5,6 +5,7 @@ import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.user.UserRequest;
 import com.phoenix.assetbe.dto.user.UserResponse;
+import com.phoenix.assetbe.model.asset.MyAssetQueryRepository;
 import com.phoenix.assetbe.model.user.Status;
 import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
@@ -17,7 +18,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
-
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.*;
@@ -30,6 +30,8 @@ public class UserServiceTest extends DummyEntity {
     private UserService userService;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private MyAssetQueryRepository myAssetQueryRepository;
     @Spy
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Mock
@@ -43,11 +45,12 @@ public class UserServiceTest extends DummyEntity {
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
+        myAssetQueryRepository = mock(MyAssetQueryRepository.class);
         bCryptPasswordEncoder = spy(BCryptPasswordEncoder.class);
         authenticationManager = mock(AuthenticationManager.class);
         javaMailSender = mock(JavaMailSender.class);
         objectMapper = spy(ObjectMapper.class);
-        userService = new UserService(authenticationManager, javaMailSender, bCryptPasswordEncoder, userRepository);
+        userService = new UserService(authenticationManager, javaMailSender, bCryptPasswordEncoder, userRepository, myAssetQueryRepository);
     }
 
     /**

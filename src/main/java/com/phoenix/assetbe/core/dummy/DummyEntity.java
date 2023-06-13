@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.core.dummy;
 
 import com.phoenix.assetbe.model.asset.Asset;
+import com.phoenix.assetbe.model.asset.MyAsset;
 import com.phoenix.assetbe.model.user.Role;
 import com.phoenix.assetbe.model.user.SocialType;
 import com.phoenix.assetbe.model.user.Status;
@@ -89,6 +90,23 @@ public class DummyEntity {
                 .updatedAt(LocalDateTime.now())
                 .fileUrl(assetName + " fileUrl 입니다.")
                 .thumbnailUrl(assetName + " thumbnail 입니다.")
+                .build();
+    }
+
+    /**
+     * MyAsset 더미 데이터
+     */
+    public MyAsset newMyAsset1(User user, Asset asset) {
+        return MyAsset.builder()
+                .user(newUser(user.getFirstName(), user.getLastName()))
+                .asset(newAsset(asset.getAssetName()))
+                .build();
+    }
+
+    public MyAsset newMyAsset2(User user, Asset asset) {
+        return MyAsset.builder()
+                .user(newUser(user.getFirstName(), user.getLastName()))
+                .asset(newAsset(asset.getAssetName()))
                 .build();
     }
 }

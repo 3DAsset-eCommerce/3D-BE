@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 @Repository
 public class MyAssetQueryRepository {
 
-    private final JPAQueryFactory jpaQueryFactory;
+    private final JPAQueryFactory queryFactory;
 
     public boolean existsAssetIdAndUserId(Long assetId, Long userId) {
-        Integer fetchOne = jpaQueryFactory
+        Integer fetchOne = queryFactory
                 .selectOne()
                 .from(myAsset)
                 .where(myAsset.asset.id.eq(assetId).and(myAsset.user.id.eq(userId)))
@@ -30,7 +30,7 @@ public class MyAssetQueryRepository {
         QMyAsset qMyAsset = QMyAsset.myAsset;
         QAsset qAsset = QAsset.asset;
 
-        return jpaQueryFactory
+        return queryFactory
                 .select(Projections.fields(UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO.class,
                         qAsset.id,
                         qAsset.assetName,

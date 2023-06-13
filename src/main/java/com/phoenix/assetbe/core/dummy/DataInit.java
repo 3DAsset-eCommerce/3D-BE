@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.core.dummy;
 
 import com.phoenix.assetbe.model.asset.AssetRepository;
+import com.phoenix.assetbe.model.asset.MyAssetRepository;
 import com.phoenix.assetbe.model.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +13,7 @@ public class DataInit extends DummyEntity{
 
     @Profile("dev")
     @Bean
-    CommandLineRunner init(UserRepository userRepository, AssetRepository assetRepository){
+    CommandLineRunner init(UserRepository userRepository, AssetRepository assetRepository, MyAssetRepository myAssetRepository){
         return args -> {
 
             // User 더미 데이터
@@ -28,6 +29,10 @@ public class DataInit extends DummyEntity{
 
             assetRepository.save(newAsset1("뛰는 사람")); // 모든 필드 존재
             assetRepository.save(newAsset2("기어가는 사람"));
+
+            // MyAsset 더미 데이터
+//            myAssetRepository.save(newMyAsset1(newUser("송", "재근"), newAsset("뛰는 사람")));
+//            myAssetRepository.save(newMyAsset2(newUser("송", "재근"), newAsset("기어가는 사람")));
         };
     }
 }
