@@ -1,4 +1,4 @@
-name: CI
+name: Main-CI
 
 on:
   push:
@@ -113,9 +113,9 @@ jobs:
            sudo systemctl start docker
            sudo usermod -a -G docker ec2-user
            fi
-           if sudo docker ps -a --format '{{.Names}}' | grep -q "^springapp$"; then
-           sudo docker restart springapp
+           if sudo docker ps -a --format '{{.Names}}' | grep -q "^springappProd$"; then
+           sudo docker restart springappProd
            else
-           sudo docker run -d --name springapp -p 8085:8085 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE }}
+           sudo docker run -d --name springappProd -p 8085:8085 -e SPRING_PROFILES_ACTIVE=prod ${{ secrets.DOCKER_IMAGE }}
            fi
 
