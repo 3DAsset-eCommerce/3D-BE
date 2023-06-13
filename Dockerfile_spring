@@ -1,0 +1,26 @@
+# 베이스 이미지를 선택합니다.
+FROM alpine:latest
+
+# 작업 디렉토리를 생성합니다.
+WORKDIR /app
+
+# 애플리케이션을 실행할 때 필요한 패키지를 설치합니다.
+RUN apk update && \
+    apk add openjdk11 && \
+    rm -rf /var/cache/apk/*
+
+COPY /build/libs/*.jar my-app.jar
+
+# 스프링 프로파일을 설정합니다.
+ARG AWS_ACCESS_KEY
+ARG AWS_SECRET_KEY
+ARG AWS_S3_BUCKET
+ARG AWS_S3_BUCKET_URL
+ENV AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+ENV AWS_SECRET_KEY=${AWS_SECRET_KEY}
+ENV AWS_S3_BUCKET=${AWS_S3_BUCKET}
+ENV AWS_S3_BUCKET_URL=${AWS_S3_BUCKET_URL}
+
+
+# 애플리케이션을 실행합니다.
+CMD ["java", "-jar", "my-app.jar"]
