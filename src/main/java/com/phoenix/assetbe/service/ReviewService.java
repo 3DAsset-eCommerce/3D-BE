@@ -62,10 +62,10 @@ public class ReviewService {
                     throw new Exception500("에셋 수정 실패 : " + e.getMessage());
                 }
             }else {
-                throw new Exception403("이미 이 에셋의 리뷰를 작성하셨습니다.");
+                throw new Exception403("이미 이 에셋의 리뷰를 작성하셨습니다. ");
             }
         }else {
-            throw new Exception403("이 에셋을 구매하지 않았습니다.");
+            throw new Exception403("이 에셋을 구매하지 않았습니다. ");
         }
 
         return reviewQueryRepository.findReviewByUserIdAndAssetId(userId, assetId);
@@ -125,7 +125,7 @@ public class ReviewService {
                 throw new Exception500("에셋 수정 실패 : " + e.getMessage());
             }
         }else{
-            throw new Exception400("reviewId", "잘못된 요청입니다.");
+            throw new Exception400("reviewId", "잘못된 요청입니다. ");
         }
 
         return reviewQueryRepository.findReviewByUserIdAndAssetId(userId, assetId);

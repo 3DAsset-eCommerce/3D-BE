@@ -18,22 +18,22 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @GetMapping("/assets/{assetId}/reviews")
-    public ResponseEntity<?> getReviews(@PathVariable Long assetId,
+    @GetMapping("/assets/{id}/reviews")
+    public ResponseEntity<?> getReviews(@PathVariable Long id,
                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
-        ReviewResponse.ReviewsOutDTO reviewsOutDTO = reviewService.getReviewsService(assetId, myUserDetails);
+        ReviewResponse.ReviewsOutDTO reviewsOutDTO = reviewService.getReviewsService(id, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(reviewsOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("/s/assets/{assetId}/reviews")
-    public ResponseEntity<?> addReview(@PathVariable Long assetId,
+    @PostMapping("/s/assets/{id}/reviews")
+    public ResponseEntity<?> addReview(@PathVariable Long id,
                                        @RequestBody ReviewRequest.ReviewInDTO addReviewInDTO,
                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         ReviewResponse.ReviewOutDTO addReviewOutDTO =
-                reviewService.addReviewService(assetId, addReviewInDTO, myUserDetails);
+                reviewService.addReviewService(id, addReviewInDTO, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(addReviewOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }

@@ -29,8 +29,9 @@ public class ReviewQueryRepository {
 
     public ReviewResponse.ReviewOutDTO findReviewByUserIdAndAssetId(Long userId, Long assetId) {
         return queryFactory.select(Projections.constructor(ReviewResponse.ReviewOutDTO.class,
-                review.user.id, review.asset.id, review.id, review.rating, review.content))
+                review.user.id, review.asset.id, review.id, review.content, review.rating, review.asset.rating))
                 .from(review)
+                .innerJoin(review.asset)
                 .where(review.user.id.eq(userId).and(review.asset.id.eq(assetId)))
                 .fetchOne();
     }

@@ -50,15 +50,17 @@ public class ReviewResponse {
         private Long userId;
         private Long assetId;
         private Long reviewId;
-        private Double rating;
         private String content;
+        private Double reviewRating;
+        private Double assetRating;
 
-        public ReviewOutDTO(Long userId, Long assetId, Long reviewId, Double rating, String content) {
+        public ReviewOutDTO(Long userId, Long assetId, Long reviewId, String content, Double reviewRating, Double assetRating) {
             this.userId = userId;
             this.assetId = assetId;
             this.reviewId = reviewId;
-            this.rating = rating;
             this.content = content;
+            this.reviewRating = reviewRating;
+            this.assetRating = assetRating;
         }
     }
 }

@@ -318,7 +318,7 @@ public class ReviewControllerTest {
     @Test
     public void update_review_test() throws Exception {
         // given
-        Long id = 1L; // 에셋 id
+        Long assetId = 1L; // 에셋 id
         Long reviewId = 3L;
         Long userId = 3L;
         ReviewRequest.ReviewInDTO addReviewInDTO =
@@ -326,7 +326,7 @@ public class ReviewControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .post("/s/assets/{id}/reviews/{reviewId}", id, reviewId)
+                .post("/s/assets/{assetid}/reviews/{reviewId}", assetId, reviewId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(addReviewInDTO)));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
@@ -337,8 +337,8 @@ public class ReviewControllerTest {
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200));
 
-        Asset assetPS = assetRepository.findById(id).orElseThrow(
-                () -> new Exception400("id", "잘못된 요청")
+        Asset assetPS = assetRepository.findById(assetId).orElseThrow(
+                () -> new Exception400("assetId", "잘못된 요청입니다. ")
         );
         assertEquals(3L, assetPS.getReviewCount()); // 수정 후 ReviewCount는 변하지 않아야 한다.
         System.out.println("ReviewCount: "+assetPS.getReviewCount());
