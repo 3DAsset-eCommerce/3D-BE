@@ -3,10 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - dev
 env:
   AWS_ACCESS_KEY: ${{secrets.AWS_ACCESS_KEY}}
   AWS_SECRET_KEY: ${{secrets.AWS_SECRET_KEY}}
@@ -116,6 +113,6 @@ jobs:
            if sudo docker ps -a --format '{{.Names}}' | grep -q "^springapp$"; then
            sudo docker restart springapp
            else
-           sudo docker run -d --name springapp -p 8085:8085 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE }}
+           sudo docker run -d --name springapp -p 8080:8080 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE }}
            fi
 

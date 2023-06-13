@@ -3,14 +3,14 @@ server:
     encoding:
       charset: utf-8
       force: true
-  port: 8080
+  port: 8085
 
 spring:
   datasource:
-    url:
-    driver-class-name:
-    username:
-    password:
+    url: jdbc:mysql://${{ secrets.DB_ENDPOINT }}:${{ secrets.DB_PORT }}/${{ secrets.DB_DATABASE_NAME }}?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${{ secrets.DB_USERNAME }}
+    password: ${{ secrets.DB_PASSWORD }}
   jpa:
     open-in-view: false
     hibernate:
