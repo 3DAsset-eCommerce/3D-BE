@@ -55,7 +55,7 @@ public class ReviewController {
                                           @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         reviewService.deleteReviewService(assetId, reviewId, deleteReviewInDTO, myUserDetails);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>();
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseDTO);
     }
 }

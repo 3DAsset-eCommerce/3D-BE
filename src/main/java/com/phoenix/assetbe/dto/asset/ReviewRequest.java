@@ -22,6 +22,8 @@ public class ReviewRequest {
     public static class DeleteReviewInDTO {
         private Long userId;
 
+        public DeleteReviewInDTO(){}
+
         public DeleteReviewInDTO(Long userId) {
             this.userId = userId;
         }

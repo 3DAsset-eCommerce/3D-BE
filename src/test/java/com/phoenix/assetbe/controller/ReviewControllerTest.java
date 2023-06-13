@@ -321,14 +321,14 @@ public class ReviewControllerTest {
         Long assetId = 1L; // 에셋 id
         Long reviewId = 3L;
         Long userId = 3L;
-        ReviewRequest.ReviewInDTO addReviewInDTO =
+        ReviewRequest.ReviewInDTO updateReviewInDTO =
                 new ReviewRequest.ReviewInDTO(userId, 1D, "테스트입니다.");
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
                 .post("/s/assets/{assetid}/reviews/{reviewId}", assetId, reviewId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(om.writeValueAsString(addReviewInDTO)));
+                .content(om.writeValueAsString(updateReviewInDTO)));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
@@ -341,6 +341,40 @@ public class ReviewControllerTest {
                 () -> new Exception400("assetId", "잘못된 요청입니다. ")
         );
         assertEquals(3L, assetPS.getReviewCount()); // 수정 후 ReviewCount는 변하지 않아야 한다.
+        System.out.println("ReviewCount: "+assetPS.getReviewCount());
+        System.out.println("Asset Rating: "+assetPS.getRating());
+
+    }
+
+    @DisplayName("리뷰삭제 성공")
+    @WithUserDetails(value = "user3@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void delete_review_test() throws Exception {
+        // given
+        Long id = 1L; // 에셋 id
+        Long reviewId = 3L;
+        Long userId = 3L;
+        ReviewRequest.DeleteReviewInDTO deleteReviewInDTO =
+                new ReviewRequest.DeleteReviewInDTO(userId);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
+                .post("/s/assets/{id}/reviews/{reviewId}/delete", id, reviewId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(deleteReviewInDTO)));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // Then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200));
+
+        Asset assetPS = assetRepository.findById(id).orElseThrow(
+                () -> new Exception400("id", "잘못된 요청")
+        );
+        assertEquals(2L, assetPS.getReviewCount()); // 삭제 후 ReviewCount는 1 줄어든다.
+        assertEquals(3.5D, assetPS.getRating());
         System.out.println("ReviewCount: "+assetPS.getReviewCount());
         System.out.println("Asset Rating: "+assetPS.getRating());
 

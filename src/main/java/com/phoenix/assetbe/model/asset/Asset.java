@@ -63,7 +63,7 @@ public class Asset extends MyTimeBaseUtil {
     }
 
     public void calculateRatingOnDeleteReview(Asset asset, Double reviewRatingSum){
-        this.rating = (double) Math.round(reviewRatingSum * 10 / asset.getReviewCount() - 1) / 10;
+        this.rating = (double) Math.round(reviewRatingSum * 10 / (asset.getReviewCount() - 1)) / 10;
         this.reviewCount = asset.getReviewCount() - 1;
     }
 }
