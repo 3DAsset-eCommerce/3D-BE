@@ -12,6 +12,7 @@ import com.phoenix.assetbe.model.wish.WishListRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +31,16 @@ public class AssetService {
     private final AssetTagQueryRepository assetTagQueryRepository;
 
     public AssetResponse.AssetsOutDTO getAssetsService(Pageable pageable, MyUserDetails myUserDetails) {
-        Long userId = myUserDetails.getUser().getId();
-        List<AssetResponse.AssetsOutDTO.AssetDetail> assetDetails = assetQueryRepository.findAssetWithPaging(userId);
-        return new AssetResponse.AssetsOutDTO(assetDetails,null,null,null,null);
+        Page<AssetResponse.AssetsOutDTO.AssetDetail> assetDetails;
+        if(myUserDetails != null) {
+            Long userId = myUserDetails.getUser().getId();
+            assetDetails = assetQueryRepository.findAssetsWithUserIdAndPaging(userId, pageable);
+        }else {
+            assetDetails = assetQueryRepository.findAssetsWithPaging(pageable);
+        }
+        return new AssetResponse.AssetsOutDTO(assetDetails);
     }
+
     @Transactional
     public AssetResponse.AssetDetailsOutDTO getAssetDetailsService(Long assetId, MyUserDetails myUserDetails) {
         Long wishListId = null;

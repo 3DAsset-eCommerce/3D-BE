@@ -2,6 +2,8 @@ package com.phoenix.assetbe.controller;
 
 import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.model.asset.*;
+import com.phoenix.assetbe.model.cart.Cart;
+import com.phoenix.assetbe.model.cart.CartRepository;
 import com.phoenix.assetbe.model.user.*;
 import com.phoenix.assetbe.model.wish.WishList;
 import com.phoenix.assetbe.model.wish.WishListRepository;
@@ -70,6 +72,9 @@ public class AssetControllerTest {
 
     @Autowired
     private WishListRepository wishListRepository;
+
+    @Autowired
+    private CartRepository cartRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -160,6 +165,17 @@ public class AssetControllerTest {
         WishList w9 = WishList.builder().asset(a9).user(u3).build();
         wishListRepository.saveAll(Arrays.asList(w1, w2, w3, w4, w5, w6, w7, w8, w9));
 
+        Cart cart1 = Cart.builder().asset(a1).user(u1).build();
+        Cart cart2 = Cart.builder().asset(a1).user(u2).build();
+        Cart cart3 = Cart.builder().asset(a1).user(u3).build();
+        Cart cart4 = Cart.builder().asset(a2).user(u1).build();
+        Cart cart5 = Cart.builder().asset(a2).user(u2).build();
+        Cart cart6 = Cart.builder().asset(a2).user(u3).build();
+        Cart cart7 = Cart.builder().asset(a4).user(u1).build();
+        Cart cart8 = Cart.builder().asset(a5).user(u1).build();
+        Cart cart9 = Cart.builder().asset(a9).user(u1).build();
+        cartRepository.saveAll(Arrays.asList(cart1,cart2,cart3,cart4,cart5,cart6,cart7,cart8,cart9));
+
         em.clear();
     }
 
@@ -203,16 +219,40 @@ public class AssetControllerTest {
                 .andExpect(jsonPath("$.data.visitCount").value(10001L));
     }
 
-    @DisplayName("에셋 상세정보 로그인 성공")
+    @DisplayName("개별에셋 로그인 성공")
     @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    public void get_assets_test() throws Exception {
+    public void get_assets_with_user_test() throws Exception {
         // given
-        Long id = 1L;
+        String page = "0";
+        String size = "4";
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/assets"));
+                .get("/assets")
+                .param("page", page)
+                .param("size", size));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // Then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200));
+    }
+
+    @DisplayName("개별에셋 비로그인 성공")
+    @Test
+    public void get_assets_test() throws Exception {
+        // given
+        String page = "0";
+        String size = "4";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
+                .get("/assets")
+                .param("page", page)
+                .param("size", size));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 

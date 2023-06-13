@@ -13,6 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -194,22 +198,23 @@ public class AssetQueryRepositoryTest {
     public void find_assets_test() {
         //Given
         Long userId = 1L;
-//        int page = 0;
-//        int size = 3;
-//        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC);
+        int page = 0;
+        int size = 3;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("releaseDate").descending());
 
-        List<AssetResponse.AssetsOutDTO.AssetDetail> result = assetQueryRepository.findAssetWithPaging(userId);
+        Page<AssetResponse.AssetsOutDTO.AssetDetail> result = assetQueryRepository.findAssetsWithUserIdAndPaging(userId, pageable);
 
         //then
-        assertThat(result.size(), is(9));
-        assertThat(result.get(8).getAssetId(), is(1L));
-        assertThat(result.get(8).getWishlistId(), is(1L));
-        assertThat(result.get(8).getCartId(), is(1L));
-        assertThat(result.get(7).getAssetId(), is(2L));
-        assertNull(result.get(7).getWishlistId());
-        assertThat(result.get(7).getCartId(), is(4L));
-        assertThat(result.get(6).getAssetId(), is(3L));
-        assertThat(result.get(6).getWishlistId(), is(2L));
-        assertNull(result.get(6).getCartId());
+//        assertThat(result.size(), is(9)); //페이징 하기전 테스트
+        assertThat(result.getContent().size(), is(3));
+        assertThat(result.getContent().get(0).getAssetId(), is(9L));
+        assertNull(result.getContent().get(0).getWishlistId());
+        assertThat(result.getContent().get(0).getCartId(), is(9L));
+        assertThat(result.getContent().get(1).getAssetId(), is(8L));
+        assertNull(result.getContent().get(1).getWishlistId());
+        assertNull(result.getContent().get(1).getCartId());
+        assertThat(result.getContent().get(2).getAssetId(), is(7L));
+        assertThat(result.getContent().get(2).getWishlistId(), is(5L));
+        assertNull(result.getContent().get(2).getCartId());
     }
 }

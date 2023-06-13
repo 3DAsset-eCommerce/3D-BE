@@ -3,9 +3,9 @@ package com.phoenix.assetbe.dto.asset;
 import com.phoenix.assetbe.model.asset.Asset;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class AssetResponse {
@@ -83,21 +83,22 @@ public class AssetResponse {
 
     @Getter @Setter
     public static class AssetsOutDTO {
-        private List<AssetDetail> assetList;
-        private Long size;
-        private Long currentPage;
-        private Long totalPage;
-        private Long totalElement;
+        private List<?> assetList;
+        private int size;
+        private int currentPage;
+        private int totalPage;
+        private long totalElement;
 
-        public AssetsOutDTO(List<AssetDetail> assetList, Long size, Long currentPage, Long totalPage, Long totalElement) {
-            this.assetList = assetList;
-            this.size = size;
-            this.currentPage = currentPage;
-            this.totalPage = totalPage;
-            this.totalElement = totalElement;
+        public AssetsOutDTO(Page<?> assetList) {
+            this.assetList = assetList.getContent();
+            this.size = assetList.getSize();
+            this.currentPage = assetList.getPageable().getPageNumber();
+            this.totalPage = assetList.getTotalPages();
+            this.totalElement = assetList.getTotalElements();
         }
 
-        @Getter @Setter
+        @Getter
+        @Setter
         public static class AssetDetail {
             private Long assetId;
             private String assetName;
@@ -108,6 +109,18 @@ public class AssetResponse {
             private Long wishCount;
             private Long wishlistId;
             private Long cartId;
+
+            public AssetDetail(Long assetId, String assetName, Double price,
+                               LocalDate releaseDate, Double rating, Long reviewCount,
+                               Long wishCount) {
+                this.assetId = assetId;
+                this.assetName = assetName;
+                this.price = price;
+                this.releaseDate = releaseDate;
+                this.rating = rating;
+                this.reviewCount = reviewCount;
+                this.wishCount = wishCount;
+            }
 
             public AssetDetail(Long assetId, String assetName, Double price,
                                LocalDate releaseDate, Double rating, Long reviewCount,
