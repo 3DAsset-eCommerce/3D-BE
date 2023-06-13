@@ -1,10 +1,12 @@
 package com.phoenix.assetbe.dto.user;
 
+import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class UserResponse {
     @Getter
@@ -119,7 +121,27 @@ public class UserResponse {
      */
     @Getter
     @Setter
-    public static class FindMyAssetOutDTO {
+    public static class MyAssetListOutDTO {
+        private List<FindMyAssetOutDTO> myAssetList;
 
+        public MyAssetListOutDTO(List<FindMyAssetOutDTO> findMyAssetOutDTO) {
+            this.myAssetList = findMyAssetOutDTO;
+        }
+
+        @Getter
+        @Setter
+        public static class FindMyAssetOutDTO {
+            private Long assetId;
+            private String assetName;
+            private String fileUrl;
+            private String thumbnailUrl;
+
+            public FindMyAssetOutDTO(Long assetId, String assetName, String fileUrl, String thumbnailUrl) {
+                this.assetId = assetId;
+                this.assetName = assetName;
+                this.fileUrl = fileUrl;
+                this.thumbnailUrl = thumbnailUrl;
+            }
+        }
     }
 }

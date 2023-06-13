@@ -17,6 +17,7 @@ import com.phoenix.assetbe.dto.user.UserResponse.EmailCheckOutDTO;
 import com.phoenix.assetbe.dto.user.UserResponse.LoginWithJWTOutDTO;
 import com.phoenix.assetbe.dto.user.UserResponse.PasswordChangeOutDTO;
 import com.phoenix.assetbe.dto.user.UserResponse.SignupOutDTO;
+import com.phoenix.assetbe.model.asset.MyAssetQueryRepository;
 import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -42,11 +44,12 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
+    private final MyAssetQueryRepository myAssetQueryRepository;
 
     public LoginWithJWTOutDTO loginService(UserRequest.LoginInDTO loginInDTO) {
         User userPS = findUserByEmail(loginInDTO.getEmail());
-        if(!userPS.isEmailVerified()){
-            throw new Exception400("verified","이메일 인증이 필요합니다. ");
+        if (!userPS.isEmailVerified()) {
+            throw new Exception400("verified", "이메일 인증이 필요합니다. ");
         }
 
         try {
@@ -78,10 +81,10 @@ public class UserService {
     @Transactional
     public CodeCheckOutDTO codeCheckService(CodeCheckInDTO codeCheckInDTO) {
         Optional<User> userPS = userRepository.findByEmail(codeCheckInDTO.getEmail());
-        if(!userPS.isPresent()){
+        if (!userPS.isPresent()) {
             throw new Exception400("code", "먼저 이메일 인증코드를 전송해주세요. ");
         }
-        if(userPS.get().getEmailCheckToken().equals(codeCheckInDTO.getCode())){
+        if (userPS.get().getEmailCheckToken().equals(codeCheckInDTO.getCode())) {
             return new CodeCheckOutDTO(userPS.get().getEmail(), true);
         }
         throw new Exception400("code", "이메일 인증코드가 틀렸습니다. ");
@@ -90,17 +93,17 @@ public class UserService {
     @Transactional
     public PasswordChangeOutDTO passwordChangeService(PasswordChangeInDTO passwordChangeInDTO) {
         User userPS = findUserByEmail(passwordChangeInDTO.getEmail());
-        if(userPS.getEmailCheckToken()==null){
-            throw new Exception400("email","이메일 인증을 먼저 해야 합니다. ");
+        if (userPS.getEmailCheckToken() == null) {
+            throw new Exception400("email", "이메일 인증을 먼저 해야 합니다. ");
         }
-        if(userPS.getEmailCheckToken().equals(passwordChangeInDTO.getCode())){
+        if (userPS.getEmailCheckToken().equals(passwordChangeInDTO.getCode())) {
             userPS.setPassword(passwordEncoder.encode(passwordChangeInDTO.getPassword()));
             userPS.setEmailCheckToken("");
             userPS.setTokenCreatedAt();
 
             return new PasswordChangeOutDTO(userPS.getEmail());
         }
-        throw new Exception400("code","이메일 인증 코드가 틀렸습니다. ");
+        throw new Exception400("code", "이메일 인증 코드가 틀렸습니다. ");
     }
 
     public EmailCheckOutDTO emailCheckService(EmailCheckInDTO emailCheckInDTO) {
@@ -114,7 +117,7 @@ public class UserService {
 
         String encPassword = passwordEncoder.encode(signupInDTO.getPassword()); // 60Byte
         signupInDTO.setPassword(encPassword);
-        System.out.println("encPassword : "+encPassword);
+        System.out.println("encPassword : " + encPassword);
 
         // 디비 save 되는 쪽만 try catch로 처리하자.
         try {
@@ -127,8 +130,8 @@ public class UserService {
             javaMailSender.send(mailMessage);
 
             return new SignupOutDTO(userPS);
-        }catch (Exception e){
-            throw new Exception500("회원가입 실패 : "+e.getMessage());
+        } catch (Exception e) {
+            throw new Exception500("회원가입 실패 : " + e.getMessage());
         }
     }
 
@@ -154,7 +157,7 @@ public class UserService {
         try {
             userRepository.save(userPS);
         } catch (Exception e) {
-            throw new Exception500("회원탈퇴 실패 : "+e.getMessage());
+            throw new Exception500("회원탈퇴 실패 : " + e.getMessage());
         }
     }
 
@@ -171,7 +174,7 @@ public class UserService {
         try {
             userRepository.save(userPS);
         } catch (Exception e) {
-            throw new Exception500("회원정보 수정 실패 : "+e.getMessage());
+            throw new Exception500("회원정보 수정 실패 : " + e.getMessage());
         }
     }
 
@@ -184,30 +187,14 @@ public class UserService {
     /**
      * 나의 에셋
      */
-    public UserOutDTO.FindMyAssetOutDTO findMyAssetService(Long userId, MyUserDetails myUserDetails) {
-        return null;
+    public UserResponse.MyAssetListOutDTO findMyAssetService(Long userId, MyUserDetails myUserDetails) {
+        authCheck(myUserDetails, userId);
+        List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> myAssetPS = myAssetQueryRepository.findMyAsset(userId);
+        if (myAssetPS.isEmpty()) {
+            throw new Exception400("myAsset", "myAsset이 존재하지 않습니다. ");
+        }
+        return new UserResponse.MyAssetListOutDTO(myAssetPS);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

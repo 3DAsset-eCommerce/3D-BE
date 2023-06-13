@@ -21,9 +21,13 @@ public class DataInit extends DummyEntity{
             userRepository.save(newUser("양", "진호"));
             userRepository.save(newUser("이", "지훈"));
 
-            assetRepository.save(newAsset("뛰는 사람"));
+
+            // Asset 더미 데이터
+            assetRepository.save(newAsset("뛰는 사람")); // 이름만 존재
             assetRepository.save(newAsset("기어가는 사람"));
 
+            assetRepository.save(newAsset1("뛰는 사람")); // 모든 필드 존재
+            assetRepository.save(newAsset2("기어가는 사람"));
         };
     }
 }

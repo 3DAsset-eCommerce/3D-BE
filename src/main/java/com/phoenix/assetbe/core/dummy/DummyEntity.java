@@ -7,7 +7,13 @@ import com.phoenix.assetbe.model.user.Status;
 import com.phoenix.assetbe.model.user.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class DummyEntity {
+    /**
+     * User 더미데이터
+     */
     public User newUser(String firstName, String lastName){
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return User.builder()
@@ -39,7 +45,50 @@ public class DummyEntity {
                 .build();
     }
 
+    /**
+     * Asset 더미데이터
+     */
     public Asset newAsset(String assetName){
-        return Asset.builder().assetName(assetName).build();
+        return Asset.builder()
+                .assetName(assetName)
+                .build();
+    }
+
+    public Asset newAsset1(String assetName) {
+        return Asset.builder()
+                .assetName(assetName)
+                .price(10000.0)
+                .size(10.7)
+                .extension("확장자입니다.")
+                .releaseDate(LocalDate.now())
+                .creator("네이션에이")
+                .rating(4.5)
+                .wishCount(1111L)
+                .visitCount(2222L)
+                .reviewCount(3333L)
+                .status(true)
+                .updatedAt(LocalDateTime.now())
+                .fileUrl(assetName + " fileUrl 입니다.")
+                .thumbnailUrl(assetName + " thumbnail 입니다.")
+                .build();
+    }
+
+    public Asset newAsset2(String assetName) {
+        return Asset.builder()
+                .assetName(assetName)
+                .price(10000.0)
+                .size(10.7)
+                .extension("확장자입니다.")
+                .releaseDate(LocalDate.now())
+                .creator("네이션에이")
+                .rating(4.5)
+                .wishCount(1111L)
+                .visitCount(2222L)
+                .reviewCount(3333L)
+                .status(true)
+                .updatedAt(LocalDateTime.now())
+                .fileUrl(assetName + " fileUrl 입니다.")
+                .thumbnailUrl(assetName + " thumbnail 입니다.")
+                .build();
     }
 }

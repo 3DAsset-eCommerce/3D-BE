@@ -94,8 +94,10 @@ public class UserController {
      * 나의 에셋
      */
     @GetMapping("/s/user/{id}/assets")
-    public ResponseEntity<?> findMyAsset(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        UserOutDTO.FindMyAssetOutDTO findMyAssetOutDTO = userService.findMyAssetService(id, myUserDetails);
-        return ResponseEntity.ok(new ResponseDTO<>(findMyAssetOutDTO));
+    public ResponseEntity<?> findMyAsset(
+            @PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.findMyAssetService(id, myUserDetails);
+        return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
     }
+
 }
