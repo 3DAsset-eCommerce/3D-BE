@@ -283,7 +283,7 @@ public class ReviewControllerTest {
         resultActions.andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.status").value("403"))
                 .andExpect(jsonPath("$.msg").value("forbidden"))
-                .andExpect(jsonPath("$.data").value("이 에셋을 구매하지 않았습니다."));
+                .andExpect(jsonPath("$.data").value("이 에셋을 구매하지 않았습니다. "));
 
 
     }
@@ -310,7 +310,7 @@ public class ReviewControllerTest {
         resultActions.andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.status").value("403"))
                 .andExpect(jsonPath("$.msg").value("forbidden"))
-                .andExpect(jsonPath("$.data").value("이미 이 에셋의 리뷰를 작성하셨습니다."));
+                .andExpect(jsonPath("$.data").value("이미 이 에셋의 리뷰를 작성하셨습니다. "));
     }
 
     @DisplayName("리뷰수정 성공")
