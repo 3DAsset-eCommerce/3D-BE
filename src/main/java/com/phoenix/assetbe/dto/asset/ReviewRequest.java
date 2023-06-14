@@ -1,11 +1,13 @@
 package com.phoenix.assetbe.dto.asset;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 public class ReviewRequest {
 
     @Getter @Setter
+    @NoArgsConstructor
     public static class ReviewInDTO {
         private Long userId;
         private Double rating;

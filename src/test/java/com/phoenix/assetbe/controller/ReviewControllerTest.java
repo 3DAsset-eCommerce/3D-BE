@@ -238,6 +238,7 @@ public class ReviewControllerTest {
         Long userId = 4L;
         ReviewRequest.ReviewInDTO addReviewInDTO =
                 new ReviewRequest.ReviewInDTO(userId, 1D, "테스트입니다.");
+        System.out.println("테스트 request : " + om.writeValueAsString(addReviewInDTO));
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
