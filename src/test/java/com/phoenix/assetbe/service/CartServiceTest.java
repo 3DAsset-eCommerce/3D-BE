@@ -4,7 +4,7 @@ import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception403;
-import com.phoenix.assetbe.dto.CartRequest;
+import com.phoenix.assetbe.dto.cart.CartRequest;
 import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.cart.Cart;
 import com.phoenix.assetbe.model.cart.CartQueryRepository;
@@ -69,7 +69,7 @@ public class CartServiceTest extends DummyEntity {
         when(assetService.findAssetById(1L)).thenReturn(asset1);
         when(assetService.findAssetById(2L)).thenReturn(asset2);
 
-        cartService.addCart(addCartInDTO, myUserDetails);
+        cartService.addCartService(addCartInDTO, myUserDetails);
 
         // then
         verify(userService, times(1)).findUserById(anyLong());
@@ -94,7 +94,7 @@ public class CartServiceTest extends DummyEntity {
         // when
         when(userService.findUserById(userId)).thenThrow(new Exception400("id", "존재하지 않는 사용자입니다."));
 
-        assertThrows(Exception400.class, () -> cartService.addCart(addCartInDTO, myUserDetails));
+        assertThrows(Exception400.class, () -> cartService.addCartService(addCartInDTO, myUserDetails));
 
         // then
         verify(userService, times(1)).findUserById(anyLong());
@@ -121,7 +121,7 @@ public class CartServiceTest extends DummyEntity {
         doThrow(new Exception403("권한이 없습니다."))
                 .when(userService).authCheck(myUserDetails, userId);
 
-        assertThrows(Exception403.class, () -> cartService.addCart(addCartInDTO, myUserDetails));
+        assertThrows(Exception403.class, () -> cartService.addCartService(addCartInDTO, myUserDetails));
 
         // then
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
@@ -152,7 +152,7 @@ public class CartServiceTest extends DummyEntity {
         // when
         when(cartRepository.findAllById(carts)).thenReturn(Arrays.asList(cart1, cart2));
 
-        cartService.deleteCart(deleteCartInDTO, myUserDetails);
+        cartService.deleteCartService(deleteCartInDTO, myUserDetails);
 
         // then
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
@@ -178,7 +178,7 @@ public class CartServiceTest extends DummyEntity {
         doThrow(new Exception403("권한이 없습니다."))
                 .when(userService).authCheck(myUserDetails, userId);
 
-        assertThrows(Exception403.class, () -> cartService.deleteCart(deleteCartInDTO, myUserDetails));
+        assertThrows(Exception403.class, () -> cartService.deleteCartService(deleteCartInDTO, myUserDetails));
 
         // then
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
@@ -193,13 +193,6 @@ public class CartServiceTest extends DummyEntity {
 
         User user = newUser("유", "현주");
         MyUserDetails myUserDetails = new MyUserDetails(user);
-
-        Asset asset1 = newAsset("에셋1");
-        Asset asset2 = newAsset("에셋2");
-        Cart cart1 = Cart.builder().user(user).asset(asset1).build();
-        Cart cart2 = Cart.builder().user(user).asset(asset2).build();
-        cartRepository.save(cart1);
-        cartRepository.save(cart2);
 
         // when
         cartService.countCartService(userId, myUserDetails);
@@ -218,13 +211,6 @@ public class CartServiceTest extends DummyEntity {
         User user = newUser("유", "현주");
         MyUserDetails myUserDetails = new MyUserDetails(user);
 
-        Asset asset1 = newAsset("에셋1");
-        Asset asset2 = newAsset("에셋2");
-        Cart cart1 = Cart.builder().user(user).asset(asset1).build();
-        Cart cart2 = Cart.builder().user(user).asset(asset2).build();
-        cartRepository.save(cart1);
-        cartRepository.save(cart2);
-
         // when
         doThrow(new Exception403("권한이 없습니다."))
                 .when(userService).authCheck(myUserDetails, userId);
@@ -234,5 +220,42 @@ public class CartServiceTest extends DummyEntity {
         // then
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
         verify(cartQueryRepository, never()).countByUserId(anyLong());
+    }
+
+    @Test
+    @DisplayName("장바구니 리스트 조회 성공")
+    void getCartTest() {
+        // given
+        Long userId = 1L;
+
+        User user = newUser("유", "현주");
+        MyUserDetails myUserDetails = new MyUserDetails(user);
+
+        // when
+        cartService.getCartListService(userId, myUserDetails);
+
+        // then
+        verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
+        verify(cartQueryRepository, times(1)).getCartWithOrderByUserId(anyLong());
+    }
+
+    @Test
+    @DisplayName("장바구니 리스트 조회 실패 : 권한 체크 실패")
+    void getCartTest_AuthCheckFail() {
+        // given
+        Long userId = 1L;
+
+        User user = newUser("유", "현주");
+        MyUserDetails myUserDetails = new MyUserDetails(user);
+
+        // when
+        doThrow(new Exception403("권한이 없습니다."))
+                .when(userService).authCheck(myUserDetails, userId);
+
+        assertThrows(Exception403.class, () -> cartService.getCartListService(userId, myUserDetails));
+
+        // then
+        verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
+        verify(cartQueryRepository, never()).getCartWithOrderByUserId(anyLong());
     }
 }
