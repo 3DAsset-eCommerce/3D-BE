@@ -118,15 +118,12 @@ public class UserRequest {
     public static class WithdrawInDTO {
         @NotNull(message = "탈퇴 사유를 적어주세요.")
         private String message;
+        private boolean deleteConfirm; // true -> 탈퇴된 상태
     }
 
     @Getter
     @Setter
     public static class UpdateInDTO {
-        @NotNull(message = "firstName을 입력해주세요.")
-        private String firstName;
-        @NotNull(message = "lastName을 입력해주세요.")
-        private String lastName;
         @NotNull(message = "새로운 비밀번호를 입력해주세요.")
         private String newPassword;
     }

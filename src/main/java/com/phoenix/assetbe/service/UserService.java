@@ -155,6 +155,9 @@ public class UserService {
     public void withdrawService(Long userId, UserRequest.WithdrawInDTO withdrawInDTO, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
         User userPS = findUserById(userId);
+        if (withdrawInDTO.isDeleteConfirm()) { // true 상태
+            throw new Exception400("deleteConfirm", "이미 탈퇴되어 있습니다. ");
+        }
         userPS.changeStatus();
         userPS.changeWithdrawalMassage(withdrawInDTO.getMessage());
 
@@ -169,10 +172,6 @@ public class UserService {
     public void updateService(Long userId, UserRequest.UpdateInDTO updateInDTO, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
         User userPS = findUserById(userId);
-        if (!updateInDTO.getFirstName().equals(userPS.getFirstName()) ||
-                !updateInDTO.getLastName().equals(userPS.getLastName())) {
-            throw new Exception400("name", "이름이 일치하지 않습니다. ");
-        }
 
         userPS.changePassword(passwordEncoder.encode(updateInDTO.getNewPassword()));
         try {
@@ -193,8 +192,14 @@ public class UserService {
      */
     public UserResponse.MyAssetListOutDTO findMyAssetService(Long userId, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
+<<<<<<< HEAD
         List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> myAssetPS = myAssetQueryRepository.findMyAsset(userId);
         if (myAssetPS.isEmpty()) {
+=======
+        Pageable pageable = PageRequest.of(page, size); // 페이지 번호와 페이지 크기 설정
+        List<UserOutDTO.MyAssetListOutDTO.FindMyAssetOutDTO> myAssetListPS = myAssetQueryRepository.findMyAsset(userId);
+        if (myAssetListPS.equals(null)) {
+>>>>>>> 6ef489b (feat: #10 마이페이지 FE의 DTO 수정 반영)
             throw new Exception400("myAsset", "myAsset이 존재하지 않습니다. ");
         }
         return new UserResponse.MyAssetListOutDTO(myAssetPS);
