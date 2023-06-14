@@ -96,12 +96,12 @@ public class UserController {
     /**
      * 나의 에셋
      */
-    @GetMapping("/s/user/{id}/assets")
-    public ResponseEntity<?> findMyAsset(@PathVariable Long id,
-                                         @PageableDefault(size = 14, page = 0) Pageable pageable,
-                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.findMyAssetService(pageable, id, myUserDetails);
-        return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
-    }
+//    @GetMapping("/s/user/{id}/assets")
+//    public ResponseEntity<?> findMyAsset(@PathVariable Long id,
+//                                         @PageableDefault(size = 14, page = 0) Pageable pageable,
+//                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
+//        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.findMyAssetService(pageable, id, myUserDetails);
+//        return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
+//    }
 
 }

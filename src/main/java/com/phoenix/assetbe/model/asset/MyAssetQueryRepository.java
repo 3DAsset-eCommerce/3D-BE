@@ -28,27 +28,6 @@ public class MyAssetQueryRepository {
     }
 
     public List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> findMyAsset(Long userId, Pageable pageable) {
-        // QueryDSL 작성한다는 사전 준비 세팅
-        QMyAsset qMyAsset = QMyAsset.myAsset;
-        QAsset qAsset = QAsset.asset;
-
-        return queryFactory
-                .select(Projections.constructor(UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO.class,
-                        qAsset.id,
-                        qAsset.assetName,
-                        qAsset.fileUrl,
-                        qAsset.thumbnailUrl))
-                .from(qMyAsset)
-                .join(qMyAsset.asset, qAsset)
-                .where(qMyAsset.id.eq(userId)) // userId 넣기
-                .fetch()
-                .stream()
-                .map(asset -> new UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO(
-                        asset.getAssetId(),
-                        asset.getAssetName(),
-                        asset.getFileUrl(),
-                        asset.getThumbnailUrl()
-                ))
-                .collect(Collectors.toList());
+        return null;
     }
 }

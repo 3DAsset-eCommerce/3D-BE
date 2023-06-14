@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.phoenix.assetbe.model.asset.QMyAsset.myAsset;
 import static com.phoenix.assetbe.model.asset.QReview.review;
 import static com.phoenix.assetbe.model.user.QUser.user;
 

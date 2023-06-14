@@ -190,14 +190,14 @@ public class UserService {
     /**
      * 나의 에셋
      */
-    public UserResponse.MyAssetListOutDTO findMyAssetService(Pageable pageable, Long userId, MyUserDetails myUserDetails) {
-        authCheck(myUserDetails, userId);
-        List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> myAssetListPS = myAssetQueryRepository.findMyAsset(userId, pageable);
-        if (myAssetListPS == null) {
-            throw new Exception400("myAsset", "myAsset이 존재하지 않습니다. ");
-        }
-        return new UserResponse.MyAssetListOutDTO(myAssetListPS);
-    }
+//    public UserResponse.MyAssetListOutDTO findMyAssetService(Pageable pageable, Long userId, MyUserDetails myUserDetails) {
+//        authCheck(myUserDetails, userId);
+//        List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> myAssetListPS = myAssetQueryRepository.findMyAsset(userId, pageable);
+//        if (myAssetListPS == null) {
+//            throw new Exception400("myAsset", "myAsset이 존재하지 않습니다. ");
+//        }
+//        return new UserResponse.MyAssetListOutDTO(myAssetListPS);
+//    }
 
 
 
