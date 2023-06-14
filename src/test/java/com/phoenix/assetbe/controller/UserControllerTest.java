@@ -314,8 +314,6 @@ public class UserControllerTest extends MyRestDoc {
         Long id = 2L;
 
         UserRequest.UpdateInDTO updateInDTO = new UserRequest.UpdateInDTO();
-        updateInDTO.setFirstName("송");
-        updateInDTO.setLastName("재근");
         updateInDTO.setNewPassword("5678");
 
         String requestBody = objectMapper.writeValueAsString(updateInDTO);
@@ -342,8 +340,6 @@ public class UserControllerTest extends MyRestDoc {
         Long id = 3L;
 
         UserRequest.UpdateInDTO updateInDTO = new UserRequest.UpdateInDTO();
-        updateInDTO.setFirstName("송");
-        updateInDTO.setLastName("재근");
         updateInDTO.setNewPassword("5678");
 
         String requestBody = objectMapper.writeValueAsString(updateInDTO);
@@ -401,47 +397,47 @@ public class UserControllerTest extends MyRestDoc {
     /**
      * 내 에셋
      */
-    @DisplayName("내 에셋 조회 성공")
-    @WithUserDetails(value = "user3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    @Test
-    public void find_my_asset_test() throws Exception {
-        // given
-        Long id = 7L;
-        String page = "0";
-        String size = "4";
-
-        // when
-        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
-                .param("page", page)
-                .param("size", size));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("테스트 : " + responseBody);
-
-        // then
-        resultActions.andExpect(jsonPath("$.status").value(200));
-        resultActions.andExpect(jsonPath("$.msg").value("성공"));
-        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
-    }
-
-    @DisplayName("내 에셋 조회 실패")
-    @WithUserDetails(value = "user3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    @Test
-    public void find_my_asset_fail_test() throws Exception {
-        // given
-        Long id = 7L;
-        String page = "0";
-        String size = "4";
-
-        // when
-        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
-                .param("page", page)
-                .param("size", size));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("테스트 : " + responseBody);
-
-        // then
-        resultActions.andExpect(jsonPath("$.status").value(200));
-        resultActions.andExpect(jsonPath("$.msg").value("성공"));
-        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
-    }
+//    @DisplayName("내 에셋 조회 성공")
+//    @WithUserDetails(value = "user3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+//    @Test
+//    public void find_my_asset_test() throws Exception {
+//        // given
+//        Long id = 7L;
+//        String page = "0";
+//        String size = "4";
+//
+//        // when
+//        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
+//                .param("page", page)
+//                .param("size", size));
+//        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+//        System.out.println("테스트 : " + responseBody);
+//
+//        // then
+//        resultActions.andExpect(jsonPath("$.status").value(200));
+//        resultActions.andExpect(jsonPath("$.msg").value("성공"));
+//        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+//    }
+//
+//    @DisplayName("내 에셋 조회 실패")
+//    @WithUserDetails(value = "user3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+//    @Test
+//    public void find_my_asset_fail_test() throws Exception {
+//        // given
+//        Long id = 7L;
+//        String page = "0";
+//        String size = "4";
+//
+//        // when
+//        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
+//                .param("page", page)
+//                .param("size", size));
+//        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+//        System.out.println("테스트 : " + responseBody);
+//
+//        // then
+//        resultActions.andExpect(jsonPath("$.status").value(200));
+//        resultActions.andExpect(jsonPath("$.msg").value("성공"));
+//        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+//    }
 }

@@ -109,8 +109,6 @@ public class UserServiceTest extends DummyEntity {
         Long userId = 1L;
 
         UserRequest.UpdateInDTO updateInDTO = new UserRequest.UpdateInDTO();
-        updateInDTO.setFirstName("송");
-        updateInDTO.setLastName("재근");
         updateInDTO.setNewPassword("5678");
 
         String requestBody = objectMapper.writeValueAsString(updateInDTO);
