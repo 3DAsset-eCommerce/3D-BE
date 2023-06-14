@@ -14,6 +14,7 @@ import com.phoenix.assetbe.dto.UserOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.CodeCheckOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.CodeOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.EmailCheckOutDTO;
+import com.phoenix.assetbe.dto.UserOutDTO.LoginWithJWTOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.PasswordChangeOutDTO;
 import com.phoenix.assetbe.dto.UserOutDTO.SignupOutDTO;
 import com.phoenix.assetbe.model.user.User;
@@ -43,7 +44,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public String loginService(UserInDTO.LoginInDTO loginInDTO) {
+    public LoginWithJWTOutDTO loginService(UserInDTO.LoginInDTO loginInDTO) {
         User userPS = findUserByEmail(loginInDTO.getEmail());
         if(!userPS.isEmailVerified()){
             throw new Exception400("verified","이메일 인증이 필요합니다. ");
@@ -55,7 +56,7 @@ public class UserService {
             Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             MyUserDetails myUserDetails = (MyUserDetails) authentication.getPrincipal();
 
-            return MyJwtProvider.create(myUserDetails.getUser());
+            return new LoginWithJWTOutDTO(myUserDetails.getUser().getId(), MyJwtProvider.create(myUserDetails.getUser()));
         }catch (Exception e){
             throw new Exception401("아이디 혹은 비밀번호를 확인해주세요. ");
         }

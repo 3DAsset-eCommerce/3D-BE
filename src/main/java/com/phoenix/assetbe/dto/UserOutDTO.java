@@ -7,6 +7,25 @@ import lombok.Setter;
 import java.time.format.DateTimeFormatter;
 
 public class UserOutDTO {
+    @Getter
+    @Setter
+    public static class LoginWithJWTOutDTO {
+        private Long id;
+        private String jwt;
+
+        public LoginWithJWTOutDTO(Long id, String jwt) {
+            this.id = id;
+            this.jwt = jwt;
+        }
+    }
+    @Getter
+    @Setter
+    public static class LoginOutDTO {
+        private Long userId;
+        public LoginOutDTO(Long userId) {
+            this.userId = userId;
+        }
+    }
     @Setter
     @Getter
     public static class CodeOutDTO {
