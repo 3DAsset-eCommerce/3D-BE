@@ -87,10 +87,6 @@ public class UserControllerTest extends MyRestDoc {
     @BeforeEach
     public void setUp() {
         // 첫번째 더미 데이터
-        userRepository.save(dummy.newUser("유", "현주")); // id 순서 주의
-        userRepository.save(dummy.newUser("송", "재근"));
-        userRepository.save(dummy.newUser("양", "진호"));
-        userRepository.save(dummy.newUser("이", "지훈"));
 
         // 두번째 더미 데이터
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -200,7 +196,7 @@ public class UserControllerTest extends MyRestDoc {
      * 마이페이지
      */
     @DisplayName("비밀번호 확인 성공")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void check_password_test() throws Exception {
         // given
@@ -227,7 +223,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("비밀번호 확인 실패") // 비밀번호 일치 X
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void check_password_fail_test() throws Exception {
         // given
@@ -255,7 +251,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("회원탈퇴 성공")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void withdraw_test() throws Exception {
         // given
@@ -281,7 +277,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("회원탈퇴 실패") // id 다른 경우
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void withdraw_fail_test() throws Exception {
         // given
@@ -307,7 +303,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("회원정보 수정 성공")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void update_test() throws Exception {
         // given
@@ -333,7 +329,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("회원정보 수정 실패") // id 다른 경우
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void update_fail_test() throws Exception {
         // given
@@ -358,7 +354,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("내 회원정보 조회 성공")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void find_my_info_test() throws Exception {
         // given
@@ -371,14 +367,14 @@ public class UserControllerTest extends MyRestDoc {
         resultActions.andExpect(jsonPath("$.status").value(200));
         resultActions.andExpect(jsonPath("$.msg").value("성공"));
         resultActions.andExpect(jsonPath("$.data.id").value(2));
-        resultActions.andExpect(jsonPath("$.data.firstName").value("송"));
-        resultActions.andExpect(jsonPath("$.data.lastName").value("재근"));
-        resultActions.andExpect(jsonPath("$.data.email").value("송재근@nate.com"));
+        resultActions.andExpect(jsonPath("$.data.firstName").value("이"));
+        resultActions.andExpect(jsonPath("$.data.lastName").value("유저"));
+        resultActions.andExpect(jsonPath("$.data.email").value("user2@gmail.com"));
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @DisplayName("내 회원정보 조회 실패") // id 다른 경우
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void find_my_info_fail_test() throws Exception {
         // given
