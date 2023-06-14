@@ -1,4 +1,4 @@
-package com.phoenix.assetbe.dto;
+package com.phoenix.assetbe.dto.user;
 
 import com.phoenix.assetbe.model.user.User;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import java.time.format.DateTimeFormatter;
 
-public class UserOutDTO {
+public class UserResponse {
     @Getter
     @Setter
     public static class LoginWithJWTOutDTO {

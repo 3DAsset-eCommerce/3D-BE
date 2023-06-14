@@ -1,4 +1,4 @@
-package com.phoenix.assetbe.dto;
+package com.phoenix.assetbe.dto.user;
 
 import com.phoenix.assetbe.model.user.Role;
 import com.phoenix.assetbe.model.user.SocialType;
@@ -11,7 +11,7 @@ import lombok.Setter;
 import javax.validation.constraints.*;
 import java.util.UUID;
 
-public class UserInDTO {
+public class UserRequest {
     @Setter
     @Getter
     public static class LoginInDTO {

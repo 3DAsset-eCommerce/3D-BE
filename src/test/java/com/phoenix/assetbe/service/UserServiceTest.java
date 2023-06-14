@@ -3,8 +3,8 @@ package com.phoenix.assetbe.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
-import com.phoenix.assetbe.dto.UserInDTO;
-import com.phoenix.assetbe.dto.UserOutDTO;
+import com.phoenix.assetbe.dto.user.UserRequest;
+import com.phoenix.assetbe.dto.user.UserResponse;
 import com.phoenix.assetbe.model.user.Status;
 import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
@@ -17,16 +17,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
 
 public class UserServiceTest extends DummyEntity {
 
@@ -60,7 +57,7 @@ public class UserServiceTest extends DummyEntity {
     public void testCheckPasswordService() throws Exception {
         // given
         Long userId = 1L;
-        UserInDTO.CheckPasswordInDTO checkPasswordInDTO = new UserInDTO.CheckPasswordInDTO();
+        UserRequest.CheckPasswordInDTO checkPasswordInDTO = new UserRequest.CheckPasswordInDTO();
         checkPasswordInDTO.setId(userId);
         checkPasswordInDTO.setPassword("1234");
 
@@ -84,7 +81,7 @@ public class UserServiceTest extends DummyEntity {
     public void testWithdrawService() throws Exception {
         // given
         Long userId = 1L;
-        UserInDTO.WithdrawInDTO withdrawInDTO = new UserInDTO.WithdrawInDTO();
+        UserRequest.WithdrawInDTO withdrawInDTO = new UserRequest.WithdrawInDTO();
         withdrawInDTO.setMessage("아파서 쉽니다.");
 
         String requestBody = objectMapper.writeValueAsString(withdrawInDTO);
@@ -108,7 +105,7 @@ public class UserServiceTest extends DummyEntity {
         // given
         Long userId = 1L;
 
-        UserInDTO.UpdateInDTO updateInDTO = new UserInDTO.UpdateInDTO();
+        UserRequest.UpdateInDTO updateInDTO = new UserRequest.UpdateInDTO();
         updateInDTO.setFirstName("송");
         updateInDTO.setLastName("재근");
         updateInDTO.setNewPassword("5678");
@@ -144,7 +141,7 @@ public class UserServiceTest extends DummyEntity {
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
 
         // when
-        UserOutDTO.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(userId, myUserDetails);
+        UserResponse.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(userId, myUserDetails);
 
         // then
         verify(userRepository, times(1)).findById(userId);

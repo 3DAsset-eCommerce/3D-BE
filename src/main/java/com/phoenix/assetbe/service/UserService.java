@@ -6,17 +6,17 @@ import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception401;
 import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.core.exception.Exception500;
-import com.phoenix.assetbe.dto.UserInDTO;
-import com.phoenix.assetbe.dto.UserInDTO.CodeCheckInDTO;
-import com.phoenix.assetbe.dto.UserInDTO.EmailCheckInDTO;
-import com.phoenix.assetbe.dto.UserInDTO.PasswordChangeInDTO;
-import com.phoenix.assetbe.dto.UserOutDTO;
-import com.phoenix.assetbe.dto.UserOutDTO.CodeCheckOutDTO;
-import com.phoenix.assetbe.dto.UserOutDTO.CodeOutDTO;
-import com.phoenix.assetbe.dto.UserOutDTO.EmailCheckOutDTO;
-import com.phoenix.assetbe.dto.UserOutDTO.LoginWithJWTOutDTO;
-import com.phoenix.assetbe.dto.UserOutDTO.PasswordChangeOutDTO;
-import com.phoenix.assetbe.dto.UserOutDTO.SignupOutDTO;
+import com.phoenix.assetbe.dto.user.UserRequest;
+import com.phoenix.assetbe.dto.user.UserRequest.CodeCheckInDTO;
+import com.phoenix.assetbe.dto.user.UserRequest.EmailCheckInDTO;
+import com.phoenix.assetbe.dto.user.UserRequest.PasswordChangeInDTO;
+import com.phoenix.assetbe.dto.user.UserResponse;
+import com.phoenix.assetbe.dto.user.UserResponse.CodeCheckOutDTO;
+import com.phoenix.assetbe.dto.user.UserResponse.CodeOutDTO;
+import com.phoenix.assetbe.dto.user.UserResponse.EmailCheckOutDTO;
+import com.phoenix.assetbe.dto.user.UserResponse.LoginWithJWTOutDTO;
+import com.phoenix.assetbe.dto.user.UserResponse.PasswordChangeOutDTO;
+import com.phoenix.assetbe.dto.user.UserResponse.SignupOutDTO;
 import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +43,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public LoginWithJWTOutDTO loginService(UserInDTO.LoginInDTO loginInDTO) {
+    public LoginWithJWTOutDTO loginService(UserRequest.LoginInDTO loginInDTO) {
         User userPS = findUserByEmail(loginInDTO.getEmail());
         if(!userPS.isEmailVerified()){
             throw new Exception400("verified","이메일 인증이 필요합니다. ");
@@ -63,7 +62,7 @@ public class UserService {
     }
 
     @Transactional
-    public CodeOutDTO codeSendService(UserInDTO.CodeInDTO codeInDTO){
+    public CodeOutDTO codeSendService(UserRequest.CodeInDTO codeInDTO){
         User userPS = findUserByEmail(codeInDTO.getEmail());
         userPS.generateEmailCheckToken();
 
@@ -110,7 +109,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserOutDTO.SignupOutDTO signupService(UserInDTO.SignupInDTO signupInDTO) {
+    public UserResponse.SignupOutDTO signupService(UserRequest.SignupInDTO signupInDTO) {
         existsUserByEmail(signupInDTO.getEmail());
 
         String encPassword = passwordEncoder.encode(signupInDTO.getPassword()); // 60Byte
@@ -136,7 +135,7 @@ public class UserService {
     /**
      * 마이페이지
      */
-    public void checkPasswordService(UserInDTO.CheckPasswordInDTO checkPasswordInDTO, MyUserDetails myUserDetails) {
+    public void checkPasswordService(UserRequest.CheckPasswordInDTO checkPasswordInDTO, MyUserDetails myUserDetails) {
         Long userId = checkPasswordInDTO.getId();
         authCheck(myUserDetails, checkPasswordInDTO.getId());
         User userPS = findUserById(userId);
@@ -146,7 +145,7 @@ public class UserService {
     }
 
     @Transactional
-    public void withdrawService(Long userId, UserInDTO.WithdrawInDTO withdrawInDTO, MyUserDetails myUserDetails) {
+    public void withdrawService(Long userId, UserRequest.WithdrawInDTO withdrawInDTO, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
         User userPS = findUserById(userId);
         userPS.changeStatus();
@@ -160,7 +159,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateService(Long userId, UserInDTO.UpdateInDTO updateInDTO, MyUserDetails myUserDetails) {
+    public void updateService(Long userId, UserRequest.UpdateInDTO updateInDTO, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
         User userPS = findUserById(userId);
         if (!updateInDTO.getFirstName().equals(userPS.getFirstName()) ||
@@ -176,10 +175,10 @@ public class UserService {
         }
     }
 
-    public UserOutDTO.FindMyInfoOutDTO findMyInfoService(Long userId, MyUserDetails myUserDetails) {
+    public UserResponse.FindMyInfoOutDTO findMyInfoService(Long userId, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
         User userPS = findUserById(userId);
-        return new UserOutDTO.FindMyInfoOutDTO(userPS);
+        return new UserResponse.FindMyInfoOutDTO(userPS);
     }
 
     /**

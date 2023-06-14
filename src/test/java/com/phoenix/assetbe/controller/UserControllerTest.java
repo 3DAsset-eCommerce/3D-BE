@@ -2,17 +2,13 @@ package com.phoenix.assetbe.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.assetbe.core.MyRestDoc;
-import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
-import com.phoenix.assetbe.dto.UserInDTO;
-import com.phoenix.assetbe.model.user.User;
+import com.phoenix.assetbe.dto.user.UserRequest;
 import com.phoenix.assetbe.model.user.UserRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,10 +20,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -36,7 +30,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
@@ -80,7 +73,7 @@ public class UserControllerTest extends MyRestDoc {
         // given
         Long userId = 2L;
 
-        UserInDTO.CheckPasswordInDTO checkPasswordInDTO = new UserInDTO.CheckPasswordInDTO();
+        UserRequest.CheckPasswordInDTO checkPasswordInDTO = new UserRequest.CheckPasswordInDTO();
         checkPasswordInDTO.setId(userId);
         checkPasswordInDTO.setPassword("1234");
 
@@ -107,7 +100,7 @@ public class UserControllerTest extends MyRestDoc {
         // given
         Long userId = 2L;
 
-        UserInDTO.CheckPasswordInDTO checkPasswordInDTO = new UserInDTO.CheckPasswordInDTO();
+        UserRequest.CheckPasswordInDTO checkPasswordInDTO = new UserRequest.CheckPasswordInDTO();
         checkPasswordInDTO.setId(userId);
         checkPasswordInDTO.setPassword("5678");
 
@@ -135,7 +128,7 @@ public class UserControllerTest extends MyRestDoc {
         // given
         Long id = 2L;
 
-        UserInDTO.WithdrawInDTO withdrawInDTO = new UserInDTO.WithdrawInDTO();
+        UserRequest.WithdrawInDTO withdrawInDTO = new UserRequest.WithdrawInDTO();
         withdrawInDTO.setMessage("아파서 쉽니다.");
 
         String requestBody = objectMapper.writeValueAsString(withdrawInDTO);
@@ -161,7 +154,7 @@ public class UserControllerTest extends MyRestDoc {
         // given
         Long id = 3L;
 
-        UserInDTO.WithdrawInDTO withdrawInDTO = new UserInDTO.WithdrawInDTO();
+        UserRequest.WithdrawInDTO withdrawInDTO = new UserRequest.WithdrawInDTO();
         withdrawInDTO.setMessage("아파서 쉽니다.");
 
         String requestBody = objectMapper.writeValueAsString(withdrawInDTO);
@@ -187,7 +180,7 @@ public class UserControllerTest extends MyRestDoc {
         // given
         Long id = 2L;
 
-        UserInDTO.UpdateInDTO updateInDTO = new UserInDTO.UpdateInDTO();
+        UserRequest.UpdateInDTO updateInDTO = new UserRequest.UpdateInDTO();
         updateInDTO.setFirstName("송");
         updateInDTO.setLastName("재근");
         updateInDTO.setNewPassword("5678");
@@ -215,7 +208,7 @@ public class UserControllerTest extends MyRestDoc {
         // given
         Long id = 3L;
 
-        UserInDTO.UpdateInDTO updateInDTO = new UserInDTO.UpdateInDTO();
+        UserRequest.UpdateInDTO updateInDTO = new UserRequest.UpdateInDTO();
         updateInDTO.setFirstName("송");
         updateInDTO.setLastName("재근");
         updateInDTO.setNewPassword("5678");
