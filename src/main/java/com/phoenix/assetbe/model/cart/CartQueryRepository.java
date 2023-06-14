@@ -14,6 +14,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.phoenix.assetbe.model.cart.QCart.cart;
+import static com.phoenix.assetbe.model.order.QOrder.order;
+import static com.phoenix.assetbe.model.order.QOrderProduct.orderProduct;
+import static com.phoenix.assetbe.model.user.QUser.user;
+import static com.phoenix.assetbe.model.wish.QWishList.wishList;
+
 @RequiredArgsConstructor
 @Repository
 public class CartQueryRepository {
@@ -21,7 +27,6 @@ public class CartQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     public CartResponse.CountCartOutDTO countByUserId(Long userId) {
-        QCart cart = QCart.cart;
         return queryFactory
                 .select(Projections.constructor(CartResponse.CountCartOutDTO.class,
                                 cart.count()))
@@ -31,12 +36,6 @@ public class CartQueryRepository {
     }
 
     public List<CartResponse.GetCartWithOrderOutDTO> getCartWithOrderByUserId(Long userId) {
-        QOrder order = QOrder.order;
-        QOrderProduct orderProduct = QOrderProduct.orderProduct;
-        QCart cart = QCart.cart;
-        QAsset asset = QAsset.asset;
-        QUser user = QUser.user;
-        QWishList wishList = QWishList.wishList;
 
         return queryFactory
                 .select(Projections.constructor(CartResponse.GetCartWithOrderOutDTO.class, cart.id, cart.asset, orderProduct.id, wishList.id))
