@@ -34,7 +34,7 @@ public class AssetController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/assets/{id}")
+    @GetMapping("/assets/{id}/details")
     public ResponseEntity<?> getAssetDetails(@PathVariable Long id,
                                              @AuthenticationPrincipal MyUserDetails myUserDetails) {
 

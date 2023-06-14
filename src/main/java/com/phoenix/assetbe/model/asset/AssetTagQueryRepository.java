@@ -14,7 +14,7 @@ import static com.phoenix.assetbe.model.asset.QTag.tag;
 public class AssetTagQueryRepository {
     private final JPAQueryFactory queryFactory;
 
-    public List<String> findTagNamesByAssetId(Long assetId) {
+    public List<String> findTagNameListByAssetId(Long assetId) {
         return queryFactory.selectDistinct(assetTag.tag.tagName)
                 .from(assetTag)
                 .join(assetTag.tag, tag)

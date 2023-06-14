@@ -187,7 +187,7 @@ public class AssetControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/assets/{id}",id).with(anonymous()));
+                .get("/assets/{id}/details",id));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
@@ -207,7 +207,7 @@ public class AssetControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/assets/{id}",id));
+                .get("/assets/{id}/details",id));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 

@@ -49,7 +49,7 @@ public class AssetService {
             wishListId = wishListRepository.findIdByAssetIdAndUserId(assetId, userId);
         }
         Asset assetPS = findAssetById(assetId);
-        List<String> tagNameList = assetTagQueryRepository.findTagNamesByAssetId(assetId);
+        List<String> tagNameList = assetTagQueryRepository.findTagNameListByAssetId(assetId);
         assetPS.increaseVisitCount();
         try {
             assetRepository.save(assetPS);
