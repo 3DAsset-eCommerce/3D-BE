@@ -3,8 +3,8 @@ package com.phoenix.assetbe.service;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception500;
-import com.phoenix.assetbe.dto.CartRequest;
-import com.phoenix.assetbe.dto.CartResponse;
+import com.phoenix.assetbe.dto.cart.CartRequest;
+import com.phoenix.assetbe.dto.cart.CartResponse;
 import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.cart.Cart;
 import com.phoenix.assetbe.model.cart.CartQueryRepository;
@@ -31,7 +31,7 @@ public class CartService {
     private final AssetService assetService;
 
     @Transactional
-    public void addCart(CartRequest.AddCartInDTO addCartInDTO, MyUserDetails myUserDetails) {
+    public void addCartService(CartRequest.AddCartInDTO addCartInDTO, MyUserDetails myUserDetails) {
 
         Long userId = addCartInDTO.getUserId();
         List<Long> assets = addCartInDTO.getAssets();
@@ -55,7 +55,7 @@ public class CartService {
     }
 
     @Transactional
-    public void deleteCart(CartRequest.DeleteCartInDTO deleteCartInDTO, MyUserDetails myUserDetails) {
+    public void deleteCartService(CartRequest.DeleteCartInDTO deleteCartInDTO, MyUserDetails myUserDetails) {
         Long userId = deleteCartInDTO.getUserId();
         List<Long> carts = deleteCartInDTO.getCarts();
 
@@ -68,18 +68,21 @@ public class CartService {
         }
     }
 
-    public CartResponse.CountCartOutDTO countCartService(Long id, MyUserDetails myUserDetails) {
-        userService.authCheck(myUserDetails, id);
+    public CartResponse.CountCartOutDTO countCartService(Long userId, MyUserDetails myUserDetails) {
+        userService.authCheck(myUserDetails, userId);
         try {
-            Long cartCount = cartQueryRepository.countByUserId(id);
-
-            CartResponse.CountCartOutDTO countCartOutDTO = new CartResponse.CountCartOutDTO(cartCount);
+            CartResponse.CountCartOutDTO countCartOutDTO = cartQueryRepository.countByUserId(userId);
             return countCartOutDTO;
         } catch (Exception e) {
             throw new Exception500("장바구니 조회 실패 : "+e.getMessage());
         }
     }
 
+    public List<CartResponse.GetCartWithOrderOutDTO> getCartListService(Long userId, MyUserDetails myUserDetails) {
+        userService.authCheck(myUserDetails, userId);
+        List<CartResponse.GetCartWithOrderOutDTO> cartList = cartQueryRepository.getCartWithOrderByUserId(userId);
+        return cartList;
+    }
 
     public void findCartById(Long cartId){
         cartRepository.findById(cartId).orElseThrow(
