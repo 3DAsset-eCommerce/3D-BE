@@ -15,6 +15,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.phoenix.assetbe.model.asset.QAsset.asset;
+import static com.phoenix.assetbe.model.asset.QAssetCategory.assetCategory;
+import static com.phoenix.assetbe.model.asset.QCategory.category;
 import static com.phoenix.assetbe.model.cart.QCart.cart;
 import static com.phoenix.assetbe.model.wish.QWishList.wishList;
 
@@ -59,6 +61,62 @@ public class AssetQueryRepository {
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
+    }
+
+    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithUserIdAndPaginationByCategory(
+            Long userId, String categoryName, Pageable pageable){
+        List <AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
+                        asset.id, asset.assetName, asset.price,
+                        asset.releaseDate, asset.rating, asset.reviewCount,
+                        asset.wishCount, wishList.id, cart.id))
+                .from(asset)
+                .innerJoin(assetCategory).on(assetCategory.asset.eq(asset))
+                .innerJoin(category).on(assetCategory.category.eq(category))
+                .leftJoin(wishList).on(wishList.asset.eq(asset)).on(wishList.user.id.eq(userId))
+                .leftJoin(cart).on(cart.asset.eq(asset)).on(cart.user.id.eq(userId))
+                .where(category.categoryName.eq(categoryName))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.count())
+                .from(asset)
+                .innerJoin(assetCategory).on(assetCategory.asset.eq(asset))
+                .innerJoin(category).on(category.eq(assetCategory.category))
+                .where(category.categoryName.eq(categoryName))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+
+    }
+
+    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithPaginationByCategory(
+            String categoryName, Pageable pageable){
+        List <AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
+                        asset.id, asset.assetName, asset.price,
+                        asset.releaseDate, asset.rating, asset.reviewCount,
+                        asset.wishCount))
+                .from(asset)
+                .innerJoin(assetCategory).on(assetCategory.asset.eq(asset))
+                .innerJoin(category).on(assetCategory.category.eq(category))
+                .where(category.categoryName.eq(categoryName))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.count())
+                .from(asset)
+                .innerJoin(assetCategory).on(assetCategory.asset.eq(asset))
+                .innerJoin(category).on(category.eq(assetCategory.category))
+                .where(category.categoryName.eq(categoryName))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+
     }
 
     private OrderSpecifier<?> assetSort(Pageable pageable) {

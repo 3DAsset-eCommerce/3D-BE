@@ -59,6 +59,17 @@ public class AssetService {
         return new AssetResponse.AssetDetailsOutDTO(assetPS, wishListId, tagNameList);
     }
 
+    public AssetResponse.AssetsOutDTO getAssetListByCategoryService(String categoryName, Pageable pageable, MyUserDetails myUserDetails) {
+        Page<AssetResponse.AssetsOutDTO.AssetDetail> assetDetailList;
+        if(myUserDetails != null) {
+            Long userId = myUserDetails.getUser().getId();
+            assetDetailList = assetQueryRepository.findAssetListWithUserIdAndPaginationByCategory(userId, categoryName, pageable);
+        }else {
+            assetDetailList = assetQueryRepository.findAssetListWithPaginationByCategory(categoryName, pageable);
+        }
+        return new AssetResponse.AssetsOutDTO(assetDetailList);
+    }
+
     public Asset findAssetById(Long assetId){
         Asset assetPS = assetRepository.findById(assetId).orElseThrow(
                 () -> new Exception400("id", "존재하지 않는 에셋입니다. "));

@@ -71,6 +71,9 @@ public class AssetControllerTest {
     private TagRepository tagRepository;
 
     @Autowired
+    private AssetCategoryRepository assetCategoryRepository;
+
+    @Autowired
     private WishListRepository wishListRepository;
 
     @Autowired
@@ -122,6 +125,17 @@ public class AssetControllerTest {
         Tag t5 = Tag.builder().tagName("tag5").tagCount(300L).build();
         Tag t6 = Tag.builder().tagName("tag6").tagCount(300L).build();
         tagRepository.saveAll(Arrays.asList(t1, t2, t3, t4, t5, t6));
+
+        AssetCategory ac1 = AssetCategory.builder().asset(a1).category(c1).build();
+        AssetCategory ac2 = AssetCategory.builder().asset(a2).category(c2).build();
+        AssetCategory ac3 = AssetCategory.builder().asset(a3).category(c3).build();
+        AssetCategory ac4 = AssetCategory.builder().asset(a4).category(c1).build();
+        AssetCategory ac5 = AssetCategory.builder().asset(a5).category(c2).build();
+        AssetCategory ac6 = AssetCategory.builder().asset(a6).category(c3).build();
+        AssetCategory ac7 = AssetCategory.builder().asset(a7).category(c1).build();
+        AssetCategory ac8 = AssetCategory.builder().asset(a8).category(c2).build();
+        AssetCategory ac9 = AssetCategory.builder().asset(a9).category(c3).build();
+        assetCategoryRepository.saveAll(Arrays.asList(ac1,ac2,ac3,ac4,ac5,ac6,ac7,ac8,ac9));
 
         AssetTag at1 = AssetTag.builder().asset(a1).category(c1).subCategory(sc1).tag(t1).build();
         AssetTag at2 = AssetTag.builder().asset(a1).category(c1).subCategory(sc1).tag(t2).build();
@@ -226,7 +240,6 @@ public class AssetControllerTest {
         // given
         String page = "0";
         String size = "4";
-
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
                 .get("/assets")
@@ -251,6 +264,51 @@ public class AssetControllerTest {
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
                 .get("/assets")
+                .param("page", page)
+                .param("size", size));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // Then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200));
+    }
+
+    @DisplayName("카테고리별 에셋 조회 로그인 성공")
+    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void get_asset_list_with_user_id_and_pagination_by_category_test() throws Exception {
+        // given
+        String categoryName = "A";
+        String page = "0";
+        String size = "4";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
+                .get("/assets/{categoryName}",categoryName)
+                .param("page", page)
+                .param("size", size));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // Then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200));
+    }
+
+    @DisplayName("카테고리별 에셋 조회 비로그인 성공")
+    @Test
+    public void get_asset_list_with_pagination_by_category_test() throws Exception {
+        // given
+        String categoryName = "A";
+        String page = "0";
+        String size = "4";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
+                .get("/assets/{categoryName}",categoryName)
                 .param("page", page)
                 .param("size", size));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();

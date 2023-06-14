@@ -43,4 +43,16 @@ public class AssetController {
         ResponseDTO<?> responseDTO = new ResponseDTO<>(assetDetailsOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("/assets/{categoryName}")
+    public ResponseEntity<?> getAssetListByCategory(
+            @PathVariable String categoryName,
+            @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal MyUserDetails myUserDetails) {
+
+        AssetResponse.AssetsOutDTO assetsOutDTO =
+                assetService.getAssetListByCategoryService(categoryName, pageable, myUserDetails);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(assetsOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }
