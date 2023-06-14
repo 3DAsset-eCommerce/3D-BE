@@ -14,6 +14,8 @@ import com.phoenix.assetbe.dto.user.UserResponse.PasswordChangeOutDTO;
 import com.phoenix.assetbe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
@@ -95,9 +97,10 @@ public class UserController {
      * 나의 에셋
      */
     @GetMapping("/s/user/{id}/assets")
-    public ResponseEntity<?> findMyAsset(
-            @PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.findMyAssetService(id, myUserDetails);
+    public ResponseEntity<?> findMyAsset(@PathVariable Long id,
+                                         @PageableDefault(size = 14, page = 0) Pageable pageable,
+                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.findMyAssetService(pageable, id, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
     }
 

@@ -190,19 +190,14 @@ public class UserService {
     /**
      * 나의 에셋
      */
-    public UserResponse.MyAssetListOutDTO findMyAssetService(Long userId, MyUserDetails myUserDetails) {
+    public UserResponse.MyAssetListOutDTO findMyAssetService(Pageable pageable, Long userId, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
-<<<<<<< HEAD
-        List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> myAssetPS = myAssetQueryRepository.findMyAsset(userId);
-        if (myAssetPS.isEmpty()) {
-=======
-        Pageable pageable = PageRequest.of(page, size); // 페이지 번호와 페이지 크기 설정
-        List<UserOutDTO.MyAssetListOutDTO.FindMyAssetOutDTO> myAssetListPS = myAssetQueryRepository.findMyAsset(userId);
+
+        List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> myAssetListPS = myAssetQueryRepository.findMyAsset(userId, pageable);
         if (myAssetListPS.equals(null)) {
->>>>>>> 6ef489b (feat: #10 마이페이지 FE의 DTO 수정 반영)
             throw new Exception400("myAsset", "myAsset이 존재하지 않습니다. ");
         }
-        return new UserResponse.MyAssetListOutDTO(myAssetPS);
+        return new UserResponse.MyAssetListOutDTO(myAssetListPS);
     }
 
 
