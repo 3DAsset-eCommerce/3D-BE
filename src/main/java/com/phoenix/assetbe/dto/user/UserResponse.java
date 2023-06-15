@@ -1,6 +1,5 @@
 package com.phoenix.assetbe.dto.user;
 
-import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -96,14 +95,14 @@ public class UserResponse {
 
     @Getter
     @Setter
-    public static class FindMyInfoOutDTO {
+    public static class GetMyInfoOutDTO {
         private Long id;
         private String firstName;
         private String lastName;
         private String email;
         private String createdAt;
 
-        public FindMyInfoOutDTO(User user) {
+        public GetMyInfoOutDTO(User user) {
             this.id = user.getId();
             this.firstName = user.getFirstName();
             this.lastName = user.getLastName();
@@ -139,13 +138,13 @@ public class UserResponse {
 
         @Getter
         @Setter
-        public static class FindMyAssetOutDTO {
+        public static class GetMyAssetOutDTO {
             private Long assetId;
             private String assetName;
             private String fileUrl;
             private String thumbnailUrl;
 
-            public FindMyAssetOutDTO(Long assetId, String assetName, String fileUrl, String thumbnailUrl) {
+            public GetMyAssetOutDTO(Long assetId, String assetName, String fileUrl, String thumbnailUrl) {
                 this.assetId = assetId;
                 this.assetName = assetName;
                 this.fileUrl = fileUrl;

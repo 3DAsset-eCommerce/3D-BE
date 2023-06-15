@@ -29,9 +29,9 @@ public class MyAssetQueryRepository {
         return fetchOne != null; // 1개가 있는지 없는지 판단 (없으면 null 이므로 null 체크)
     }
 
-    public Page<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> findMyAssetWithUserIdAndPaging(Long userId, Pageable pageable) {
-        List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> result = queryFactory
-                .select(Projections.constructor(UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO.class,
+    public Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetWithUserIdAndPaging(Long userId, Pageable pageable) {
+        List<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> result = queryFactory
+                .select(Projections.constructor(UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO.class,
                         asset.id, asset.assetName, asset.fileUrl, asset.thumbnailUrl))
                 .from(myAsset)
                 .innerJoin(myAsset.asset, asset)
@@ -42,6 +42,8 @@ public class MyAssetQueryRepository {
 
         Long totalCount = queryFactory.select(myAsset.asset.count())
                 .from(myAsset)
+                .innerJoin(myAsset.asset, asset)
+                .where(myAsset.user.id.eq(userId))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);

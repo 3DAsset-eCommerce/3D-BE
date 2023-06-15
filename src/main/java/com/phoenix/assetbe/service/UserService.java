@@ -33,7 +33,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -179,20 +178,20 @@ public class UserService {
         }
     }
 
-    public UserResponse.FindMyInfoOutDTO findMyInfoService(Long userId, MyUserDetails myUserDetails) {
+    public UserResponse.GetMyInfoOutDTO getMyInfoService(Long userId, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
         User userPS = findUserById(userId);
-        return new UserResponse.FindMyInfoOutDTO(userPS);
+        return new UserResponse.GetMyInfoOutDTO(userPS);
     }
 
     /**
      * 나의 에셋
      */
-    public UserResponse.MyAssetListOutDTO findMyAssetService(Pageable pageable, Long userId, MyUserDetails myUserDetails) {
+    public UserResponse.MyAssetListOutDTO getMyAssetService(Pageable pageable, Long userId, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
-        Page<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> findMyAssetOutDTO;
-        findMyAssetOutDTO = myAssetQueryRepository.findMyAssetWithUserIdAndPaging(userId, pageable);
-        return new UserResponse.MyAssetListOutDTO(findMyAssetOutDTO);
+        Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetOutDTO;
+        getMyAssetOutDTO = myAssetQueryRepository.getMyAssetWithUserIdAndPaging(userId, pageable);
+        return new UserResponse.MyAssetListOutDTO(getMyAssetOutDTO);
     }
 
 

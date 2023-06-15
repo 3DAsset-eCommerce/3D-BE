@@ -133,7 +133,7 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
-    public void testFindMyInfoService() throws Exception {
+    public void testGetMyInfoService() throws Exception {
         // given
         Long userId = 1L;
 
@@ -144,7 +144,7 @@ public class UserServiceTest extends DummyEntity {
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
 
         // when
-        UserResponse.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(userId, myUserDetails);
+        UserResponse.GetMyInfoOutDTO getMyInfoOutDTO = userService.getMyInfoService(userId, myUserDetails);
 
         // then
         verify(userRepository, times(1)).findById(userId);
@@ -154,7 +154,7 @@ public class UserServiceTest extends DummyEntity {
      * 내 에셋
      */
     @Test
-    public void testFindMyAssetService() throws Exception {
+    public void testGetMyAssetService() throws Exception {
         // given
         Long userId = 1L;
 
@@ -164,17 +164,17 @@ public class UserServiceTest extends DummyEntity {
 
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
 
-        UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO asset1 = new UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO(1L, "Asset 1", "fileUrl1", "thumbnailUrl1");
-        UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO asset2 = new UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO(2L, "Asset 2", "fileUrl2", "thumbnailUrl2");
-        UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO asset3 = new UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO(3L, "Asset 3", "fileUrl3", "thumbnailUrl3");
-        Page<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> fakePage = new PageImpl<>(List.of(asset1, asset2, asset3));
+        UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO asset1 = new UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO(1L, "Asset 1", "fileUrl1", "thumbnailUrl1");
+        UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO asset2 = new UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO(2L, "Asset 2", "fileUrl2", "thumbnailUrl2");
+        UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO asset3 = new UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO(3L, "Asset 3", "fileUrl3", "thumbnailUrl3");
+        Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> fakePage = new PageImpl<>(List.of(asset1, asset2, asset3));
 
         Pageable pageable = PageRequest.of(0, 2); // 예시로 페이지 번호 0, 페이지 크기 10으로 설정
 
         // when
-        when(myAssetQueryRepository.findMyAssetWithUserIdAndPaging(anyLong(), any(Pageable.class))).thenReturn(fakePage);
+        when(myAssetQueryRepository.getMyAssetWithUserIdAndPaging(anyLong(), any(Pageable.class))).thenReturn(fakePage);
 
-        UserResponse.MyAssetListOutDTO result = userService.findMyAssetService(pageable, userId, myUserDetails);
+        UserResponse.MyAssetListOutDTO result = userService.getMyAssetService(pageable, userId, myUserDetails);
 
         // then
         assertEquals(fakePage.getContent().size(), result.getMyAssetList().size());
@@ -182,7 +182,7 @@ public class UserServiceTest extends DummyEntity {
         assertEquals(fakePage.getTotalPages(), result.getTotalPage());
         assertEquals(fakePage.getTotalElements(), result.getTotalElement());
 
-        verify(myAssetQueryRepository, times(1)).findMyAssetWithUserIdAndPaging(userId, pageable);
+        verify(myAssetQueryRepository, times(1)).getMyAssetWithUserIdAndPaging(userId, pageable);
     }
 
 }

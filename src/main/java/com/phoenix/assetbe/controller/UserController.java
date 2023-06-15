@@ -13,7 +13,6 @@ import com.phoenix.assetbe.dto.user.UserResponse.LoginWithJWTOutDTO;
 import com.phoenix.assetbe.dto.user.UserResponse.PasswordChangeOutDTO;
 import com.phoenix.assetbe.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -89,9 +88,9 @@ public class UserController {
     }
 
     @GetMapping("/s/user/{id}")
-    public ResponseEntity<?> findMyInfo(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        UserResponse.FindMyInfoOutDTO findMyInfoOutDTO = userService.findMyInfoService(id, myUserDetails);
-        return ResponseEntity.ok(new ResponseDTO<>(findMyInfoOutDTO));
+    public ResponseEntity<?> getMyInfo(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        UserResponse.GetMyInfoOutDTO getMyInfoOutDTO = userService.getMyInfoService(id, myUserDetails);
+        return ResponseEntity.ok(new ResponseDTO<>(getMyInfoOutDTO));
     }
 
 
@@ -99,10 +98,10 @@ public class UserController {
      * 나의 에셋
      */
     @GetMapping("/s/user/{id}/assets")
-    public ResponseEntity<?> findMyAsset(@PathVariable Long id,
-                                         @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.DESC) Pageable pageable,
-                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.findMyAssetService(pageable, id, myUserDetails);
+    public ResponseEntity<?> getMyAsset(@PathVariable Long id,
+                                        @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.DESC) Pageable pageable,
+                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.getMyAssetService(pageable, id, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
     }
 
