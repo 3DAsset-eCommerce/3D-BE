@@ -391,11 +391,11 @@ public class UserControllerTest extends MyRestDoc {
      * 내 에셋
      */
 //    @DisplayName("내 에셋 조회 성공")
-//    @WithUserDetails(value = "user3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+//    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
 //    @Test
 //    public void find_my_asset_test() throws Exception {
 //        // given
-//        Long id = 7L;
+//        Long id = 1L;
 //        String page = "0";
 //        String size = "4";
 //

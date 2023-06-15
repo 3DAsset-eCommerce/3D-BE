@@ -15,6 +15,7 @@ import com.phoenix.assetbe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -93,15 +94,16 @@ public class UserController {
         return ResponseEntity.ok(new ResponseDTO<>(findMyInfoOutDTO));
     }
 
+
     /**
      * 나의 에셋
      */
-//    @GetMapping("/s/user/{id}/assets")
-//    public ResponseEntity<?> findMyAsset(@PathVariable Long id,
-//                                         @PageableDefault(size = 14, page = 0) Pageable pageable,
-//                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
-//        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.findMyAssetService(pageable, id, myUserDetails);
-//        return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
-//    }
+    @GetMapping("/s/user/{id}/assets")
+    public ResponseEntity<?> findMyAsset(@PathVariable Long id,
+                                         @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.DESC) Pageable pageable,
+                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.findMyAssetService(pageable, id, myUserDetails);
+        return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
+    }
 
 }

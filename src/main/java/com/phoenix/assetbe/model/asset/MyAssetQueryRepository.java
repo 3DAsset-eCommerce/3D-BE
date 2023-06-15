@@ -5,12 +5,14 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import static com.phoenix.assetbe.model.asset.QMyAsset.myAsset;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.phoenix.assetbe.model.asset.QAsset.asset;
+import static com.phoenix.assetbe.model.asset.QMyAsset.myAsset;
 
 @RequiredArgsConstructor
 @Repository
@@ -27,7 +29,21 @@ public class MyAssetQueryRepository {
         return fetchOne != null; // 1개가 있는지 없는지 판단 (없으면 null 이므로 null 체크)
     }
 
-    public List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> findMyAsset(Long userId, Pageable pageable) {
-        return null;
+    public Page<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> findMyAssetWithUserIdAndPaging(Long userId, Pageable pageable) {
+        List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> result = queryFactory
+                .select(Projections.constructor(UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO.class,
+                        asset.id, asset.assetName, asset.fileUrl, asset.thumbnailUrl))
+                .from(myAsset)
+                .innerJoin(myAsset.asset, asset)
+                .where(myAsset.user.id.eq(userId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        Long totalCount = queryFactory.select(myAsset.asset.count())
+                .from(myAsset)
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
     }
 }

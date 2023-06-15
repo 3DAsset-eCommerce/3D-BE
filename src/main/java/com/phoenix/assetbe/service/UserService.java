@@ -23,8 +23,6 @@ import com.phoenix.assetbe.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -190,14 +188,12 @@ public class UserService {
     /**
      * 나의 에셋
      */
-//    public UserResponse.MyAssetListOutDTO findMyAssetService(Pageable pageable, Long userId, MyUserDetails myUserDetails) {
-//        authCheck(myUserDetails, userId);
-//        List<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> myAssetListPS = myAssetQueryRepository.findMyAsset(userId, pageable);
-//        if (myAssetListPS == null) {
-//            throw new Exception400("myAsset", "myAsset이 존재하지 않습니다. ");
-//        }
-//        return new UserResponse.MyAssetListOutDTO(myAssetListPS);
-//    }
+    public UserResponse.MyAssetListOutDTO findMyAssetService(Pageable pageable, Long userId, MyUserDetails myUserDetails) {
+        authCheck(myUserDetails, userId);
+        Page<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> findMyAssetOutDTO;
+        findMyAssetOutDTO = myAssetQueryRepository.findMyAssetWithUserIdAndPaging(userId, pageable);
+        return new UserResponse.MyAssetListOutDTO(findMyAssetOutDTO);
+    }
 
 
 

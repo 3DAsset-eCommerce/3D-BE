@@ -4,6 +4,7 @@ import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -122,10 +123,18 @@ public class UserResponse {
     @Getter
     @Setter
     public static class MyAssetListOutDTO {
-        private List<FindMyAssetOutDTO> myAssetList;
+        private List<?> myAssetList;
+        private int size;
+        private int currentPage;
+        private int totalPage;
+        private long totalElement;
 
-        public MyAssetListOutDTO(List<FindMyAssetOutDTO> findMyAssetOutDTO) {
-            this.myAssetList = findMyAssetOutDTO;
+        public MyAssetListOutDTO(Page<?> myAssetList) {
+            this.myAssetList = myAssetList.getContent();
+            this.size = myAssetList.getSize();
+            this.currentPage = myAssetList.getPageable().getPageNumber();
+            this.totalPage = myAssetList.getTotalPages();
+            this.totalElement = myAssetList.getTotalElements();
         }
 
         @Getter
