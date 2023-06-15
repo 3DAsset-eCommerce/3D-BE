@@ -390,48 +390,48 @@ public class UserControllerTest extends MyRestDoc {
     /**
      * 내 에셋
      */
-//    @DisplayName("내 에셋 조회 성공")
-//    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-//    @Test
-//    public void find_my_asset_test() throws Exception {
-//        // given
-//        Long id = 1L;
-//        String page = "1";
-//        String size = "2";
-//
-//        // when
-//        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
-//                .param("page", page)
-//                .param("size", size));
-//        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-//        System.out.println("테스트 : " + responseBody);
-//
-//        // then
-//        resultActions.andExpect(jsonPath("$.status").value(200));
-//        resultActions.andExpect(jsonPath("$.msg").value("성공"));
-//        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
-//    }
-//
-//    @DisplayName("내 에셋 조회 실패") // id 다른 경우
-//    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-//    @Test
-//    public void find_my_asset_fail_test() throws Exception {
-//        // given
-//        Long id = 7L;
-//        String page = "0";
-//        String size = "4";
-//
-//        // when
-//        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
-//                .param("page", page)
-//                .param("size", size));
-//        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-//        System.out.println("테스트 : " + responseBody);
-//
-//        // then
-//        resultActions.andExpect(jsonPath("$.status").value(403));
-//        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
-//        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
-//        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
-//    }
+    @DisplayName("내 에셋 조회 성공")
+    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void find_my_asset_test() throws Exception {
+        // given
+        Long id = 1L;
+        String page = "1";
+        String size = "2";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
+                .param("page", page)
+                .param("size", size));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(200));
+        resultActions.andExpect(jsonPath("$.msg").value("성공"));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("내 에셋 조회 실패") // id 다른 경우
+    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void find_my_asset_fail_test() throws Exception {
+        // given
+        Long id = 7L;
+        String page = "0";
+        String size = "4";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
+                .param("page", page)
+                .param("size", size));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(403));
+        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
+        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
 }
