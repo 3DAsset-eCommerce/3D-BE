@@ -396,8 +396,8 @@ public class UserControllerTest extends MyRestDoc {
 //    public void find_my_asset_test() throws Exception {
 //        // given
 //        Long id = 1L;
-//        String page = "0";
-//        String size = "4";
+//        String page = "1";
+//        String size = "2";
 //
 //        // when
 //        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
@@ -412,8 +412,8 @@ public class UserControllerTest extends MyRestDoc {
 //        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
 //    }
 //
-//    @DisplayName("내 에셋 조회 실패")
-//    @WithUserDetails(value = "user3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+//    @DisplayName("내 에셋 조회 실패") // id 다른 경우
+//    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
 //    @Test
 //    public void find_my_asset_fail_test() throws Exception {
 //        // given
@@ -429,8 +429,9 @@ public class UserControllerTest extends MyRestDoc {
 //        System.out.println("테스트 : " + responseBody);
 //
 //        // then
-//        resultActions.andExpect(jsonPath("$.status").value(200));
-//        resultActions.andExpect(jsonPath("$.msg").value("성공"));
+//        resultActions.andExpect(jsonPath("$.status").value(403));
+//        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
+//        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
 //        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
 //    }
 }

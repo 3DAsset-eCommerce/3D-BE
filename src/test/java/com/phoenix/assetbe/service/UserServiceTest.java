@@ -13,17 +13,20 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 import org.mockito.Mock;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class UserServiceTest extends DummyEntity {
 
@@ -136,7 +139,6 @@ public class UserServiceTest extends DummyEntity {
 
         User 송재근 = newMockUser(1L, "송", "재근");
 
-
         when(userRepository.findById(any())).thenReturn(Optional.of(송재근));
 
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
@@ -147,4 +149,40 @@ public class UserServiceTest extends DummyEntity {
         // then
         verify(userRepository, times(1)).findById(userId);
     }
+
+    /**
+     * 내 에셋
+     */
+    @Test
+    public void testFindMyAssetService() throws Exception {
+        // given
+        Long userId = 1L;
+
+        User 송재근 = newMockUser(1L, "송", "재근");
+
+        when(userRepository.findById(any())).thenReturn(Optional.of(송재근));
+
+        MyUserDetails myUserDetails = new MyUserDetails(송재근);
+
+        UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO asset1 = new UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO(1L, "Asset 1", "fileUrl1", "thumbnailUrl1");
+        UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO asset2 = new UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO(2L, "Asset 2", "fileUrl2", "thumbnailUrl2");
+        UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO asset3 = new UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO(3L, "Asset 3", "fileUrl3", "thumbnailUrl3");
+        Page<UserResponse.MyAssetListOutDTO.FindMyAssetOutDTO> fakePage = new PageImpl<>(List.of(asset1, asset2, asset3));
+
+        Pageable pageable = PageRequest.of(0, 2); // 예시로 페이지 번호 0, 페이지 크기 10으로 설정
+
+        // when
+        when(myAssetQueryRepository.findMyAssetWithUserIdAndPaging(anyLong(), any(Pageable.class))).thenReturn(fakePage);
+
+        UserResponse.MyAssetListOutDTO result = userService.findMyAssetService(pageable, userId, myUserDetails);
+
+        // then
+        assertEquals(fakePage.getContent().size(), result.getMyAssetList().size());
+        assertEquals(fakePage.getNumber(), result.getCurrentPage());
+        assertEquals(fakePage.getTotalPages(), result.getTotalPage());
+        assertEquals(fakePage.getTotalElements(), result.getTotalElement());
+
+        verify(myAssetQueryRepository, times(1)).findMyAssetWithUserIdAndPaging(userId, pageable);
+    }
+
 }

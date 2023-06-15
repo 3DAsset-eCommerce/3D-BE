@@ -132,7 +132,7 @@ public class UserResponse {
         public MyAssetListOutDTO(Page<?> myAssetList) {
             this.myAssetList = myAssetList.getContent();
             this.size = myAssetList.getSize();
-            this.currentPage = myAssetList.getPageable().getPageNumber();
+            this.currentPage = myAssetList.getNumber();
             this.totalPage = myAssetList.getTotalPages();
             this.totalElement = myAssetList.getTotalElements();
         }
