@@ -28,4 +28,8 @@ public class Payment extends MyTimeBaseUtil {
 
     private String paymentTool;
 
+    public void mappingOrder(Order order){
+        this.order = order;
+    }
+
 }
