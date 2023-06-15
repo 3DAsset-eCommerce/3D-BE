@@ -70,6 +70,20 @@ public class AssetService {
         return new AssetResponse.AssetsOutDTO(assetDetailList);
     }
 
+    public AssetResponse.AssetsOutDTO getAssetListBySubCategoryService(String categoryName, String subCategoryName,
+                                                                       Pageable pageable, MyUserDetails myUserDetails) {
+        Page<AssetResponse.AssetsOutDTO.AssetDetail> assetDetailList;
+        if(myUserDetails != null) {
+            Long userId = myUserDetails.getUser().getId();
+            assetDetailList = assetQueryRepository
+                    .findAssetListWithUserIdAndPaginationBySubCategory(userId, categoryName, subCategoryName, pageable);
+        }else {
+            assetDetailList = assetQueryRepository
+                    .findAssetListWithPaginationBySubCategory(categoryName, subCategoryName, pageable);
+        }
+        return new AssetResponse.AssetsOutDTO(assetDetailList);
+    }
+
     public Asset findAssetById(Long assetId){
         Asset assetPS = assetRepository.findById(assetId).orElseThrow(
                 () -> new Exception400("id", "존재하지 않는 에셋입니다. "));

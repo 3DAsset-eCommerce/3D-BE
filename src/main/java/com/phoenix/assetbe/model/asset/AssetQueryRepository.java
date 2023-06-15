@@ -16,7 +16,10 @@ import java.util.List;
 
 import static com.phoenix.assetbe.model.asset.QAsset.asset;
 import static com.phoenix.assetbe.model.asset.QAssetCategory.assetCategory;
+import static com.phoenix.assetbe.model.asset.QAssetSubCategory.assetSubCategory;
+import static com.phoenix.assetbe.model.asset.QAssetTag.assetTag;
 import static com.phoenix.assetbe.model.asset.QCategory.category;
+import static com.phoenix.assetbe.model.asset.QSubCategory.subCategory;
 import static com.phoenix.assetbe.model.cart.QCart.cart;
 import static com.phoenix.assetbe.model.wish.QWishList.wishList;
 
@@ -113,6 +116,62 @@ public class AssetQueryRepository {
                 .innerJoin(assetCategory).on(assetCategory.asset.eq(asset))
                 .innerJoin(category).on(category.eq(assetCategory.category))
                 .where(category.categoryName.eq(categoryName))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+
+    }
+
+    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithUserIdAndPaginationBySubCategory(
+            Long userId, String categoryName, String subCategoryName, Pageable pageable){
+        List <AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
+                        asset.id, asset.assetName, asset.price,
+                        asset.releaseDate, asset.rating, asset.reviewCount,
+                        asset.wishCount, wishList.id, cart.id))
+                .from(asset)
+                .innerJoin(assetTag).on(asset.eq(assetTag.asset))
+                .innerJoin(category).on(category.id.eq(assetTag.category.id).and(category.categoryName.eq(categoryName)))
+                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id).and(subCategory.subCategoryName.eq(subCategoryName)))
+                .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.eq(asset)))
+                .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.eq(asset)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.count())
+                .from(asset)
+                .innerJoin(assetTag).on(asset.eq(assetTag.asset))
+                .innerJoin(category).on(category.id.eq(assetTag.category.id).and(category.categoryName.eq(categoryName)))
+                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id).and(subCategory.subCategoryName.eq(subCategoryName)))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+
+    }
+
+    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithPaginationBySubCategory(
+            String categoryName, String subCategoryName, Pageable pageable){
+        List <AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
+                        asset.id, asset.assetName, asset.price,
+                        asset.releaseDate, asset.rating, asset.reviewCount,
+                        asset.wishCount))
+                .from(asset)
+                .innerJoin(assetTag).on(asset.eq(assetTag.asset))
+                .innerJoin(category).on(category.id.eq(assetTag.category.id).and(category.categoryName.eq(categoryName)))
+                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id).and(subCategory.subCategoryName.eq(subCategoryName)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.count())
+                .from(asset)
+                .innerJoin(assetTag).on(asset.eq(assetTag.asset))
+                .innerJoin(category).on(category.id.eq(assetTag.category.id).and(category.categoryName.eq(categoryName)))
+                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id).and(subCategory.subCategoryName.eq(subCategoryName)))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
