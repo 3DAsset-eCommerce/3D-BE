@@ -187,10 +187,10 @@ public class UserService {
     /**
      * 나의 에셋
      */
-    public UserResponse.MyAssetListOutDTO getMyAssetService(Pageable pageable, Long userId, MyUserDetails myUserDetails) {
+    public UserResponse.MyAssetListOutDTO getMyAssetListService(Pageable pageable, Long userId, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
         Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetOutDTO;
-        getMyAssetOutDTO = myAssetQueryRepository.getMyAssetWithUserIdAndPaging(userId, pageable);
+        getMyAssetOutDTO = myAssetQueryRepository.getMyAssetListWithUserIdAndPaging(userId, pageable);
         return new UserResponse.MyAssetListOutDTO(getMyAssetOutDTO);
     }
 

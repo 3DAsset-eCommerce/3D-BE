@@ -393,7 +393,7 @@ public class UserControllerTest extends MyRestDoc {
     @DisplayName("내 에셋 조회 성공")
     @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    public void get_my_asset_test() throws Exception {
+    public void get_my_asset_list_test() throws Exception {
         // given
         Long id = 1L;
         String page = "1";
@@ -415,7 +415,7 @@ public class UserControllerTest extends MyRestDoc {
     @DisplayName("내 에셋 조회 실패") // id 다른 경우
     @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    public void get_my_asset_fail_test() throws Exception {
+    public void get_my_asset_fail_list_test() throws Exception {
         // given
         Long id = 7L;
         String page = "0";

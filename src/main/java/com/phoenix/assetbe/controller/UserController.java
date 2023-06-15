@@ -98,10 +98,10 @@ public class UserController {
      * 나의 에셋
      */
     @GetMapping("/s/user/{id}/assets")
-    public ResponseEntity<?> getMyAsset(@PathVariable Long id,
-                                        @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.DESC) Pageable pageable,
-                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.getMyAssetService(pageable, id, myUserDetails);
+    public ResponseEntity<?> getMyAssetList(@PathVariable Long id,
+                                            @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.DESC) Pageable pageable,
+                                            @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.getMyAssetListService(pageable, id, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
     }
 
