@@ -33,6 +33,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -47,6 +48,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final MyAssetQueryRepository myAssetQueryRepository;
 
+    /**
+     * 로그인, 회원가입
+     */
     public LoginWithJWTOutDTO loginService(UserRequest.LoginInDTO loginInDTO) {
         User userPS = findUserByEmail(loginInDTO.getEmail());
         if (!userPS.isEmailVerified()) {
@@ -187,14 +191,19 @@ public class UserService {
     /**
      * 나의 에셋
      */
-    public UserResponse.MyAssetListOutDTO getMyAssetListService(Pageable pageable, Long userId, MyUserDetails myUserDetails) {
+    public UserResponse.MyAssetListOutDTO getMyAssetListService(Long userId, Pageable pageable, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
         Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetOutDTO;
         getMyAssetOutDTO = myAssetQueryRepository.getMyAssetListWithUserIdAndPaging(userId, pageable);
         return new UserResponse.MyAssetListOutDTO(getMyAssetOutDTO);
     }
 
-
+    public UserResponse.MyAssetListOutDTO searchMyAssetService(Long userId, List<String> keywordList, Pageable pageable, MyUserDetails myUserDetails) {
+        authCheck(myUserDetails, userId);
+        Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetOutDTO;
+        getMyAssetOutDTO = myAssetQueryRepository.searchMyAssetListWithUserIdAndPagingAndKeyword(userId, keywordList, pageable);
+        return new UserResponse.MyAssetListOutDTO(getMyAssetOutDTO);
+    }
 
 
 
@@ -232,4 +241,7 @@ public class UserService {
             throw new Exception403("권한이 없습니다. ");
         }
     }
+
+
+
 }
