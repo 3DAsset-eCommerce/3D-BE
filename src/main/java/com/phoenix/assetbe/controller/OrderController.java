@@ -20,8 +20,8 @@ public class OrderController {
 
     @PostMapping("/s/order")
     public ResponseEntity<?> orderAssets(@RequestBody OrderRequest.OrderAssetsInDTO orderAssetsInDTO , @AuthenticationPrincipal MyUserDetails myUserDetails){
-        OrderResponse.OrderOutDTO orderOutDTO = orderService.orderAssetsService(orderAssetsInDTO, myUserDetails);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(orderOutDTO);
+        OrderResponse.OrderAssetsOutDTO orderAssetsOutDTO = orderService.orderAssetsService(orderAssetsInDTO, myUserDetails);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(orderAssetsOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 }

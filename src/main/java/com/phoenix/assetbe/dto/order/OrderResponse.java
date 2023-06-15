@@ -9,7 +9,7 @@ public class OrderResponse {
     @Getter
     @Setter
     @AllArgsConstructor
-    public static class OrderOutDTO{
+    public static class OrderAssetsOutDTO{
         private Long orderId;
     }
 }

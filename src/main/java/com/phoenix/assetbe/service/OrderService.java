@@ -28,7 +28,7 @@ public class OrderService {
     private final AssetService assetService;
 
     @Transactional
-    public OrderResponse.OrderOutDTO orderAssetsService(OrderRequest.OrderAssetsInDTO orderAssetsInDTO, MyUserDetails myUserDetails) {
+    public OrderResponse.OrderAssetsOutDTO orderAssetsService(OrderRequest.OrderAssetsInDTO orderAssetsInDTO, MyUserDetails myUserDetails) {
         User user = userService.findUserByEmail(orderAssetsInDTO.getEmail());
 
         Payment payment = Payment.builder()
@@ -55,6 +55,6 @@ public class OrderService {
         orderRepository.save(order);
         orderProductRepository.saveAll(orderProductList);
 
-        return new OrderResponse.OrderOutDTO(order.getId());
+        return new OrderResponse.OrderAssetsOutDTO(order.getId());
     }
 }
