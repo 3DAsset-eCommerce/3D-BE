@@ -105,4 +105,10 @@ public class UserController {
         return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
     }
 
+//    @GetMapping("/s/user/{id}/assets/search")
+//    public ResponseEntity<?> searchMyAsset(@PathVariable Long id,
+//                                           @PageableDefault(size = 14, page = 0, sort = "") {
+//
+//        return ResponseEntity.ok(new ResponseDTO<>());
+//    }
 }
