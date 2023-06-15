@@ -28,6 +28,10 @@ public class QAsset extends EntityPathBase<Asset> {
 
     public final StringPath creator = createString("creator");
 
+    public final NumberPath<Integer> discount = createNumber("discount", Integer.class);
+
+    public final NumberPath<Double> discountPrice = createNumber("discountPrice", Double.class);
+
     public final StringPath extension = createString("extension");
 
     public final StringPath fileUrl = createString("fileUrl");

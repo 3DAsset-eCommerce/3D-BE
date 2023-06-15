@@ -9,8 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 @Getter
 @Table(name = "asset_tb")
 @Entity
@@ -24,6 +22,10 @@ public class Asset extends MyTimeBaseUtil {
     private String assetName;
 
     private Double price;
+
+    private Integer discount;
+
+    private Double discountPrice;
 
     private Double size;
 
@@ -48,6 +50,30 @@ public class Asset extends MyTimeBaseUtil {
     private String fileUrl;
 
     private String thumbnailUrl;
+
+    @Builder
+    public Asset(Long id, String assetName, Double price, Integer discount, Double size, LocalDate releaseDate, String extension, String creator, Double rating, Long wishCount, Long visitCount, Long reviewCount, boolean status, LocalDateTime updatedAt, String fileUrl, String thumbnailUrl) {
+        this.id = id;
+        this.assetName = assetName;
+        this.price = price;
+        this.discount = discount;
+        this.size = size;
+        this.releaseDate = releaseDate;
+        this.extension = extension;
+        this.creator = creator;
+        this.rating = rating;
+        this.wishCount = wishCount;
+        this.visitCount = visitCount;
+        this.reviewCount = reviewCount;
+        this.status = status;
+        this.updatedAt = updatedAt;
+        this.fileUrl = fileUrl;
+        this.thumbnailUrl = thumbnailUrl;
+
+        if(price != null && discount != null){
+            this.discountPrice = price - (price * (discount / 100.0));
+        }
+    }
 
     public void increaseVisitCount(){
         this.visitCount++;

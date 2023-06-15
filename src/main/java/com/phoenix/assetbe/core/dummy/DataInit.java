@@ -17,14 +17,14 @@ public class DataInit extends DummyEntity{
         return args -> {
 
             // User 더미 데이터
-            userRepository.save(newUser("유", "현주"));
+            userRepository.save(newUser("유", "현주")); //1L 유현주@nate.com
             userRepository.save(newUser("송", "재근"));
             userRepository.save(newUser("양", "진호"));
             userRepository.save(newUser("이", "지훈"));
 
 
             // Asset 더미 데이터
-            assetRepository.save(newAsset("뛰는 사람")); // 이름만 존재
+            assetRepository.save(newAsset("뛰는 사람")); // 1L 이름만 존재
             assetRepository.save(newAsset("기어가는 사람"));
 
             assetRepository.save(newAsset1("뛰는 사람")); // 모든 필드 존재
