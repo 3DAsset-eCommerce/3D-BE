@@ -13,7 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -77,6 +80,18 @@ public class AssetController {
         AssetResponse.AssetListOutDTO assetListOutDTO =
                 assetService.getAssetListBySubCategoryService(categoryName, subCategoryName, pageable, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/assets/search")
+    public ResponseEntity<?> getAssetListBySearch(
+            @RequestParam(value = "keyword", required = false) List<String> keyword,
+            @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal MyUserDetails myUserDetails) {
+
+        AssetResponse.AssetsOutDTO assetsOutDTO =
+                assetService.getAssetListBySearchService(keyword, pageable, myUserDetails);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(assetsOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 }

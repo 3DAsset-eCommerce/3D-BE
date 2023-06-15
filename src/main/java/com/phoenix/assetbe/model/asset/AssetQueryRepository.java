@@ -1,9 +1,11 @@
 package com.phoenix.assetbe.model.asset;
 
 import com.phoenix.assetbe.dto.asset.AssetResponse;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -241,6 +244,65 @@ public class AssetQueryRepository {
 
         return new PageImpl<>(result, pageable, totalCount);
 
+    }
+    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithUserIdAndPaginationBySearch(
+            Long userId, List<String> keywords,Pageable pageable){
+
+        List<AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
+                        asset.id, asset.assetName, asset.price,
+                        asset.releaseDate, asset.rating, asset.reviewCount,
+                        asset.wishCount, wishList.id, cart.id))
+                .from(asset)
+                .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.eq(asset)))
+                .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.eq(asset)))
+                .where(totalCondition(keywords))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.count())
+                .from(asset)
+                .where(totalCondition(keywords))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+    }
+
+    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithPaginationBySearch(
+            List<String> keywords,Pageable pageable){
+
+        List<AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
+                        asset.id, asset.assetName, asset.price,
+                        asset.releaseDate, asset.rating, asset.reviewCount,
+                        asset.wishCount))
+                .from(asset)
+                .where(totalCondition(keywords))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.count())
+                .from(asset)
+                .where(totalCondition(keywords))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+    }
+
+    private BooleanBuilder totalCondition(List<String> keywords){
+        BooleanBuilder builder = new BooleanBuilder();
+        for(String keyword : keywords){
+            builder.or(assetNameLike(keyword));
+        }
+        return builder;
+    }
+
+    private BooleanExpression assetNameLike(String keyword){
+        return StringUtils.hasText(keyword) ? asset.assetName.contains(keyword) : null;
     }
 
     public Optional<Asset> findById(Long userId) {
