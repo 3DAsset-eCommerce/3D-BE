@@ -54,6 +54,29 @@ public class MyAssetQueryRepository {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
+    public Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> searchMyAssetListWithUserIdAndPagingAndKeyword(Long userId, List<String> keywordList, Pageable pageable) {
+
+
+        List<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> result = queryFactory
+                .select(Projections.constructor(UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO.class,
+                        asset.id, asset.assetName, asset.fileUrl, asset.thumbnailUrl))
+                .from(myAsset)
+                .innerJoin(myAsset.asset, asset)
+                .where(myAsset.user.id.eq(userId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSort(pageable))
+                .fetch();
+
+        int totalCount = result.size();
+
+        return new PageImpl<>(result, pageable, totalCount);
+    }
+
+
+    /**
+     * 정렬 기준
+     */
     private OrderSpecifier<?> assetSort(Pageable pageable) {
         if (!pageable.getSort().isEmpty()) {
             for (Sort.Order order : pageable.getSort()) {

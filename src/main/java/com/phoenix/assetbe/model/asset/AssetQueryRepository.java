@@ -178,6 +178,9 @@ public class AssetQueryRepository {
 
     }
 
+    /**
+     * 정렬 기준
+     */
     private OrderSpecifier<?> assetSort(Pageable pageable) {
         if (!pageable.getSort().isEmpty()) {
             for (Sort.Order order : pageable.getSort()) {

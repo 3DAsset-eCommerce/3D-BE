@@ -22,6 +22,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -99,16 +100,18 @@ public class UserController {
      */
     @GetMapping("/s/user/{id}/assets")
     public ResponseEntity<?> getMyAssetList(@PathVariable Long id,
-                                            @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.DESC) Pageable pageable,
+                                            @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.ASC) Pageable pageable,
                                             @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.getMyAssetListService(pageable, id, myUserDetails);
+        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.getMyAssetListService(id, pageable, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
     }
 
-//    @GetMapping("/s/user/{id}/assets/search")
-//    public ResponseEntity<?> searchMyAsset(@PathVariable Long id,
-//                                           @PageableDefault(size = 14, page = 0, sort = "") {
-//
-//        return ResponseEntity.ok(new ResponseDTO<>());
-//    }
+    @GetMapping("/s/user/{id}/assets/search")
+    public ResponseEntity<?> searchMyAsset(@PathVariable Long id,
+                                           @RequestParam(value = "keyword") List<String> keywordList,
+                                           @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.ASC) Pageable pageable,
+                                            @AuthenticationPrincipal MyUserDetails myUserDetails) {
+        UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.searchMyAssetService(id, keywordList, pageable, myUserDetails);
+        return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
+    }
 }
