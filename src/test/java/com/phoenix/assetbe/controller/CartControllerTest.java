@@ -59,9 +59,6 @@ public class CartControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private EntityManager entityManager;
-
-    @Autowired
     private CartRepository cartRepository;
 
     @Autowired
@@ -126,6 +123,7 @@ public class CartControllerTest {
         CartRequest.AddCartInDTO addCartInDTO = new CartRequest.AddCartInDTO();
         addCartInDTO.setUserId(userId);
         addCartInDTO.setAssets(assets);
+        System.out.println("테스트 request : " + objectMapper.writeValueAsString(addCartInDTO));
 
         // When
         ResultActions resultActions = mockMvc.perform(post("/s/cart/add")
@@ -133,6 +131,8 @@ public class CartControllerTest {
                 .content(objectMapper.writeValueAsString(addCartInDTO)));
 
         // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200));
@@ -153,6 +153,7 @@ public class CartControllerTest {
         CartRequest.AddCartInDTO addCartInDTO = new CartRequest.AddCartInDTO();
         addCartInDTO.setUserId(userId);
         addCartInDTO.setAssets(assets);
+        System.out.println("테스트 request : " + objectMapper.writeValueAsString(addCartInDTO));
 
         // When
         ResultActions resultActions = mockMvc.perform(post("/s/cart/add")
@@ -160,6 +161,8 @@ public class CartControllerTest {
                 .content(objectMapper.writeValueAsString(addCartInDTO)));
 
         // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
         resultActions.andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.msg").value("forbidden"))
                 .andExpect(jsonPath("$.status").value(403))
@@ -177,6 +180,7 @@ public class CartControllerTest {
         CartRequest.DeleteCartInDTO deleteCartInDTO = new CartRequest.DeleteCartInDTO();
         deleteCartInDTO.setUserId(userId);
         deleteCartInDTO.setCarts(carts);
+        System.out.println("테스트 request : " + objectMapper.writeValueAsString(deleteCartInDTO));
 
         // When
         ResultActions resultActions = mockMvc.perform(post("/s/cart/delete")
@@ -184,6 +188,8 @@ public class CartControllerTest {
                 .content(objectMapper.writeValueAsString(deleteCartInDTO)));
 
         //Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200));
@@ -203,6 +209,7 @@ public class CartControllerTest {
         CartRequest.DeleteCartInDTO deleteCartInDTO = new CartRequest.DeleteCartInDTO();
         deleteCartInDTO.setUserId(userId);
         deleteCartInDTO.setCarts(carts);
+        System.out.println("테스트 request : " + objectMapper.writeValueAsString(deleteCartInDTO));
 
         // When
         ResultActions resultActions = mockMvc.perform(post("/s/cart/delete")
@@ -210,6 +217,8 @@ public class CartControllerTest {
                 .content(objectMapper.writeValueAsString(deleteCartInDTO)));
 
         // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
         resultActions.andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.msg").value("forbidden"))
                 .andExpect(jsonPath("$.status").value(403))
@@ -227,6 +236,8 @@ public class CartControllerTest {
         ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/cartCount", id));
 
         // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
@@ -244,6 +255,8 @@ public class CartControllerTest {
         ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/cartCount", id));
 
         // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
         resultActions.andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.msg").value("forbidden"))
                 .andExpect(jsonPath("$.status").value(403))
@@ -259,10 +272,10 @@ public class CartControllerTest {
 
         // When
         ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/cart", id));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("테스트 : " + responseBody);
 
         // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200));
@@ -271,18 +284,38 @@ public class CartControllerTest {
     @Test
     @DisplayName("장바구니 조회 성공 : 0개 조회")
     @WithUserDetails(value = "김현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-    public void show_cart_3_test() throws Exception {
+    public void show_cart_0_test() throws Exception {
         // Given
         Long id = 2L;
 
         // When
         ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/cart", id));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("테스트 : " + responseBody);
 
         // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200));
+    }
+
+    @Test
+    @DisplayName("장바구니 조회 실패 : 권한 체크 실패")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    public void show_cart_auth_fail_test() throws Exception {
+        // Given
+        Long id = 2L;
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/cart", id));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+        resultActions.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.msg").value("forbidden"))
+                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.data").value("권한이 없습니다. "));
     }
 }
