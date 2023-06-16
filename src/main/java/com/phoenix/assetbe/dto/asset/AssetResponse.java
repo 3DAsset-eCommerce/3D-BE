@@ -55,6 +55,8 @@ public class AssetResponse {
         private Long assetId;
         private String assetName;
         private Double price;
+        private Integer discount;
+        private Double discountPrice;
         private Double fileSize;
         private String fileUrl;
         private String creator;
@@ -69,6 +71,8 @@ public class AssetResponse {
             this.assetId = asset.getId();
             this.assetName = asset.getAssetName();
             this.price = asset.getPrice();
+            this.discount = asset.getDiscount();
+            this.discountPrice = asset.getDiscountPrice();
             this.fileSize = asset.getSize();
             this.fileUrl = asset.getFileUrl();
             this.creator = asset.getCreator();
@@ -88,6 +92,7 @@ public class AssetResponse {
         private int currentPage;
         private int totalPage;
         private long totalElement;
+
 
         public AssetsOutDTO(Page<?> assetList) {
             this.assetList = assetList.getContent();
