@@ -87,6 +87,12 @@ public class MySecurityConfig {
                         .anyRequest().permitAll()
         );
 
+        // 12. 로그아웃 설정
+        http.logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true);
+
         return http.build();
     }
 
