@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,13 +60,13 @@ public class OrderServiceTest extends DummyEntity {
         MyUserDetails myUserDetails = new MyUserDetails(user);
 
         OrderRequest.OrderAssetsInDTO orderAssetsInDTO
-                = new OrderRequest.OrderAssetsInDTO(orderAssetList, "유현주@nate.com", "현주", "유", "010-1234-1234", 20000D, "카드");
+                = new OrderRequest.OrderAssetsInDTO(orderAssetList, "유현주@nate.com", "현주", "유", "010-1234-1234", 2000D, "카드");
 
         // when
         when(userService.findUserByEmail("유현주@nate.com")).thenReturn(user);
 
-        Asset asset1 = newAsset1("에셋1");
-        Asset asset2 = newAsset1("에셋2");
+        Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D);
+        Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D);
         when(assetService.findAllAssetById(orderAssetList)).thenReturn(Arrays.asList(asset1, asset2));
 
         orderService.orderAssetsService(orderAssetsInDTO, myUserDetails);
@@ -93,8 +94,8 @@ public class OrderServiceTest extends DummyEntity {
         // when
         when(userService.findUserByEmail("유현주@nate.com")).thenReturn(user);
 
-        Asset asset1 = newAsset1("에셋1");
-        Asset asset2 = newAsset1("에셋2");
+        Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D);
+        Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D);
         when(assetService.findAllAssetById(orderAssetList)).thenReturn(Arrays.asList(asset1, asset2));
 
         assertThrows(Exception400.class, () -> orderService.orderAssetsService(orderAssetsInDTO, myUserDetails));

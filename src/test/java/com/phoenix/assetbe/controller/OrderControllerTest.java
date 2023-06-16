@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.order.OrderRequest;
 import com.phoenix.assetbe.model.asset.Asset;
@@ -46,22 +47,13 @@ public class OrderControllerTest {
     private DummyEntity dummy = new DummyEntity();
 
     @Autowired
+    private MyTestSetUp myTestSetUp;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private AssetRepository assetRepository;
-
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private PaymentRepository paymentRepository;
 
     @Autowired
     private OrderProductRepository orderProductRepository;
@@ -71,17 +63,9 @@ public class OrderControllerTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        User user1 = dummy.newUser("유", "현주");
-        User user2 = dummy.newUser("김", "현주");
-        userRepository.saveAll(Arrays.asList(user1, user2));
+        List<User> userList = myTestSetUp.saveUser();
+        List<Asset> assetList = myTestSetUp.saveAsset();
 
-        Asset asset1 = dummy.newAsset1("뛰는 사람");
-        Asset asset2 = dummy.newAsset1("걷는 사람");
-        Asset asset3 = dummy.newAsset1("서있는 사람");
-        Asset asset4 = dummy.newAsset1("춤추는 사람");
-        assetRepository.saveAll(Arrays.asList(asset1, asset2, asset3, asset4));
-
-        em.clear();
     }
 
     @Test
@@ -92,7 +76,7 @@ public class OrderControllerTest {
         List<Long> orderAssetList = Arrays.asList(1L, 2L);
 
         OrderRequest.OrderAssetsInDTO orderAssetsInDTO
-                = new OrderRequest.OrderAssetsInDTO(orderAssetList, "유현주@nate.com", "현주", "유", "010-1234-1234", 20000D, "카드");
+                = new OrderRequest.OrderAssetsInDTO(orderAssetList, "유현주@nate.com", "현주", "유", "010-1234-1234", 3000D, "카드");
 
         String request = objectMapper.writeValueAsString(orderAssetsInDTO);
         System.out.println("테스트 request : " + request);
