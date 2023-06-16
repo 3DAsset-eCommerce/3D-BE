@@ -4,6 +4,7 @@ import com.phoenix.assetbe.dto.user.UserResponse;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.phoenix.assetbe.model.asset.QAsset.asset;
@@ -55,14 +57,28 @@ public class MyAssetQueryRepository {
     }
 
     public Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> searchMyAssetListWithUserIdAndPagingAndKeyword(Long userId, List<String> keywordList, Pageable pageable) {
+        List<BooleanExpression> keywordExpressions = new ArrayList<>();
+        for (String keyword: keywordList){
+            String[] keywordWords = keyword.split(" "); // 공백을 기준으로 단어 분할
+            BooleanExpression wordExpression = null; // 일치여부를 확인하기 위해
 
+            for (String word: keywordWords) {
+                if (wordExpression == null) wordExpression = asset.assetName.startsWithIgnoreCase(word);
+                else wordExpression = wordExpression.and(asset.assetName.startsWithIgnoreCase(word));
+            }
+            keywordExpressions.add(wordExpression); // 추가
+        }
+
+        BooleanExpression combineExpression = keywordExpressions.stream()
+                .reduce(BooleanExpression::and) // and 조건으로 결합
+                .orElse(null);
 
         List<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> result = queryFactory
                 .select(Projections.constructor(UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO.class,
                         asset.id, asset.assetName, asset.fileUrl, asset.thumbnailUrl))
                 .from(myAsset)
                 .innerJoin(myAsset.asset, asset)
-                .where(myAsset.user.id.eq(userId))
+                .where(myAsset.user.id.eq(userId).and(combineExpression))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(assetSort(pageable))
