@@ -61,7 +61,6 @@ public class UserControllerTest extends MyRestDoc {
     public void setUp() throws Exception {
         List<User> userList = myTestSetUp.saveUser();
         List<Asset> assetList = myTestSetUp.saveAsset();
-
     }
 
     /**

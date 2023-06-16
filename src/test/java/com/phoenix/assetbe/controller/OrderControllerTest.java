@@ -65,7 +65,6 @@ public class OrderControllerTest {
     public void setUp() throws Exception {
         List<User> userList = myTestSetUp.saveUser();
         List<Asset> assetList = myTestSetUp.saveAsset();
-
     }
 
     @Test

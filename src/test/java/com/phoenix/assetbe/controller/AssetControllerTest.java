@@ -2,15 +2,8 @@ package com.phoenix.assetbe.controller;
 
 import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
-import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.model.asset.*;
-import com.phoenix.assetbe.model.cart.Cart;
-import com.phoenix.assetbe.model.cart.CartRepository;
 import com.phoenix.assetbe.model.user.*;
-import com.phoenix.assetbe.model.wish.WishList;
-import com.phoenix.assetbe.model.wish.WishListRepository;
-import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,11 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -32,13 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,16 +35,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 public class AssetControllerTest {
 
-    private DummyEntity dummy = new DummyEntity();
+    private final DummyEntity dummy = new DummyEntity();
 
     @Autowired
     private MyTestSetUp myTestSetUp;
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private EntityManager em;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -75,7 +56,7 @@ public class AssetControllerTest {
     @Test
     public void get_asset_details_test() throws Exception {
         // given
-        Long id = 1L;
+        Long id = 3L;
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
@@ -90,7 +71,7 @@ public class AssetControllerTest {
     }
 
     @DisplayName("에셋 상세정보 로그인 성공")
-    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_asset_details_with_user_test() throws Exception {
         // given
@@ -109,12 +90,12 @@ public class AssetControllerTest {
     }
 
     @DisplayName("개별에셋 로그인 성공")
-    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_assets_with_user_test() throws Exception {
         // given
-        String page = "0";
-        String size = "4";
+        String page = "8";
+        String size = "3";
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
                 .get("/assets")
@@ -134,7 +115,7 @@ public class AssetControllerTest {
     public void get_assets_test() throws Exception {
         // given
         String page = "0";
-        String size = "4";
+        String size = "3";
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
@@ -151,11 +132,11 @@ public class AssetControllerTest {
     }
 
     @DisplayName("카테고리별 에셋 조회 로그인 성공")
-    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_asset_list_with_user_id_and_pagination_by_category_test() throws Exception {
         // given
-        String categoryName = "A";
+        String categoryName = "luxury";
         String page = "0";
         String size = "4";
 
@@ -177,7 +158,7 @@ public class AssetControllerTest {
     @Test
     public void get_asset_list_with_pagination_by_category_test() throws Exception {
         // given
-        String categoryName = "A";
+        String categoryName = "luxury";
         String page = "0";
         String size = "4";
 
@@ -196,14 +177,14 @@ public class AssetControllerTest {
     }
 
     @DisplayName("하위 카테고리별 에셋 조회 로그인 성공")
-    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void find_asset_list_with_user_id_and_pagination_by_sub_category_test() throws Exception {
         // given
-        String categoryName = "A";
-        String subCategoryName = "AA";
+        String categoryName = "luxury";
+        String subCategoryName = "man";
         String page = "0";
-        String size = "4";
+        String size = "28";
 
         // when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders

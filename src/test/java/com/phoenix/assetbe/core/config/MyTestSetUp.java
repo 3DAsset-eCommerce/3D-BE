@@ -25,7 +25,7 @@ public class MyTestSetUp extends DummyEntity{
     private final AssetRepository assetRepository;
 
     private final CategoryRepository categoryRepository;
-    private final  SubCategoryRepository subCategoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
     private final TagRepository tagRepository;
     private final AssetCategoryRepository assetCategoryRepository;
     private final AssetSubCategoryRepository assetSubCategoryRepository;
@@ -137,25 +137,25 @@ public class MyTestSetUp extends DummyEntity{
     }
 
     public void saveCategoryAndSubCategoryAndTag(List<Asset> assetList) {
-        List<Category> categoryList = new ArrayList<Category>();
+        List<Category> categoryList = new ArrayList<>();
         for (String category : categories) {
             categoryList.add(Category.builder().categoryName(category).build());
         }
         categoryRepository.saveAll(categoryList);
 
-        List<SubCategory> subCategoryList = new ArrayList<SubCategory>();
+        List<SubCategory> subCategoryList = new ArrayList<>();
         for (String subcategory : subCategories) {
             subCategoryList.add(SubCategory.builder().subCategoryName(subcategory).build());
         }
         subCategoryRepository.saveAll(subCategoryList);
 
-        List<Tag> tagList = new ArrayList<Tag>();
+        List<Tag> tagList = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
             tagList.add(Tag.builder().tagName("tag" + i).build());
         }
         tagRepository.saveAll(tagList);
 
-        List<AssetCategory> assetCategoryList = new ArrayList<AssetCategory>(30);
+        List<AssetCategory> assetCategoryList = new ArrayList<>(30);
         for(int i = 0; i < 5; i++){ //1~6 동일한 카테고리
             Category category = categoryList.get(i);
             for(int j = 0; j < 6; j++){
@@ -167,7 +167,7 @@ public class MyTestSetUp extends DummyEntity{
         assetCategoryRepository.saveAll(assetCategoryList);
 
         //AssetSubCategory
-        List<AssetSubCategory> assetSubCategoryList = new ArrayList<AssetSubCategory>();
+        List<AssetSubCategory> assetSubCategoryList = new ArrayList<>();
         for(int i = 0; i < 5; i++){ //1~6 동일한 카테고리, 각각 다른 서브 카테고리
             Category category = categoryList.get(i);
             for(int j = 0; j < 6; j++){
@@ -180,7 +180,7 @@ public class MyTestSetUp extends DummyEntity{
         assetSubCategoryRepository.saveAll(assetSubCategoryList);
 
         //AssetTag
-        List<AssetTag> assetTagList = new ArrayList<AssetTag>();
+        List<AssetTag> assetTagList = new ArrayList<>();
         for(int i = 0; i < 5; i++){
             Category category = categoryList.get(i);
             for(int j = 0; j < 6; j++){

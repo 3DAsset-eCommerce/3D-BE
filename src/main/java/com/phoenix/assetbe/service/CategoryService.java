@@ -63,6 +63,7 @@ public class CategoryService {
 
             AssetResponse.CategoryOutDTO.CategoryDTO categoryDTO = new AssetResponse.CategoryOutDTO.CategoryDTO(
                     category.getCategoryName(), null, tagList, subCategoryDTOList
+
             );
 
             categoryDTOList.add(categoryDTO);

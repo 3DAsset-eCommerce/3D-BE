@@ -1,6 +1,5 @@
 package com.phoenix.assetbe.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.model.asset.*;
@@ -20,9 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-
-import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,16 +33,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 public class CategoryControllerTest {
 
-    private DummyEntity dummy = new DummyEntity();
+    private final DummyEntity dummy = new DummyEntity();
 
     @Autowired
     private MyTestSetUp myTestSetUp;
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private EntityManager em;
 
     @BeforeEach
     public void setUp() throws Exception {
