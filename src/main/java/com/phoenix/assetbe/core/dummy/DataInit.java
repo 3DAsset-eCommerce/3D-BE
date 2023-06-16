@@ -145,7 +145,7 @@ public class DataInit extends DummyEntity{
                 Category category = categoryList.get(i);
                 for(int j = 0; j < 6; j++){
                     Asset asset = assetList.get((i * 6) + j);
-                    SubCategory subCategory = subCategoryList.get(i);
+                    SubCategory subCategory = subCategoryList.get(j);
 
                     assetSubCategoryList.add(AssetSubCategory.builder().asset(asset).category(category).subCategory(subCategory).build());
                 }
@@ -158,7 +158,7 @@ public class DataInit extends DummyEntity{
                 Category category = categoryList.get(i);
                 for(int j = 0; j < 6; j++){
                     Asset asset = assetList.get((i * 6) + j);
-                    SubCategory subCategory = subCategoryList.get(i);
+                    SubCategory subCategory = subCategoryList.get(j);
 
                     for(int k = 0; k < 10; k++){
                         Tag tag = tagList.get(k);
