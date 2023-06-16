@@ -1,9 +1,11 @@
 package com.phoenix.assetbe.core.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.assetbe.core.auth.jwt.MyJwtAuthorizationFilter;
 import com.phoenix.assetbe.core.exception.Exception401;
 import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.core.util.MyFilterResponseUtil;
+import com.phoenix.assetbe.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @Configuration
@@ -91,7 +95,23 @@ public class MySecurityConfig {
         http.logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
-                .invalidateHttpSession(true);
+                .invalidateHttpSession(true)
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    // 로그아웃 성공 시 수행할 작업
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+
+                    // 응답 데이터 생성
+                    ResponseDTO<String> responseDto = new ResponseDTO<>("로그아웃이 성공적으로 처리되었습니다.");
+
+                    // JSON 변환
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String jsonResponse = objectMapper.writeValueAsString(responseDto);
+
+                    response.getWriter().write(jsonResponse);
+                    response.getWriter().flush();
+                });
 
         return http.build();
     }
