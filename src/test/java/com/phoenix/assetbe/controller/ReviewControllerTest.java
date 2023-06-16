@@ -1,48 +1,48 @@
-//package com.phoenix.assetbe.controller;
+package com.phoenix.assetbe.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phoenix.assetbe.core.config.MyTestSetUp;
+import com.phoenix.assetbe.core.dummy.DummyEntity;
+import com.phoenix.assetbe.core.exception.Exception400;
+import com.phoenix.assetbe.dto.asset.ReviewRequest;
+import com.phoenix.assetbe.model.asset.*;
+import com.phoenix.assetbe.model.user.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.test.context.support.TestExecutionEvent;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@DisplayName("리뷰 컨트롤러 TEST")
+@ActiveProfiles("test")
+@Sql("classpath:db/teardown.sql")
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@AutoConfigureMockMvc
+@Transactional
+public class ReviewControllerTest {
 //
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.phoenix.assetbe.core.config.MyTestSetUp;
-//import com.phoenix.assetbe.core.dummy.DummyEntity;
-//import com.phoenix.assetbe.core.exception.Exception400;
-//import com.phoenix.assetbe.dto.asset.ReviewRequest;
-//import com.phoenix.assetbe.model.asset.*;
-//import com.phoenix.assetbe.model.user.*;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.http.MediaType;
-//import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-//import org.springframework.security.test.context.support.TestExecutionEvent;
-//import org.springframework.security.test.context.support.WithUserDetails;
-//import org.springframework.test.context.ActiveProfiles;
-//import org.springframework.test.context.jdbc.Sql;
-//import org.springframework.test.context.junit.jupiter.SpringExtension;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.ResultActions;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import javax.persistence.EntityManager;
-//
-//import java.util.List;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-//
-//@DisplayName("리뷰 컨트롤러 TEST")
-//@ActiveProfiles("test")
-//@Sql("classpath:db/teardown.sql")
-//@ExtendWith(SpringExtension.class)
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-//@AutoConfigureMockMvc
-//@Transactional
-//public class ReviewControllerTest {
-//
-//    private final DummyEntity dummy = new DummyEntity();
+//    private DummyEntity dummy = new DummyEntity();
 //
 //    @Autowired
 //    private MyTestSetUp myTestSetUp;
@@ -256,4 +256,4 @@
 //        System.out.println("Asset Rating: "+assetPS.getRating());
 //
 //    }
-//}
+}

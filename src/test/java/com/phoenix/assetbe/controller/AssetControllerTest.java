@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 public class AssetControllerTest {
 
-    private final DummyEntity dummy = new DummyEntity();
+    private DummyEntity dummy = new DummyEntity();
 
     @Autowired
     private MyTestSetUp myTestSetUp;
