@@ -33,6 +33,7 @@ import javax.persistence.EntityManager;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -93,13 +94,13 @@ public class UserControllerTest extends MyRestDoc {
         User u4 = User.builder().email("user4@gmail.com").firstName("사").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
         userRepository.saveAll(Arrays.asList(u1, u2, u3, u4)); // 5 6 7 8
 
-        Asset a1 = Asset.builder().assetName("a").size(4.0).fileUrl("address-asset1.FBX").extension(".FBX").price(10000D).rating(4.0).releaseDate(LocalDate.parse("2023-05-01")).reviewCount(3L).visitCount(10000L).wishCount(1000L).creator("NationA").build();
+        Asset a1 = Asset.builder().assetName("달리는 사람").size(4.0).fileUrl("address-asset1.FBX").extension(".FBX").price(10000D).rating(4.0).releaseDate(LocalDate.parse("2023-05-01")).reviewCount(3L).visitCount(10000L).wishCount(1000L).creator("NationA").build();
         Asset a2 = Asset.builder().assetName("b").size(4.1).fileUrl("address-asset2.FBX").extension(".FBX").price(10001D).rating(4.1).releaseDate(LocalDate.parse("2023-05-02")).reviewCount(101L).visitCount(10001L).wishCount(1001L).creator("NationA").build();
-        Asset a3 = Asset.builder().assetName("c").size(4.2).fileUrl("address-asset3.FBX").extension(".FBX").price(10002D).rating(4.2).releaseDate(LocalDate.parse("2023-05-03")).reviewCount(102L).visitCount(10002L).wishCount(1002L).creator("NationA").build();
+        Asset a3 = Asset.builder().assetName("수영과 골프하는 인간").size(4.2).fileUrl("address-asset3.FBX").extension(".FBX").price(10002D).rating(4.2).releaseDate(LocalDate.parse("2023-05-03")).reviewCount(102L).visitCount(10002L).wishCount(1002L).creator("NationA").build();
         Asset a4 = Asset.builder().assetName("d").size(4.3).fileUrl("address-asset4.FBX").extension(".FBX").price(10003D).rating(4.3).releaseDate(LocalDate.parse("2023-05-04")).reviewCount(103L).visitCount(10003L).wishCount(1003L).creator("NationA").build();
-        Asset a5 = Asset.builder().assetName("e").size(4.4).fileUrl("address-asset5.FBX").extension(".FBX").price(10004D).rating(4.4).releaseDate(LocalDate.parse("2023-05-05")).reviewCount(104L).visitCount(10004L).wishCount(1004L).creator("NationA").build();
+        Asset a5 = Asset.builder().assetName("골프").size(4.4).fileUrl("address-asset5.FBX").extension(".FBX").price(10004D).rating(4.4).releaseDate(LocalDate.parse("2023-05-05")).reviewCount(104L).visitCount(10004L).wishCount(1004L).creator("NationA").build();
         Asset a6 = Asset.builder().assetName("f").size(4.5).fileUrl("address-asset6.FBX").extension(".FBX").price(10005D).rating(4.5).releaseDate(LocalDate.parse("2023-05-06")).reviewCount(105L).visitCount(10005L).wishCount(1005L).creator("NationA").build();
-        Asset a7 = Asset.builder().assetName("g").size(4.6).fileUrl("address-asset7.FBX").extension(".FBX").price(10006D).rating(4.6).releaseDate(LocalDate.parse("2023-05-07")).reviewCount(106L).visitCount(10006L).wishCount(1006L).creator("NationA").build();
+        Asset a7 = Asset.builder().assetName("축구하는 사람").size(4.6).fileUrl("address-asset7.FBX").extension(".FBX").price(10006D).rating(4.6).releaseDate(LocalDate.parse("2023-05-07")).reviewCount(106L).visitCount(10006L).wishCount(1006L).creator("NationA").build();
         Asset a8 = Asset.builder().assetName("h").size(4.7).fileUrl("address-asset8.FBX").extension(".FBX").price(10007D).rating(4.7).releaseDate(LocalDate.parse("2023-05-08")).reviewCount(107L).visitCount(10007L).wishCount(1007L).creator("NationA").build();
         Asset a9 = Asset.builder().assetName("i").size(4.8).fileUrl("address-asset9.FBX").extension(".FBX").price(10008D).rating(4.8).releaseDate(LocalDate.parse("2023-05-09")).reviewCount(108L).visitCount(10008L).wishCount(1008L).creator("NationA").build();
         assetRepository.saveAll(Arrays.asList(a1, a2, a3, a4, a5, a6, a7, a8, a9));
@@ -385,6 +386,8 @@ public class UserControllerTest extends MyRestDoc {
         ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
                 .param("page", page)
                 .param("size", size));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(200));
@@ -413,49 +416,50 @@ public class UserControllerTest extends MyRestDoc {
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
-//    @DisplayName("내 에셋 검색 성공")
-//    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-//    @Test
-//    public void search_my_asset_test() throws Exception {
-//        // given
-//        Long id = 1L;
-//        String page = "1";
-//        String size = "2";
-//
-//        // when
-//        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets/search", id)
-//
-//                .param("page", page)
-//                .param("size", size));
-//        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-//        System.out.println("테스트 : " + responseBody);
-//
-//        // then
-//        resultActions.andExpect(jsonPath("$.status").value(200));
-//        resultActions.andExpect(jsonPath("$.msg").value("성공"));
-//        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
-//    }
-//
-//    @DisplayName("내 에셋 검색 실패") // id 다른 경우
-//    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-//    @Test
-//    public void search_my_asset_fail_test() throws Exception {
-//        // given
-//        Long id = 2L;
-//        String page = "1";
-//        String size = "2";
-//
-//        // when
-//        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
-//                .param("page", page)
-//                .param("size", size));
-//        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-//        System.out.println("테스트 : " + responseBody);
-//
-//        // then
-//        resultActions.andExpect(jsonPath("$.status").value(403));
-//        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
-//        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
-//        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
-//    }
+    @DisplayName("내 에셋 검색 성공")
+    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void search_my_asset_test() throws Exception {
+        // given
+        Long id = 1L;
+        String page = "0";
+        String size = "14";
+        List<String> keywordList = Arrays.asList("축구", "골프");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets/search", id)
+                .param("keyword", keywordList.toArray(new String[0]))
+                .param("page", page)
+                .param("size", size));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(200));
+        resultActions.andExpect(jsonPath("$.msg").value("성공"));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("내 에셋 검색 실패") // id 다른 경우
+    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void search_my_asset_fail_test() throws Exception {
+        // given
+        Long id = 1L;
+        String page = "1";
+        String size = "2";
+        List<String> keywordList = Arrays.asList("달리는 사람", "기어가는");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets/search", id)
+                .param("keyword", keywordList.toArray(new String[0]))
+                .param("page", page)
+                .param("size", size));
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(403));
+        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
+        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
 }
