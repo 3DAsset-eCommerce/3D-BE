@@ -174,7 +174,7 @@ public class UserServiceTest extends DummyEntity {
         // when
         when(myAssetQueryRepository.getMyAssetListWithUserIdAndPaging(anyLong(), any(Pageable.class))).thenReturn(fakePage);
 
-        UserResponse.MyAssetListOutDTO result = userService.getMyAssetListService(pageable, userId, myUserDetails);
+        UserResponse.MyAssetListOutDTO result = userService.getMyAssetListService(userId, pageable, myUserDetails);
 
         // then
         assertEquals(fakePage.getContent().size(), result.getMyAssetList().size());
