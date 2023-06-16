@@ -203,12 +203,9 @@ public class UserControllerTest extends MyRestDoc {
         checkPasswordInDTO.setId(userId);
         checkPasswordInDTO.setPassword("1234");
 
-        String requestBody = objectMapper.writeValueAsString(checkPasswordInDTO);
-        System.out.println("request 테스트: " + requestBody);
-
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/user/check")
-                .content(requestBody)
+                .content(objectMapper.writeValueAsString(checkPasswordInDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -230,12 +227,9 @@ public class UserControllerTest extends MyRestDoc {
         checkPasswordInDTO.setId(userId);
         checkPasswordInDTO.setPassword("5678");
 
-        String requestBody = objectMapper.writeValueAsString(checkPasswordInDTO);
-        System.out.println("request 테스트: " + requestBody);
-
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/user/check")
-                .content(requestBody)
+                .content(objectMapper.writeValueAsString(checkPasswordInDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -257,12 +251,9 @@ public class UserControllerTest extends MyRestDoc {
         UserRequest.WithdrawInDTO withdrawInDTO = new UserRequest.WithdrawInDTO();
         withdrawInDTO.setMessage("아파서 쉽니다.");
 
-        String requestBody = objectMapper.writeValueAsString(withdrawInDTO);
-        System.out.println("request 테스트: " + requestBody);
-
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/user/{id}/withdraw", id)
-                .content(requestBody)
+                .content(objectMapper.writeValueAsString(withdrawInDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -283,12 +274,9 @@ public class UserControllerTest extends MyRestDoc {
         UserRequest.WithdrawInDTO withdrawInDTO = new UserRequest.WithdrawInDTO();
         withdrawInDTO.setMessage("아파서 쉽니다.");
 
-        String requestBody = objectMapper.writeValueAsString(withdrawInDTO);
-        System.out.println("request 테스트: " + requestBody);
-
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/user/{id}/withdraw", id)
-                .content(requestBody)
+                .content(objectMapper.writeValueAsString(withdrawInDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -309,12 +297,9 @@ public class UserControllerTest extends MyRestDoc {
         UserRequest.UpdateInDTO updateInDTO = new UserRequest.UpdateInDTO();
         updateInDTO.setNewPassword("5678");
 
-        String requestBody = objectMapper.writeValueAsString(updateInDTO);
-        System.out.println("request 테스트: " + requestBody);
-
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/user/{id}", id)
-                .content(requestBody)
+                .content(objectMapper.writeValueAsString(updateInDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 
 
@@ -335,12 +320,9 @@ public class UserControllerTest extends MyRestDoc {
         UserRequest.UpdateInDTO updateInDTO = new UserRequest.UpdateInDTO();
         updateInDTO.setNewPassword("5678");
 
-        String requestBody = objectMapper.writeValueAsString(updateInDTO);
-        System.out.println("request 테스트: " + requestBody);
-
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/user/{id}", id)
-                .content(requestBody)
+                .content(objectMapper.writeValueAsString(updateInDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -403,8 +385,6 @@ public class UserControllerTest extends MyRestDoc {
         ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
                 .param("page", page)
                 .param("size", size));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("테스트 : " + responseBody);
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(200));
@@ -425,8 +405,6 @@ public class UserControllerTest extends MyRestDoc {
         ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
                 .param("page", page)
                 .param("size", size));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("테스트 : " + responseBody);
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(403));
@@ -434,4 +412,50 @@ public class UserControllerTest extends MyRestDoc {
         resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
+
+//    @DisplayName("내 에셋 검색 성공")
+//    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+//    @Test
+//    public void search_my_asset_test() throws Exception {
+//        // given
+//        Long id = 1L;
+//        String page = "1";
+//        String size = "2";
+//
+//        // when
+//        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets/search", id)
+//
+//                .param("page", page)
+//                .param("size", size));
+//        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+//        System.out.println("테스트 : " + responseBody);
+//
+//        // then
+//        resultActions.andExpect(jsonPath("$.status").value(200));
+//        resultActions.andExpect(jsonPath("$.msg").value("성공"));
+//        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+//    }
+//
+//    @DisplayName("내 에셋 검색 실패") // id 다른 경우
+//    @WithUserDetails(value = "user2@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+//    @Test
+//    public void search_my_asset_fail_test() throws Exception {
+//        // given
+//        Long id = 2L;
+//        String page = "1";
+//        String size = "2";
+//
+//        // when
+//        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
+//                .param("page", page)
+//                .param("size", size));
+//        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+//        System.out.println("테스트 : " + responseBody);
+//
+//        // then
+//        resultActions.andExpect(jsonPath("$.status").value(403));
+//        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
+//        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+//        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+//    }
 }
