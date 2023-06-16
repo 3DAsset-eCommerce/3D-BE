@@ -56,7 +56,7 @@ public class DummyEntity {
                 .rating(rating)
                 .wishCount(1111L)
                 .visitCount(2222L)
-                .reviewCount(3333L)
+                .reviewCount(0L)
                 .status(true)
                 .updatedAt(LocalDateTime.now())
                 .fileUrl(assetName + ".fileUrl")
