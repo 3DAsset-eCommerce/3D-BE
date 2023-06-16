@@ -105,28 +105,28 @@ public class UserControllerTest extends MyRestDoc {
         Asset a9 = Asset.builder().assetName("i").size(4.8).fileUrl("address-asset9.FBX").extension(".FBX").price(10008D).rating(4.8).releaseDate(LocalDate.parse("2023-05-09")).reviewCount(108L).visitCount(10008L).wishCount(1008L).creator("NationA").build();
         assetRepository.saveAll(Arrays.asList(a1, a2, a3, a4, a5, a6, a7, a8, a9));
 
-        Category c1 = Category.builder().categoryName("A").categoryCount(500L).build();
-        Category c2 = Category.builder().categoryName("B").categoryCount(600L).build();
-        Category c3 = Category.builder().categoryName("C").categoryCount(700L).build();
+        Category c1 = Category.builder().categoryName("A").build();
+        Category c2 = Category.builder().categoryName("B").build();
+        Category c3 = Category.builder().categoryName("C").build();
         categoryRepository.saveAll(Arrays.asList(c1, c2, c3));
 
-        SubCategory sc1 = SubCategory.builder().subCategoryName("AA").subCategoryCount(100L).build();
-        SubCategory sc2 = SubCategory.builder().subCategoryName("AB").subCategoryCount(110L).build();
-        SubCategory sc3 = SubCategory.builder().subCategoryName("AC").subCategoryCount(120L).build();
-        SubCategory sc4 = SubCategory.builder().subCategoryName("BA").subCategoryCount(130L).build();
-        SubCategory sc5 = SubCategory.builder().subCategoryName("BB").subCategoryCount(140L).build();
-        SubCategory sc6 = SubCategory.builder().subCategoryName("BC").subCategoryCount(150L).build();
-        SubCategory sc7 = SubCategory.builder().subCategoryName("CA").subCategoryCount(160L).build();
-        SubCategory sc8 = SubCategory.builder().subCategoryName("CB").subCategoryCount(170L).build();
-        SubCategory sc9 = SubCategory.builder().subCategoryName("CC").subCategoryCount(180L).build();
+        SubCategory sc1 = SubCategory.builder().subCategoryName("AA").build();
+        SubCategory sc2 = SubCategory.builder().subCategoryName("AB").build();
+        SubCategory sc3 = SubCategory.builder().subCategoryName("AC").build();
+        SubCategory sc4 = SubCategory.builder().subCategoryName("BA").build();
+        SubCategory sc5 = SubCategory.builder().subCategoryName("BB").build();
+        SubCategory sc6 = SubCategory.builder().subCategoryName("BC").build();
+        SubCategory sc7 = SubCategory.builder().subCategoryName("CA").build();
+        SubCategory sc8 = SubCategory.builder().subCategoryName("CB").build();
+        SubCategory sc9 = SubCategory.builder().subCategoryName("CC").build();
         subCategoryRepository.saveAll(Arrays.asList(sc1, sc2, sc3, sc4, sc5, sc6, sc7, sc8, sc9));
 
-        Tag t1 = Tag.builder().tagName("tag1").tagCount(300L).build();
-        Tag t2 = Tag.builder().tagName("tag2").tagCount(300L).build();
-        Tag t3 = Tag.builder().tagName("tag3").tagCount(300L).build();
-        Tag t4 = Tag.builder().tagName("tag4").tagCount(300L).build();
-        Tag t5 = Tag.builder().tagName("tag5").tagCount(300L).build();
-        Tag t6 = Tag.builder().tagName("tag6").tagCount(300L).build();
+        Tag t1 = Tag.builder().tagName("tag1").build();
+        Tag t2 = Tag.builder().tagName("tag2").build();
+        Tag t3 = Tag.builder().tagName("tag3").build();
+        Tag t4 = Tag.builder().tagName("tag4").build();
+        Tag t5 = Tag.builder().tagName("tag5").build();
+        Tag t6 = Tag.builder().tagName("tag6").build();
         tagRepository.saveAll(Arrays.asList(t1, t2, t3, t4, t5, t6));
 
         AssetTag at1 = AssetTag.builder().asset(a1).category(c1).subCategory(sc1).tag(t1).build();
