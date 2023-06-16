@@ -69,6 +69,7 @@ public class AssetResponse {
             this.totalElement = assetList.getTotalElements();
         }
 
+
         @NoArgsConstructor
         @AllArgsConstructor
         @Getter @Setter

@@ -8,6 +8,7 @@ import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.model.wish.WishListQueryRepository;
 
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,7 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Slf4j
@@ -87,18 +89,28 @@ public class AssetService {
         return new AssetResponse.AssetListOutDTO(assetList);
     }
 
-    public AssetResponse.AssetsOutDTO getAssetListBySearchService(List<String> keywords,
+    public AssetResponse.AssetListOutDTO getAssetListBySearchService(List<String> keywordList,
                                                                   Pageable pageable, MyUserDetails myUserDetails) {
-        Page<AssetResponse.AssetsOutDTO.AssetDetail> assetDetailList;
+
+        HashSet<String> keywordSet = new LinkedHashSet<>(keywordList);
+
+        for (String keyword : keywordList) {
+            keywordSet.addAll(Arrays.asList(keyword.split(" ")));
+        }
+
+        List<String> splitKeywordList = new ArrayList<>(keywordSet);
+
+        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetDetailList;
         if(myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
             assetDetailList = assetQueryRepository
-                    .findAssetListWithUserIdAndPaginationBySearch(userId, keywords, pageable);
+                    .findAssetListWithUserIdAndPaginationBySearch(userId, splitKeywordList, pageable);
         }else {
             assetDetailList = assetQueryRepository
-                    .findAssetListWithPaginationBySearch(keywords, pageable);
+                    .findAssetListWithPaginationBySearch(splitKeywordList, pageable);
         }
-        return new AssetResponse.AssetsOutDTO(assetDetailList);
+
+        return new AssetResponse.AssetListOutDTO(assetDetailList);
     }
 
     public Asset findAssetById(Long assetId){

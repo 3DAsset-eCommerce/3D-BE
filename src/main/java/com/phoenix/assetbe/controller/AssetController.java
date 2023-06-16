@@ -89,7 +89,7 @@ public class AssetController {
             @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
-        AssetResponse.AssetsOutDTO assetsOutDTO =
+        AssetResponse.AssetListOutDTO assetsOutDTO =
                 assetService.getAssetListBySearchService(keyword, pageable, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(assetsOutDTO);
         return ResponseEntity.ok().body(responseDTO);

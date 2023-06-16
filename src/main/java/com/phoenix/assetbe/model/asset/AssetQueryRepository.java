@@ -5,13 +5,10 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -245,64 +242,86 @@ public class AssetQueryRepository {
         return new PageImpl<>(result, pageable, totalCount);
 
     }
-    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithUserIdAndPaginationBySearch(
-            Long userId, List<String> keywords,Pageable pageable){
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserIdAndPaginationBySearch(
+            Long userId, List<String> keywordList,Pageable pageable){
 
-        List<AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
-                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
-                        asset.id, asset.assetName, asset.price,
-                        asset.releaseDate, asset.rating, asset.reviewCount,
-                        asset.wishCount, wishList.id, cart.id))
+        List<AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.thumbnailUrl,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount,
+                        wishList.id,
+                        cart.id)
+                )
                 .from(asset)
                 .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.eq(asset)))
                 .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.eq(asset)))
-                .where(totalCondition(keywords))
+                .where(totalCondition(keywordList))
+                .orderBy(assetSortByIncludedKeywordCount(keywordList).desc(), assetSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(assetSort(pageable))
                 .fetch();
 
         Long totalCount = queryFactory.select(asset.count())
                 .from(asset)
-                .where(totalCondition(keywords))
+                .where(totalCondition(keywordList))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithPaginationBySearch(
-            List<String> keywords,Pageable pageable){
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPaginationBySearch(
+            List<String> keywordList, Pageable pageable){
 
-        List<AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
-                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
-                        asset.id, asset.assetName, asset.price,
-                        asset.releaseDate, asset.rating, asset.reviewCount,
-                        asset.wishCount))
+        List<AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.thumbnailUrl,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount)
+                )
                 .from(asset)
-                .where(totalCondition(keywords))
+                .where(totalCondition(keywordList))
+                .orderBy(assetSortByIncludedKeywordCount(keywordList).desc(), assetSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(assetSort(pageable))
                 .fetch();
 
         Long totalCount = queryFactory.select(asset.count())
                 .from(asset)
-                .where(totalCondition(keywords))
+                .where(totalCondition(keywordList))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    private BooleanBuilder totalCondition(List<String> keywords){
+    private BooleanBuilder totalCondition(List<String> splitKeywordList){
         BooleanBuilder builder = new BooleanBuilder();
-        for(String keyword : keywords){
+
+        builder.and(asset.status.eq(true));
+
+        for(String keyword : splitKeywordList){
             builder.or(assetNameLike(keyword));
         }
+
         return builder;
     }
 
     private BooleanExpression assetNameLike(String keyword){
-        return StringUtils.hasText(keyword) ? asset.assetName.contains(keyword) : null;
+        return StringUtils.hasText(keyword) ? asset.assetName.containsIgnoreCase(keyword) : null;
     }
 
     public Optional<Asset> findById(Long userId) {
@@ -346,5 +365,79 @@ public class AssetQueryRepository {
             }
         }
         return null;
+    }
+
+    private NumberExpression<Integer> assetSortByIncludedKeywordCount(List<String> keywordList){
+
+        NumberExpression<Integer> expression;
+
+        switch (keywordList.size()) {
+            case 1:
+                expression = new CaseBuilder()
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))).then(1)
+                        .otherwise(0);
+                break;
+            case 2:
+                expression = new CaseBuilder()
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(1)))).then(3)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))).then(2)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(1))).then(1)
+                        .otherwise(0);
+                break;
+            case 3:
+                expression = new CaseBuilder()
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(1)))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(2)))).then(7)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(1)))).then(6)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(2)))).then(5)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(1))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(2)))).then(4)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))).then(3)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(1))).then(2)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(2))).then(1)
+                        .otherwise(0);
+                break;
+            default:
+                expression = new CaseBuilder()
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(1)))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(2)))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(3)))).then(15)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(1)))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(2)))).then(14)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(1)))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(3)))).then(13)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(2)))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(3)))).then(12)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(1))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(2)))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(3)))).then(11)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(1)))).then(10)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(2)))).then(9)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(3)))).then(8)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(1))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(2)))).then(7)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(1))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(3)))).then(6)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(2))
+                                .and(asset.assetName.containsIgnoreCase(keywordList.get(3)))).then(5)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(0))).then(4)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(1))).then(3)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(2))).then(2)
+                        .when(asset.assetName.containsIgnoreCase(keywordList.get(3))).then(1)
+                        .otherwise(0);
+                break;
+        }
+        return expression;
     }
 }

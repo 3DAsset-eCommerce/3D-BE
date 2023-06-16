@@ -258,20 +258,19 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.totalElement").value(1L));
     }
 
-    @DisplayName("에셋 검색 로그인 성공")
-    @WithUserDetails(value = "user1@gmail.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @DisplayName("에셋 검색 비로그인 성공")
     @Test
-    public void find_asset_list_with_user_id_and_pagination_by_search_test() throws Exception {
+    public void find_asset_list_with_pagination_by_search_test() throws Exception {
         // given
         String page = "0";
         String size = "4";
 
         // when
-        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/assets/search")
-                .param("keyword", "a", "c", "d", "f", "g")
-                .param("page", page)
-                .param("size", size));
+        ResultActions resultActions = mockMvc.perform(
+                get("/assets/search")
+                        .param("keyword", "luxury man", "sexy woman", "sexy man")
+                        .param("page", page)
+                        .param("size", size));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
@@ -281,19 +280,20 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.status").value(200));
     }
 
-    @DisplayName("에셋 검색 비로그인 성공")
+    @DisplayName("에셋 검색 로그인 성공")
+    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    public void find_asset_list_with_pagination_by_search_test() throws Exception {
+    public void find_asset_list_with_user_id_and_pagination_by_search_test() throws Exception {
         // given
         String page = "0";
-        String size = "4";
+        String size = "22";
 
         // when
-        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders
-                .get("/assets/search")
-                .param("keyword", "a", "c", "d", "f", "g")
-                .param("page", page)
-                .param("size", size));
+        ResultActions resultActions = mockMvc.perform(
+                get("/assets/search")
+                        .param("keyword", "luxury", "man", "cute")
+                        .param("page", page)
+                        .param("size", size));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
