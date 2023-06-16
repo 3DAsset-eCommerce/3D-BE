@@ -45,6 +45,8 @@ public class CartResponse {
         private Long assetId;
         private String assetName;
         private Double price;
+        private Integer discount;
+        private Double discountPrice;
         private String extension;
         private Double size;
 
@@ -52,6 +54,8 @@ public class CartResponse {
             this.assetId = asset.getId();
             this.assetName = asset.getAssetName();
             this.price = asset.getPrice();
+            this.discount = asset.getDiscount();
+            this.discountPrice = asset.getDiscountPrice();
             this.extension = asset.getExtension();
             this.size = asset.getSize();
         }

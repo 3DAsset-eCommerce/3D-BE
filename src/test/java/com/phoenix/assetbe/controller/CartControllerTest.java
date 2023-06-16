@@ -1,20 +1,13 @@
 package com.phoenix.assetbe.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.cart.CartRequest;
 import com.phoenix.assetbe.model.asset.Asset;
-import com.phoenix.assetbe.model.asset.AssetRepository;
 import com.phoenix.assetbe.model.cart.Cart;
 import com.phoenix.assetbe.model.cart.CartRepository;
-import com.phoenix.assetbe.model.order.Order;
-import com.phoenix.assetbe.model.order.OrderProduct;
-import com.phoenix.assetbe.model.order.OrderProductRepository;
-import com.phoenix.assetbe.model.order.OrderRepository;
 import com.phoenix.assetbe.model.user.User;
-import com.phoenix.assetbe.model.user.UserRepository;
-import com.phoenix.assetbe.model.wish.WishList;
-import com.phoenix.assetbe.model.wish.WishListRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,6 +46,9 @@ public class CartControllerTest {
     private DummyEntity dummy = new DummyEntity();
 
     @Autowired
+    private MyTestSetUp myTestSetUp;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -61,54 +57,16 @@ public class CartControllerTest {
     @Autowired
     private CartRepository cartRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private AssetRepository assetRepository;
-
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private WishListRepository wishListRepository;
-
-    @Autowired
-    private OrderProductRepository orderProductRepository;
 
     @Autowired
     private EntityManager em;
 
     @BeforeEach
-    public void setUp() throws Exception {
-        User user1 = dummy.newUser("유", "현주");
-        User user2 = dummy.newUser("김", "현주");
-        userRepository.saveAll(Arrays.asList(user1, user2));
+    void setUp() {
+        List<User> userList = myTestSetUp.saveUser();
+        List<Asset> assetList = myTestSetUp.saveAsset();
 
-        Asset asset1 = dummy.newAsset("뛰는 사람");
-        Asset asset2 = dummy.newAsset("걷는 사람");
-        Asset asset3 = dummy.newAsset("서있는 사람");
-        Asset asset4 = dummy.newAsset("춤추는 사람");
-        assetRepository.saveAll(Arrays.asList(asset1, asset2, asset3, asset4));
-
-        Cart cart1 = Cart.builder().user(user1).asset(asset1).build(); //order wish
-        Cart cart2 = Cart.builder().user(user1).asset(asset2).build(); //order
-        Cart cart3 = Cart.builder().user(user1).asset(asset3).build(); //wish
-        Cart cart4 = Cart.builder().user(user1).asset(asset4).build(); // null
-        cartRepository.saveAll(Arrays.asList(cart1, cart2, cart3, cart4));
-
-        Order order = Order.builder().user(user1).build();
-        orderRepository.save(order);
-
-        OrderProduct orderProduct1 = OrderProduct.builder().order(order).asset(asset1).build();
-        OrderProduct orderProduct2 = OrderProduct.builder().order(order).asset(asset2).build();
-        orderProductRepository.saveAll(Arrays.asList(orderProduct1, orderProduct2));
-
-        WishList wishList1 = WishList.builder().user(user1).asset(asset1).build();
-        WishList wishList2 = WishList.builder().user(user1).asset(asset3).build();
-        wishListRepository.saveAll(Arrays.asList(wishList1, wishList2));
-
-        em.clear();
+        myTestSetUp.saveUserScenario(userList, assetList);
     }
 
     @Test
@@ -118,7 +76,7 @@ public class CartControllerTest {
         // Given
         Long userId = 1L;
 
-        List<Long> assets = Arrays.asList(1L, 2L);
+        List<Long> assets = Arrays.asList(29L, 30L);
 
         CartRequest.AddCartInDTO addCartInDTO = new CartRequest.AddCartInDTO();
         addCartInDTO.setUserId(userId);
@@ -137,8 +95,8 @@ public class CartControllerTest {
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200));
 
-        List<Cart> cartItems = cartRepository.findAll();
-        assertEquals(6, cartItems.size());
+        List<Cart> cartItems = cartRepository.findAllByUser(1L);
+        assertEquals(10, cartItems.size());
     }
 
     @Test
@@ -175,7 +133,7 @@ public class CartControllerTest {
     public void delete_cart_test() throws Exception {
         //Given
         Long userId = 1L;
-        List<Long> carts = Arrays.asList(1L);
+        List<Long> carts = Arrays.asList(5L);
 
         CartRequest.DeleteCartInDTO deleteCartInDTO = new CartRequest.DeleteCartInDTO();
         deleteCartInDTO.setUserId(userId);
@@ -194,8 +152,8 @@ public class CartControllerTest {
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200));
 
-        List<Cart> cartItems = cartRepository.findAll();
-        assertEquals(3, cartItems.size());
+        List<Cart> cartItems = cartRepository.findAllByUser(userId);
+        assertEquals(7, cartItems.size());
     }
 
     @Test
@@ -204,7 +162,7 @@ public class CartControllerTest {
     public void delete_cart_auth_fail_test() throws Exception {
         //Given
         Long userId = 2L;
-        List<Long> carts = Arrays.asList(1L);
+        List<Long> carts = Arrays.asList(5L);
 
         CartRequest.DeleteCartInDTO deleteCartInDTO = new CartRequest.DeleteCartInDTO();
         deleteCartInDTO.setUserId(userId);
@@ -241,7 +199,7 @@ public class CartControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.cartCount").value(4));
+                .andExpect(jsonPath("$.data.cartCount").value(8));
     }
 
     @Test
@@ -283,10 +241,10 @@ public class CartControllerTest {
 
     @Test
     @DisplayName("장바구니 조회 성공 : 0개 조회")
-    @WithUserDetails(value = "김현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "이지훈@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void show_cart_0_test() throws Exception {
         // Given
-        Long id = 2L;
+        Long id = 4L;
 
         // When
         ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/cart", id));

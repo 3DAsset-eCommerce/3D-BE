@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,8 +65,8 @@ public class CartServiceTest extends DummyEntity {
         // when
         when(userService.findUserById(1L)).thenReturn(user);
 
-        Asset asset1 = newAsset("에셋1");
-        Asset asset2 = newAsset("에셋2");
+        Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D);
+        Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D);
         when(assetService.findAssetById(1L)).thenReturn(asset1);
         when(assetService.findAssetById(2L)).thenReturn(asset2);
 
@@ -142,8 +143,8 @@ public class CartServiceTest extends DummyEntity {
         User user = newUser("유", "현주");
         MyUserDetails myUserDetails = new MyUserDetails(user);
 
-        Asset asset1 = newAsset("에셋1");
-        Asset asset2 = newAsset("에셋2");
+        Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D);
+        Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D);
         Cart cart1 = Cart.builder().user(user).asset(asset1).build();
         Cart cart2 = Cart.builder().user(user).asset(asset2).build();
         cartRepository.save(cart1);
