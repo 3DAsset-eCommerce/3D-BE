@@ -19,8 +19,6 @@ public class QCategory extends EntityPathBase<Category> {
 
     public static final QCategory category = new QCategory("category");
 
-    public final NumberPath<Long> categoryCount = createNumber("categoryCount", Long.class);
-
     public final StringPath categoryName = createString("categoryName");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);

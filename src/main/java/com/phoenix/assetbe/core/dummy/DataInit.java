@@ -1,38 +1,244 @@
 package com.phoenix.assetbe.core.dummy;
 
-import com.phoenix.assetbe.model.asset.AssetRepository;
-import com.phoenix.assetbe.model.asset.MyAssetRepository;
+import com.phoenix.assetbe.model.asset.*;
+import com.phoenix.assetbe.model.cart.Cart;
+import com.phoenix.assetbe.model.cart.CartRepository;
+import com.phoenix.assetbe.model.order.*;
+import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
+import com.phoenix.assetbe.model.wish.WishList;
+import com.phoenix.assetbe.model.wish.WishListRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class DataInit extends DummyEntity{
 
     @Profile("dev")
     @Bean
-    CommandLineRunner init(UserRepository userRepository, AssetRepository assetRepository, MyAssetRepository myAssetRepository){
+    CommandLineRunner init(UserRepository userRepository,
+                           AssetRepository assetRepository,
+                           CategoryRepository categoryRepository,
+                           SubCategoryRepository subCategoryRepository,
+                           TagRepository tagRepository,
+                           AssetCategoryRepository assetCategoryRepository,
+                           AssetSubCategoryRepository assetSubCategoryRepository,
+                           AssetTagRepository assetTagRepository,
+                           CartRepository cartRepository,
+                           WishListRepository wishListRepository,
+                           OrderRepository orderRepository,
+                           OrderProductRepository orderProductRepository,
+                           PaymentRepository paymentRepository,
+                           MyAssetRepository myAssetRepository){
         return args -> {
 
-            // User 더미 데이터
-            userRepository.save(newUser("유", "현주")); //1L 유현주@nate.com
-            userRepository.save(newUser("송", "재근"));
-            userRepository.save(newUser("양", "진호"));
-            userRepository.save(newUser("이", "지훈"));
+            // User 1L 유현주@nate.com 1234
+            User user1 = newUser("유", "현주");
+            User user2 = newUser("송", "재근");
+            User user3 = newUser("양", "진호");
+            User user4 = newUser("이", "지훈");
+            User user5 = newUser("이", "로운");
+            User user6 = newUser("이", "찬영");
+            User user7 =  newUser("송", "지윤");
 
+            List<User> userList = Arrays.asList(user1, user2, user3, user4, user5, user6, user7);
+            userRepository.saveAll(userList);
 
-            // Asset 더미 데이터
-            assetRepository.save(newAsset("뛰는 사람")); // 1L 이름만 존재
-            assetRepository.save(newAsset("기어가는 사람"));
+            // 에셋 내용 리스팅
+            List<String> firstTitle = Arrays.asList("cute", "pretty", "sexy", "luxury", "dirty");
+            List<String> lastTitle = Arrays.asList("man", "woman", "boy", "girl", "runner", "dancer");
+            List<String> titles = new ArrayList<String>(firstTitle.size() * lastTitle.size());
+            for (String title1: firstTitle){
+                for (String title2: lastTitle){
+                    titles.add(title1 + "  " + title2);
+                }
+            }
 
-            assetRepository.save(newAsset1("뛰는 사람")); // 모든 필드 존재
-            assetRepository.save(newAsset2("기어가는 사람"));
+            List<Double> priceList = Arrays.asList(1000D, 2000D, 3000D, 4000D, 5000D);
+            List<Double> prices = Stream.generate(() -> priceList)
+                    .limit(30)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
 
-            // MyAsset 더미 데이터
-//            myAssetRepository.save(newMyAsset1(newUser("송", "재근"), newAsset("뛰는 사람")));
-//            myAssetRepository.save(newMyAsset2(newUser("송", "재근"), newAsset("기어가는 사람")));
+            List<Double> sizeList = Arrays.asList(1D, 2D, 3D, 4D, 5D);
+            List<Double> sizes = Stream.generate(() -> sizeList)
+                    .limit(30)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+
+            List<LocalDate> dates = new ArrayList<LocalDate>();
+            String dateStr = "2023-06-";
+            for(int i = 1; i <= 9; i++){
+                dates.add(LocalDate.parse(dateStr + "0" + String.valueOf(i)));
+            }
+            for(int i = 10; i <= 30; i++){
+                dates.add(LocalDate.parse(dateStr + String.valueOf(i)));
+            }
+
+            List<Double> ratingList = Arrays.asList(5D, 4D, 3D, 2D, 1D);
+            List<Double> ratings = Stream.generate(() -> ratingList)
+                    .limit(30)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+
+            //Asset
+            List<Asset> assetList = new ArrayList<Asset>();
+            for(int i = 0; i < 30; i++){
+                Asset asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), ratings.get(i));
+                assetList.add(asset);
+            }
+            assetRepository.saveAll(assetList);
+
+            //Category
+            List<String> categories = Arrays.asList("cute", "pretty", "sexy", "luxury", "dirty");
+            List<Category> categoryList = new ArrayList<Category>();
+            for (String category : categories) {
+                categoryList.add(Category.builder().categoryName(category).build());
+            }
+            categoryRepository.saveAll(categoryList);
+
+            //SubCategory
+            List<String> subCategories = Arrays.asList("man", "woman", "boy", "girl", "runner", "dancer");
+            List<SubCategory> subCategoryList = new ArrayList<SubCategory>();
+            for (String subcategory : categories) {
+                subCategoryList.add(SubCategory.builder().subCategoryName(subcategory).build());
+            }
+            subCategoryRepository.saveAll(subCategoryList);
+
+            //TagCategory
+            List<Tag> tagList = new ArrayList<Tag>();
+            for (int i = 1; i <= 10; i++) {
+                tagList.add(Tag.builder().tagName("tag" + i).build());
+            }
+            tagRepository.saveAll(tagList);
+
+            /**
+             * Asset 총 30개
+             * 상위 카테고리 5개 -> 에셋 6개씩
+             * 하위 카테고리 6개 -> 에셋 5개씩
+             * 태그 10개 에셋 -> 30개 공통
+             */
+            //AssetCategory
+            List<AssetCategory> assetCategoryList = new ArrayList<AssetCategory>(30);
+            for(int i = 0; i < 5; i++){ //1~6 동일한 카테고리
+                Category category = categoryList.get(i);
+                for(int j = 0; j < 6; j++){
+                    Asset asset = assetList.get((i * 6) + j);
+
+                    assetCategoryList.add(AssetCategory.builder().asset(asset).category(category).build());
+                }
+            }
+            assetCategoryRepository.saveAll(assetCategoryList);
+
+            //AssetSubCategory
+            List<AssetSubCategory> assetSubCategoryList = new ArrayList<AssetSubCategory>();
+            for(int i = 0; i < 5; i++){ //1~6 동일한 카테고리, 각각 다른 서브 카테고리
+                Category category = categoryList.get(i);
+                for(int j = 0; j < 6; j++){
+                    Asset asset = assetList.get((i * 6) + j);
+                    SubCategory subCategory = subCategoryList.get(i);
+
+                    assetSubCategoryList.add(AssetSubCategory.builder().asset(asset).category(category).subCategory(subCategory).build());
+                }
+            }
+            assetCategoryRepository.saveAll(assetCategoryList);
+
+            //AssetTag
+            List<AssetTag> assetTagList = new ArrayList<AssetTag>();
+            for(int i = 0; i < 5; i++){
+                Category category = categoryList.get(i);
+                for(int j = 0; j < 6; j++){
+                    Asset asset = assetList.get((i * 6) + j);
+                    SubCategory subCategory = subCategoryList.get(i);
+
+                    for(int k = 0; k < 10; k++){
+                        Tag tag = tagList.get(k);
+                        assetTagList.add(AssetTag.builder().asset(asset).category(category).subCategory(subCategory).tag(tag).build());
+                    }
+                }
+            }
+            assetTagRepository.saveAll(assetTagList);
+
+            /**
+             * 1L 사용자 -> 1L~8L 구매, 5L~12L 장바구니, 10L~18L 위시
+             * 2L 사용자 -> 5L~12L 장바구니, 10L~18L 위시
+             * 3L 사용자 -> 1L~8L 구매, 5L~12L 장바구니
+             * 4L 사용자 -> 1L~8L 구매, 10L~18L 위시
+             * 5L 사용자 -> 1L~8L 구매
+             * 6L 사용자 -> 10L~18L 위시
+             * 7L 사용자 -> 5L~12L 장바구니
+             * 8L 사용자
+             */
+
+            //Cart
+            List<Cart> cartList = new ArrayList<>();
+            List<Integer> cartUserIndexList = Arrays.asList(0, 1, 2, 6);
+
+            for(Integer userIndex : cartUserIndexList ){
+                User user = userList.get(userIndex);
+
+                for(int i = 4; i < 12; i++){
+                    Asset asset = assetList.get(i);
+
+                    cartList.add(Cart.builder().user(user).asset(asset).build());
+                }
+            }
+            cartRepository.saveAll(cartList);
+
+            //WishList
+            List<WishList> wishListList = new ArrayList<>();
+            List<Integer> wishUserIndexList = Arrays.asList(0, 1, 3, 5);
+
+            for(Integer userIndex : wishUserIndexList ){
+                User user = userList.get(userIndex);
+
+                for(int i = 9; i < 18; i++){
+                    Asset asset = assetList.get(i);
+
+                    wishListList.add(WishList.builder().user(user).asset(asset).build());
+                }
+            }
+            wishListRepository.saveAll(wishListList);
+
+            //Order
+            List<Order> orderList = new ArrayList<>();
+            List<Payment> paymentList = new ArrayList<>();
+            List<OrderProduct> orderProductList = new ArrayList<>();
+            List<MyAsset> myAssetList = new ArrayList<>();
+            List<Integer> orderUserIndexList = Arrays.asList(0, 1, 3, 5);
+
+            for(Integer userIndex : orderUserIndexList ){
+                User user = userList.get(userIndex);
+
+                for(int i = 0; i < 8; i++){
+                    Asset asset = assetList.get(i);
+
+                    Payment payment = Payment.builder().paymentTool("국민카드").totalPrice(21000D).receiptURL("receipt.url").build();
+                    paymentRepository.save(payment);
+                    Order order = Order.builder().user(user).payment(payment).build();
+                    orderRepository.save(order);
+                    payment.mappingOrder(order);
+                    paymentRepository.save(payment);
+                    OrderProduct orderProduct = OrderProduct.builder().order(order).asset(asset).build();
+                    MyAsset myAsset = MyAsset.builder().asset(asset).user(user).build();
+
+                    paymentList.add(payment);
+                    orderList.add(order);
+                    orderProductList.add(orderProduct);
+                    myAssetList.add(myAsset);
+                }
+            }
+            orderProductRepository.saveAll(orderProductList);
+            myAssetRepository.saveAll(myAssetList);
         };
     }
 }

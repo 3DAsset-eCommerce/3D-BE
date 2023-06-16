@@ -19,5 +19,4 @@ public class SubCategory {
 
     private String subCategoryName;
 
-    private Long subCategoryCount;
 }

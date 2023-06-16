@@ -21,8 +21,6 @@ public class QSubCategory extends EntityPathBase<SubCategory> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Long> subCategoryCount = createNumber("subCategoryCount", Long.class);
-
     public final StringPath subCategoryName = createString("subCategoryName");
 
     public QSubCategory(String variable) {

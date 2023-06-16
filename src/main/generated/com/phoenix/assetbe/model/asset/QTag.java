@@ -21,8 +21,6 @@ public class QTag extends EntityPathBase<Tag> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Long> tagCount = createNumber("tagCount", Long.class);
-
     public final StringPath tagName = createString("tagName");
 
     public QTag(String variable) {

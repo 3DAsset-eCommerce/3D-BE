@@ -19,5 +19,4 @@ public class Tag {
 
     private String tagName;
 
-    private Long tagCount;
 }
