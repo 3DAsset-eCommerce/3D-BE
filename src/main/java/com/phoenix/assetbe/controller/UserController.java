@@ -109,8 +109,8 @@ public class UserController {
     @GetMapping("/s/user/{id}/assets/search")
     public ResponseEntity<?> searchMyAsset(@PathVariable Long id,
                                            @RequestParam(value = "keyword") List<String> keywordList,
-                                           @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.ASC) Pageable pageable,
-                                            @AuthenticationPrincipal MyUserDetails myUserDetails) {
+                                           @PageableDefault(size = 14, page = 0) Pageable pageable,
+                                           @AuthenticationPrincipal MyUserDetails myUserDetails) {
         UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.searchMyAssetService(id, keywordList, pageable, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
     }

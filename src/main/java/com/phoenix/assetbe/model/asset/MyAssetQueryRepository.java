@@ -5,6 +5,10 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.ComparableExpressionBase;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.phoenix.assetbe.model.asset.QAsset.asset;
@@ -64,13 +69,13 @@ public class MyAssetQueryRepository {
 
             for (String word: keywordWords) {
                 if (wordExpression == null) wordExpression = asset.assetName.startsWithIgnoreCase(word);
-                else wordExpression = wordExpression.and(asset.assetName.startsWithIgnoreCase(word));
+                else wordExpression = wordExpression.or(asset.assetName.startsWithIgnoreCase(word));
             }
             keywordExpressions.add(wordExpression); // 추가
         }
 
         BooleanExpression combineExpression = keywordExpressions.stream()
-                .reduce(BooleanExpression::and) // and 조건으로 결합
+                .reduce(BooleanExpression::or) // or 조건으로 결합
                 .orElse(null);
 
         List<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> result = queryFactory
@@ -79,12 +84,17 @@ public class MyAssetQueryRepository {
                 .from(myAsset)
                 .innerJoin(myAsset.asset, asset)
                 .where(myAsset.user.id.eq(userId).and(combineExpression))
+                .orderBy()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(assetSort(pageable))
                 .fetch();
 
-        int totalCount = result.size();
+        Long totalCount = queryFactory
+                .select(myAsset.asset.count())
+                .from(myAsset)
+                .innerJoin(myAsset.asset, asset)
+                .where(myAsset.user.id.eq(userId).and(combineExpression))
+                .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
     }
@@ -97,7 +107,7 @@ public class MyAssetQueryRepository {
         if (!pageable.getSort().isEmpty()) {
             for (Sort.Order order : pageable.getSort()) {
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-                switch (order.getProperty()){
+                switch (order.getProperty()) {
                     case "id":
                         return new OrderSpecifier<>(direction, asset.id);
                     case "assetName":
@@ -105,6 +115,24 @@ public class MyAssetQueryRepository {
                 }
             }
         }
+        return null;
+    }
+
+    private List<OrderSpecifier<?>> assetSortByKeyword(List<String> keywordList) {
+        if (!keywordList.isEmpty()) {
+            List<ComparableExpressionBase<?>> keywordExpressions = new ArrayList<>();
+            for (String keyword : keywordList) {
+                keywordExpressions.add(asset.assetName.equalsIgnoreCase(keyword));
+            }
+
+            List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+            for (ComparableExpressionBase<?> expression : keywordExpressions) {
+                orderSpecifiers.add(new OrderSpecifier<>(Order.ASC, expression));
+            }
+
+            return orderSpecifiers;
+        }
+
         return null;
     }
 }
