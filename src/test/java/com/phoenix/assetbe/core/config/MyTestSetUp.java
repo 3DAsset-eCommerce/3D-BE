@@ -69,10 +69,11 @@ public class MyTestSetUp extends DummyEntity{
     }
 
     List<String> categories = Arrays.asList("cute", "pretty", "sexy", "luxury", "dirty");
+    List<String> subCategories = Arrays.asList("man", "woman", "boy", "girl", "runner", "dancer");
     List<Double> priceList = Arrays.asList(1000D, 2000D, 3000D, 4000D, 5000D);
     List<Double> sizeList = Arrays.asList(1D, 2D, 3D, 4D, 5D);
     List<Double> ratingList = Arrays.asList(5D, 4D, 3D, 2D, 1D);
-    List<String> subCategories = Arrays.asList("man", "woman", "boy", "girl", "runner", "dancer");
+
 
     public List<User> saveUser() {
         List<User> userList = Arrays.asList(
@@ -143,7 +144,7 @@ public class MyTestSetUp extends DummyEntity{
         categoryRepository.saveAll(categoryList);
 
         List<SubCategory> subCategoryList = new ArrayList<SubCategory>();
-        for (String subcategory : categories) {
+        for (String subcategory : subCategories) {
             subCategoryList.add(SubCategory.builder().subCategoryName(subcategory).build());
         }
         subCategoryRepository.saveAll(subCategoryList);
@@ -176,7 +177,7 @@ public class MyTestSetUp extends DummyEntity{
                 assetSubCategoryList.add(AssetSubCategory.builder().asset(asset).category(category).subCategory(subCategory).build());
             }
         }
-        assetCategoryRepository.saveAll(assetCategoryList);
+        assetSubCategoryRepository.saveAll(assetSubCategoryList);
 
         //AssetTag
         List<AssetTag> assetTagList = new ArrayList<AssetTag>();

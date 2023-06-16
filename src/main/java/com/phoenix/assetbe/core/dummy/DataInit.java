@@ -109,7 +109,7 @@ public class DataInit extends DummyEntity{
             //SubCategory
             List<String> subCategories = Arrays.asList("man", "woman", "boy", "girl", "runner", "dancer");
             List<SubCategory> subCategoryList = new ArrayList<SubCategory>();
-            for (String subcategory : categories) {
+            for (String subcategory : subCategories) {
                 subCategoryList.add(SubCategory.builder().subCategoryName(subcategory).build());
             }
             subCategoryRepository.saveAll(subCategoryList);
@@ -150,7 +150,7 @@ public class DataInit extends DummyEntity{
                     assetSubCategoryList.add(AssetSubCategory.builder().asset(asset).category(category).subCategory(subCategory).build());
                 }
             }
-            assetCategoryRepository.saveAll(assetCategoryList);
+            assetSubCategoryRepository.saveAll(assetSubCategoryList);
 
             //AssetTag
             List<AssetTag> assetTagList = new ArrayList<AssetTag>();
