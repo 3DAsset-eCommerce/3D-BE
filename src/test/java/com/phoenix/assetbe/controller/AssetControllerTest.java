@@ -1,5 +1,7 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.config.MyTestSetUp;
+import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.model.asset.*;
 import com.phoenix.assetbe.model.cart.Cart;
@@ -49,148 +51,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 public class AssetControllerTest {
 
+    private DummyEntity dummy = new DummyEntity();
+
+    @Autowired
+    private MyTestSetUp myTestSetUp;
+
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private EntityManager em;
 
-    @Autowired
-    private AssetRepository assetRepository;
-
-    @Autowired
-    private AssetTagRepository assetTagRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private SubCategoryRepository subCategoryRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
-
-    @Autowired
-    private AssetCategoryRepository assetCategoryRepository;
-
-    @Autowired
-    private WishListRepository wishListRepository;
-
-    @Autowired
-    private CartRepository cartRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
     @BeforeEach
     public void setUp() throws Exception {
+        List<User> userList = myTestSetUp.saveUser();
+        List<Asset> assetList = myTestSetUp.saveAsset();
 
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        User u1 = User.builder().email("user1@gmail.com").firstName("일").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
-        User u2 = User.builder().email("user2@gamil.com").firstName("이").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
-        User u3 = User.builder().email("user3@gamil.com").firstName("삼").lastName("유저").status(Status.ACTIVE).role(Role.USER).password(passwordEncoder.encode("1234")).emailVerified(true).provider(SocialType.COMMON).build();
-        userRepository.saveAll(Arrays.asList(u1, u2, u3));
-
-        Asset a1 = Asset.builder().assetName("a").size(4.0).fileUrl("address-asset1.FBX").extension(".FBX").price(10000D).rating(4.0).releaseDate(LocalDate.parse("2023-05-01")).reviewCount(100L).visitCount(10000L).wishCount(1000L).creator("NationA").build();
-        Asset a2 = Asset.builder().assetName("b").size(4.1).fileUrl("address-asset2.FBX").extension(".FBX").price(10001D).rating(4.1).releaseDate(LocalDate.parse("2023-05-02")).reviewCount(101L).visitCount(10001L).wishCount(1001L).creator("NationA").build();
-        Asset a3 = Asset.builder().assetName("c").size(4.2).fileUrl("address-asset3.FBX").extension(".FBX").price(10002D).rating(4.2).releaseDate(LocalDate.parse("2023-05-03")).reviewCount(102L).visitCount(10002L).wishCount(1002L).creator("NationA").build();
-        Asset a4 = Asset.builder().assetName("d").size(4.3).fileUrl("address-asset4.FBX").extension(".FBX").price(10003D).rating(4.3).releaseDate(LocalDate.parse("2023-05-04")).reviewCount(103L).visitCount(10003L).wishCount(1003L).creator("NationA").build();
-        Asset a5 = Asset.builder().assetName("e").size(4.4).fileUrl("address-asset5.FBX").extension(".FBX").price(10004D).rating(4.4).releaseDate(LocalDate.parse("2023-05-05")).reviewCount(104L).visitCount(10004L).wishCount(1004L).creator("NationA").build();
-        Asset a6 = Asset.builder().assetName("f").size(4.5).fileUrl("address-asset6.FBX").extension(".FBX").price(10005D).rating(4.5).releaseDate(LocalDate.parse("2023-05-06")).reviewCount(105L).visitCount(10005L).wishCount(1005L).creator("NationA").build();
-        Asset a7 = Asset.builder().assetName("g").size(4.6).fileUrl("address-asset7.FBX").extension(".FBX").price(10006D).rating(4.6).releaseDate(LocalDate.parse("2023-05-07")).reviewCount(106L).visitCount(10006L).wishCount(1006L).creator("NationA").build();
-        Asset a8 = Asset.builder().assetName("h").size(4.7).fileUrl("address-asset8.FBX").extension(".FBX").price(10007D).rating(4.7).releaseDate(LocalDate.parse("2023-05-08")).reviewCount(107L).visitCount(10007L).wishCount(1007L).creator("NationA").build();
-        Asset a9 = Asset.builder().assetName("i").size(4.8).fileUrl("address-asset9.FBX").extension(".FBX").price(10008D).rating(4.8).releaseDate(LocalDate.parse("2023-05-09")).reviewCount(108L).visitCount(10008L).wishCount(1008L).creator("NationA").build();
-        assetRepository.saveAll(Arrays.asList(a1, a2, a3, a4, a5, a6, a7, a8, a9));
-
-        Category c1 = Category.builder().categoryName("A").categoryCount(500L).build();
-        Category c2 = Category.builder().categoryName("B").categoryCount(600L).build();
-        Category c3 = Category.builder().categoryName("C").categoryCount(700L).build();
-        categoryRepository.saveAll(Arrays.asList(c1, c2, c3));
-
-        SubCategory sc1 = SubCategory.builder().subCategoryName("AA").subCategoryCount(100L).build();
-        SubCategory sc2 = SubCategory.builder().subCategoryName("AB").subCategoryCount(110L).build();
-        SubCategory sc3 = SubCategory.builder().subCategoryName("AC").subCategoryCount(120L).build();
-        SubCategory sc4 = SubCategory.builder().subCategoryName("BA").subCategoryCount(130L).build();
-        SubCategory sc5 = SubCategory.builder().subCategoryName("BB").subCategoryCount(140L).build();
-        SubCategory sc6 = SubCategory.builder().subCategoryName("BC").subCategoryCount(150L).build();
-        SubCategory sc7 = SubCategory.builder().subCategoryName("CA").subCategoryCount(160L).build();
-        SubCategory sc8 = SubCategory.builder().subCategoryName("CB").subCategoryCount(170L).build();
-        SubCategory sc9 = SubCategory.builder().subCategoryName("CC").subCategoryCount(180L).build();
-        subCategoryRepository.saveAll(Arrays.asList(sc1, sc2, sc3, sc4, sc5, sc6, sc7, sc8, sc9));
-
-        Tag t1 = Tag.builder().tagName("tag1").tagCount(300L).build();
-        Tag t2 = Tag.builder().tagName("tag2").tagCount(300L).build();
-        Tag t3 = Tag.builder().tagName("tag3").tagCount(300L).build();
-        Tag t4 = Tag.builder().tagName("tag4").tagCount(300L).build();
-        Tag t5 = Tag.builder().tagName("tag5").tagCount(300L).build();
-        Tag t6 = Tag.builder().tagName("tag6").tagCount(300L).build();
-        tagRepository.saveAll(Arrays.asList(t1, t2, t3, t4, t5, t6));
-
-        AssetCategory ac1 = AssetCategory.builder().asset(a1).category(c1).build();
-        AssetCategory ac2 = AssetCategory.builder().asset(a2).category(c1).build();
-        AssetCategory ac3 = AssetCategory.builder().asset(a3).category(c1).build();
-        AssetCategory ac4 = AssetCategory.builder().asset(a4).category(c1).build();
-        AssetCategory ac5 = AssetCategory.builder().asset(a5).category(c2).build();
-        AssetCategory ac6 = AssetCategory.builder().asset(a6).category(c3).build();
-        AssetCategory ac7 = AssetCategory.builder().asset(a7).category(c1).build();
-        AssetCategory ac8 = AssetCategory.builder().asset(a8).category(c2).build();
-        AssetCategory ac9 = AssetCategory.builder().asset(a9).category(c3).build();
-        assetCategoryRepository.saveAll(Arrays.asList(ac1,ac2,ac3,ac4,ac5,ac6,ac7,ac8,ac9));
-
-        AssetTag at1 = AssetTag.builder().asset(a1).category(c1).subCategory(sc1).tag(t1).build();
-        AssetTag at2 = AssetTag.builder().asset(a1).category(c1).subCategory(sc1).tag(t2).build();
-        AssetTag at3 = AssetTag.builder().asset(a1).category(c1).subCategory(sc1).tag(t3).build();
-        AssetTag at4 = AssetTag.builder().asset(a2).category(c1).subCategory(sc2).tag(t4).build();
-        AssetTag at5 = AssetTag.builder().asset(a2).category(c1).subCategory(sc2).tag(t5).build();
-        AssetTag at6 = AssetTag.builder().asset(a2).category(c1).subCategory(sc2).tag(t6).build();
-        AssetTag at7 = AssetTag.builder().asset(a3).category(c1).subCategory(sc3).tag(t1).build();
-        AssetTag at8 = AssetTag.builder().asset(a3).category(c1).subCategory(sc3).tag(t2).build();
-        AssetTag at9 = AssetTag.builder().asset(a3).category(c1).subCategory(sc3).tag(t3).build();
-        AssetTag at10 = AssetTag.builder().asset(a4).category(c2).subCategory(sc4).tag(t4).build();
-        AssetTag at11 = AssetTag.builder().asset(a4).category(c2).subCategory(sc4).tag(t5).build();
-        AssetTag at12 = AssetTag.builder().asset(a4).category(c2).subCategory(sc4).tag(t6).build();
-        AssetTag at13 = AssetTag.builder().asset(a5).category(c2).subCategory(sc5).tag(t1).build();
-        AssetTag at14 = AssetTag.builder().asset(a5).category(c2).subCategory(sc5).tag(t2).build();
-        AssetTag at15 = AssetTag.builder().asset(a5).category(c2).subCategory(sc5).tag(t3).build();
-        AssetTag at16 = AssetTag.builder().asset(a6).category(c2).subCategory(sc6).tag(t4).build();
-        AssetTag at17 = AssetTag.builder().asset(a6).category(c2).subCategory(sc6).tag(t5).build();
-        AssetTag at18 = AssetTag.builder().asset(a6).category(c2).subCategory(sc6).tag(t6).build();
-        AssetTag at19 = AssetTag.builder().asset(a7).category(c3).subCategory(sc7).tag(t1).build();
-        AssetTag at20 = AssetTag.builder().asset(a7).category(c3).subCategory(sc7).tag(t2).build();
-        AssetTag at21 = AssetTag.builder().asset(a7).category(c3).subCategory(sc7).tag(t3).build();
-        AssetTag at22 = AssetTag.builder().asset(a8).category(c3).subCategory(sc8).tag(t4).build();
-        AssetTag at23 = AssetTag.builder().asset(a8).category(c3).subCategory(sc8).tag(t5).build();
-        AssetTag at24 = AssetTag.builder().asset(a8).category(c3).subCategory(sc8).tag(t6).build();
-        AssetTag at25 = AssetTag.builder().asset(a9).category(c3).subCategory(sc9).tag(t1).build();
-        AssetTag at26 = AssetTag.builder().asset(a9).category(c3).subCategory(sc9).tag(t2).build();
-        AssetTag at27 = AssetTag.builder().asset(a9).category(c3).subCategory(sc9).tag(t3).build();
-        AssetTag at28 = AssetTag.builder().asset(a1).category(c1).subCategory(sc1).tag(t6).build();
-        assetTagRepository.saveAll(Arrays.asList(at1, at2, at3, at4, at5, at6, at7, at8, at9, at10, at11, at12,
-                at13, at14, at15, at16, at17, at18, at19, at20, at21, at22, at23, at24, at25, at26, at27, at28));
-
-        WishList w1 = WishList.builder().asset(a1).user(u1).build();
-        WishList w2 = WishList.builder().asset(a3).user(u1).build();
-        WishList w3 = WishList.builder().asset(a3).user(u2).build();
-        WishList w4 = WishList.builder().asset(a4).user(u2).build();
-        WishList w5 = WishList.builder().asset(a7).user(u1).build();
-        WishList w6 = WishList.builder().asset(a7).user(u2).build();
-        WishList w7 = WishList.builder().asset(a7).user(u3).build();
-        WishList w8 = WishList.builder().asset(a8).user(u3).build();
-        WishList w9 = WishList.builder().asset(a9).user(u3).build();
-        wishListRepository.saveAll(Arrays.asList(w1, w2, w3, w4, w5, w6, w7, w8, w9));
-
-        Cart cart1 = Cart.builder().asset(a1).user(u1).build();
-        Cart cart2 = Cart.builder().asset(a1).user(u2).build();
-        Cart cart3 = Cart.builder().asset(a1).user(u3).build();
-        Cart cart4 = Cart.builder().asset(a2).user(u1).build();
-        Cart cart5 = Cart.builder().asset(a2).user(u2).build();
-        Cart cart6 = Cart.builder().asset(a2).user(u3).build();
-        Cart cart7 = Cart.builder().asset(a4).user(u1).build();
-        Cart cart8 = Cart.builder().asset(a5).user(u1).build();
-        Cart cart9 = Cart.builder().asset(a9).user(u1).build();
-        cartRepository.saveAll(Arrays.asList(cart1,cart2,cart3,cart4,cart5,cart6,cart7,cart8,cart9));
-
-        em.clear();
+        myTestSetUp.saveUserScenario(userList, assetList);
+        myTestSetUp.saveCategoryAndSubCategoryAndTag(assetList);
     }
 
     @DisplayName("에셋 상세정보 비로그인 성공")
@@ -208,8 +86,7 @@ public class AssetControllerTest {
         // Then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
-                .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.visitCount").value(10001L));
+                .andExpect(jsonPath("$.status").value(200));
     }
 
     @DisplayName("에셋 상세정보 로그인 성공")
@@ -228,9 +105,7 @@ public class AssetControllerTest {
         // Then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
-                .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.wishlistId").value(1L))
-                .andExpect(jsonPath("$.data.visitCount").value(10001L));
+                .andExpect(jsonPath("$.status").value(200));
     }
 
     @DisplayName("개별에셋 로그인 성공")

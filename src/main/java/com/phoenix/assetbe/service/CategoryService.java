@@ -55,14 +55,14 @@ public class CategoryService {
                         .collect(Collectors.toList());
 
                 AssetResponse.CategoryOutDTO.SubCategoryDTO subCategoryDTO = new AssetResponse.CategoryOutDTO.SubCategoryDTO(
-                        subCategory.getSubCategoryName(), subCategory.getSubCategoryCount(), subCategoryTagList
+                        subCategory.getSubCategoryName(), null, subCategoryTagList
                 );
 
                 subCategoryDTOList.add(subCategoryDTO);
             }
 
             AssetResponse.CategoryOutDTO.CategoryDTO categoryDTO = new AssetResponse.CategoryOutDTO.CategoryDTO(
-                    category.getCategoryName(),category.getCategoryCount(),tagList,subCategoryDTOList
+                    category.getCategoryName(), null, tagList, subCategoryDTOList
             );
 
             categoryDTOList.add(categoryDTO);
