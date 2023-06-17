@@ -188,4 +188,89 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.data").value("권한이 없습니다. "));
 
     }
+
+    @Test
+    @DisplayName("주문 상세 조회 성공")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    public void get_order_product_List_test() throws Exception {
+        // Given
+        Long userId = 1L;
+        Long orderId = 1L;
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{userId}/orders/{orderId}", userId, orderId));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200));
+
+    }
+
+    @Test
+    @DisplayName("주문 상세 조회 실패 : 권한 체크 실패")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    public void get_order_product_List_auth_fail_test() throws Exception {
+        // Given
+        Long userId = 2L;
+        Long orderId = 1L;
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{userId}/orders/{orderId}", userId, orderId));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+        resultActions.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.msg").value("forbidden"))
+                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+
+    }
+
+    @Test
+    @DisplayName("주문 상세 조회 실패 : 내 주문 내역 아님")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    public void get_order_product_List_fail_others_test() throws Exception {
+        // Given
+        Long userId = 1L;
+        Long orderId = 2L;
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{userId}/orders/{orderId}", userId, orderId));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.msg").value("badRequest"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.data.key").value("orderId"))
+                .andExpect(jsonPath("$.data.value").value("잘못된 요청입니다. "));
+
+    }
+
+    @Test
+    @DisplayName("주문 상세 조회 실패 : 없는 주문 내역")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    public void get_order_product_List_auth_fail_others_test() throws Exception {
+        // Given
+        Long userId = 1L;
+        Long orderId = 10L;
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{userId}/orders/{orderId}", userId, orderId));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.msg").value("badRequest"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.data.key").value("orderId"))
+                .andExpect(jsonPath("$.data.value").value("잘못된 요청입니다. "));
+
+    }
 }
