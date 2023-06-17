@@ -53,17 +53,19 @@ public class CategoryControllerTest {
     @DisplayName("카테고리별 이름,에셋수,태그리스트")
     @Test
     public void get_category_list_test() throws Exception {
-        //given
+        // Given
 
-        // when
+        // When
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.get("/assets/count"));
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 : " + responseBody);
 
-        //then
+        // Then
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
-                .andExpect(jsonPath("$.status").value(200));
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.categoryList[0].categoryName").value("cute"))
+                .andExpect(jsonPath("$.data.categoryList[0].categoryCount").value(6));
     }
 }

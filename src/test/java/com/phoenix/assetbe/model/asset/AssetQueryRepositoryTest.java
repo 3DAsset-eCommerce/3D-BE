@@ -22,7 +22,6 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("에셋 레포지토리 TEST")
 @ActiveProfiles("test")
@@ -50,16 +49,16 @@ public class AssetQueryRepositoryTest {
 
     @Test
     public void find_assets_test() {
-        //Given
+        // Given
         Long userId = 1L;
         int page = 0;
         int size = 3;
         Pageable pageable = PageRequest.of(page, size, Sort.by("releaseDate").descending());
 
+        // When
         Page<AssetResponse.AssetsOutDTO.AssetDetail> result = assetQueryRepository.findAssetsWithUserIdAndPaging(userId, pageable);
 
-        //then
+        // Then
         assertThat(result.getContent().size(), is(3));
-
     }
 }

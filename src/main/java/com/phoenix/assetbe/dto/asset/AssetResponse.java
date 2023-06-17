@@ -1,7 +1,9 @@
 package com.phoenix.assetbe.dto.asset;
 
 import com.phoenix.assetbe.model.asset.Asset;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
 
@@ -10,47 +12,12 @@ import java.util.List;
 
 public class AssetResponse {
 
-    @Getter @Setter
-    public static class CategoryOutDTO {
 
-        private List<AssetResponse.CategoryOutDTO.CategoryDTO> categoryList;
 
-        public CategoryOutDTO(List<AssetResponse.CategoryOutDTO.CategoryDTO> categoryList) {
-            this.categoryList = categoryList;
-        }
-
-        @Getter
-        @Setter
-        public static class CategoryDTO {
-            private String categoryName;
-            private Long categoryCount;
-            private List<String> tagList;
-            private List<SubCategoryDTO> subCategoryList;
-
-            public CategoryDTO(String categoryName, Long categoryCount, List<String> tagList, List<SubCategoryDTO> subCategoryList) {
-                this.categoryName = categoryName;
-                this.categoryCount = categoryCount;
-                this.tagList = tagList;
-                this.subCategoryList = subCategoryList;
-            }
-        }
-
-        @Getter
-        @Setter
-        public static class SubCategoryDTO {
-            private String subCategoryName;
-            private Long subCategoryCount;
-            private List<String> tagList;
-
-            public SubCategoryDTO(String subCategoryName, Long subCategoryCount, List<String> tagList) {
-                this.subCategoryName = subCategoryName;
-                this.subCategoryCount = subCategoryCount;
-                this.tagList = tagList;
-            }
-        }
-    }
-
-    @Getter @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
     public static class AssetDetailsOutDTO {
         private Long assetId;
         private String assetName;
@@ -81,7 +48,10 @@ public class AssetResponse {
         }
     }
 
-    @Getter @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
     public static class AssetsOutDTO {
         private List<?> assetList;
         private int size;
@@ -97,6 +67,7 @@ public class AssetResponse {
             this.totalElement = assetList.getTotalElements();
         }
 
+        @NoArgsConstructor
         @Getter
         @Setter
         public static class AssetDetail {

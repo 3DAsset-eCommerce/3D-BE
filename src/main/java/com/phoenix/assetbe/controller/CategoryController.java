@@ -2,6 +2,7 @@ package com.phoenix.assetbe.controller;
 
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
+import com.phoenix.assetbe.dto.asset.CategoryResponse;
 import com.phoenix.assetbe.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ public class CategoryController {
 
     @GetMapping("/assets/count")
     public ResponseEntity<?> getCategoryList() {
-        AssetResponse.CategoryOutDTO categoryOutDTO = categoryService.getCategoryListService();
+        CategoryResponse.CategoryOutDTO categoryOutDTO = categoryService.getCategoryListService();
         ResponseDTO<?> responseDTO = new ResponseDTO<>(categoryOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
