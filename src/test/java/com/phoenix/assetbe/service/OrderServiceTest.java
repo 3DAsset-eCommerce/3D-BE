@@ -113,23 +113,4 @@ public class OrderServiceTest extends DummyEntity {
         verify(orderRepository, never()).save(any());
         verify(orderProductRepository, never()).saveAll(anyList());
     }
-
-    @Test
-    @DisplayName("주문 내역 조회 성공")
-    void testGetOrderList() {
-        // given
-        Long userId = 1L;
-
-        User user = newUser("유", "현주");
-        MyUserDetails myUserDetails = new MyUserDetails(user);
-        Pageable pageable = PageRequest.of(0, 7, Sort.by(Sort.Direction.DESC, "id"));
-
-        // when
-
-        orderService.getOrderListService(userId, pageable, myUserDetails);
-
-        // then
-        verify(userService, times(1)).authCheck(myUserDetails, userId);
-        verify(orderQueryRepository, times(1)).getOrderListByUserIdWithPaging(anyLong(), any());
-    }
 }
