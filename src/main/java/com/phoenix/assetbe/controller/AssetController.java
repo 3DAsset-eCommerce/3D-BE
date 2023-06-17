@@ -26,11 +26,11 @@ public class AssetController {
     private final AssetService assetService;
 
     @GetMapping("/assets")
-    public ResponseEntity<?> getAssets(@PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
+    public ResponseEntity<?> getAssetList(@PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
                                        @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
-        AssetResponse.AssetsOutDTO assetsOutDTO = assetService.getAssetsService(pageable, myUserDetails);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(assetsOutDTO);
+        AssetResponse.AssetListOutDTO assetListOutDTO = assetService.getAssetListService(pageable, myUserDetails);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -50,9 +50,9 @@ public class AssetController {
             @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
-        AssetResponse.AssetsOutDTO assetsOutDTO =
+        AssetResponse.AssetListOutDTO assetListOutDTO =
                 assetService.getAssetListByCategoryService(categoryName, pageable, myUserDetails);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(assetsOutDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
@@ -63,9 +63,9 @@ public class AssetController {
             @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
-        AssetResponse.AssetsOutDTO assetsOutDTO =
+        AssetResponse.AssetListOutDTO assetListOutDTO =
                 assetService.getAssetListBySubCategoryService(categoryName, subCategoryName, pageable, myUserDetails);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(assetsOutDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 }

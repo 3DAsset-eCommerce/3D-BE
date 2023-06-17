@@ -14,12 +14,13 @@ public class AssetResponse {
 
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter
-    @Setter
+    @Getter @Setter
     public static class AssetDetailsOutDTO {
         private Long assetId;
         private String assetName;
         private Double price;
+        private Integer discount;
+        private Double discountPrice;
         private Double fileSize;
         private String fileUrl;
         private String creator;
@@ -34,6 +35,8 @@ public class AssetResponse {
             this.assetId = asset.getId();
             this.assetName = asset.getAssetName();
             this.price = asset.getPrice();
+            this.discount = asset.getDiscount();
+            this.discountPrice = asset.getDiscountPrice();
             this.fileSize = asset.getSize();
             this.fileUrl = asset.getFileUrl();
             this.creator = asset.getCreator();
@@ -48,16 +51,15 @@ public class AssetResponse {
 
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter
-    @Setter
-    public static class AssetsOutDTO {
+    @Getter @Setter
+    public static class AssetListOutDTO {
         private List<?> assetList;
         private int size;
         private int currentPage;
         private int totalPage;
         private long totalElement;
 
-        public AssetsOutDTO(Page<?> assetList) {
+        public AssetListOutDTO(Page<?> assetList) {
             this.assetList = assetList.getContent();
             this.size = assetList.getSize();
             this.currentPage = assetList.getPageable().getPageNumber();
@@ -66,12 +68,14 @@ public class AssetResponse {
         }
 
         @NoArgsConstructor
-        @Getter
-        @Setter
+        @AllArgsConstructor
+        @Getter @Setter
         public static class AssetDetail {
             private Long assetId;
             private String assetName;
             private Double price;
+            private Integer discount;
+            private Double discountPrice;
             private LocalDate releaseDate;
             private Double rating;
             private Long reviewCount;
@@ -80,29 +84,18 @@ public class AssetResponse {
             private Long cartId;
 
             public AssetDetail(Long assetId, String assetName, Double price,
+                               Integer discount, Double discountPrice,
                                LocalDate releaseDate, Double rating, Long reviewCount,
                                Long wishCount) {
                 this.assetId = assetId;
                 this.assetName = assetName;
                 this.price = price;
+                this.discount = discount;
+                this.discountPrice = discountPrice;
                 this.releaseDate = releaseDate;
                 this.rating = rating;
                 this.reviewCount = reviewCount;
                 this.wishCount = wishCount;
-            }
-
-            public AssetDetail(Long assetId, String assetName, Double price,
-                               LocalDate releaseDate, Double rating, Long reviewCount,
-                               Long wishCount, Long wishlistId, Long cartId) {
-                this.assetId = assetId;
-                this.assetName = assetName;
-                this.price = price;
-                this.releaseDate = releaseDate;
-                this.rating = rating;
-                this.reviewCount = reviewCount;
-                this.wishCount = wishCount;
-                this.wishlistId = wishlistId;
-                this.cartId = cartId;
             }
         }
     }

@@ -30,15 +30,15 @@ public class AssetService {
     private final WishListRepository wishListRepository;
     private final AssetTagQueryRepository assetTagQueryRepository;
 
-    public AssetResponse.AssetsOutDTO getAssetsService(Pageable pageable, MyUserDetails myUserDetails) {
-        Page<AssetResponse.AssetsOutDTO.AssetDetail> assetDetails;
+    public AssetResponse.AssetListOutDTO getAssetListService(Pageable pageable, MyUserDetails myUserDetails) {
+        Page<AssetResponse.AssetListOutDTO.AssetDetail> assetDetailList;
         if(myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
-            assetDetails = assetQueryRepository.findAssetsWithUserIdAndPaging(userId, pageable);
+            assetDetailList = assetQueryRepository.findAssetListWithUserIdAndPaging(userId, pageable);
         }else {
-            assetDetails = assetQueryRepository.findAssetsWithPaging(pageable);
+            assetDetailList = assetQueryRepository.findAssetListWithPaging(pageable);
         }
-        return new AssetResponse.AssetsOutDTO(assetDetails);
+        return new AssetResponse.AssetListOutDTO(assetDetailList);
     }
 
     @Transactional
@@ -59,20 +59,20 @@ public class AssetService {
         return new AssetResponse.AssetDetailsOutDTO(assetPS, wishListId, tagNameList);
     }
 
-    public AssetResponse.AssetsOutDTO getAssetListByCategoryService(String categoryName, Pageable pageable, MyUserDetails myUserDetails) {
-        Page<AssetResponse.AssetsOutDTO.AssetDetail> assetDetailList;
+    public AssetResponse.AssetListOutDTO getAssetListByCategoryService(String categoryName, Pageable pageable, MyUserDetails myUserDetails) {
+        Page<AssetResponse.AssetListOutDTO.AssetDetail> assetDetailList;
         if(myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
             assetDetailList = assetQueryRepository.findAssetListWithUserIdAndPaginationByCategory(userId, categoryName, pageable);
         }else {
             assetDetailList = assetQueryRepository.findAssetListWithPaginationByCategory(categoryName, pageable);
         }
-        return new AssetResponse.AssetsOutDTO(assetDetailList);
+        return new AssetResponse.AssetListOutDTO(assetDetailList);
     }
 
-    public AssetResponse.AssetsOutDTO getAssetListBySubCategoryService(String categoryName, String subCategoryName,
+    public AssetResponse.AssetListOutDTO getAssetListBySubCategoryService(String categoryName, String subCategoryName,
                                                                        Pageable pageable, MyUserDetails myUserDetails) {
-        Page<AssetResponse.AssetsOutDTO.AssetDetail> assetDetailList;
+        Page<AssetResponse.AssetListOutDTO.AssetDetail> assetDetailList;
         if(myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
             assetDetailList = assetQueryRepository
@@ -81,7 +81,7 @@ public class AssetService {
             assetDetailList = assetQueryRepository
                     .findAssetListWithPaginationBySubCategory(categoryName, subCategoryName, pageable);
         }
-        return new AssetResponse.AssetsOutDTO(assetDetailList);
+        return new AssetResponse.AssetListOutDTO(assetDetailList);
     }
 
     public Asset findAssetById(Long assetId){

@@ -16,7 +16,6 @@ import java.util.List;
 
 import static com.phoenix.assetbe.model.asset.QAsset.asset;
 import static com.phoenix.assetbe.model.asset.QAssetCategory.assetCategory;
-import static com.phoenix.assetbe.model.asset.QAssetSubCategory.assetSubCategory;
 import static com.phoenix.assetbe.model.asset.QAssetTag.assetTag;
 import static com.phoenix.assetbe.model.asset.QCategory.category;
 import static com.phoenix.assetbe.model.asset.QSubCategory.subCategory;
@@ -28,11 +27,21 @@ import static com.phoenix.assetbe.model.wish.QWishList.wishList;
 public class AssetQueryRepository {
     private final JPAQueryFactory queryFactory;
 
-    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetsWithUserIdAndPaging(Long userId, Pageable pageable){
-        List <AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
-                .select(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
-                        asset.id, asset.assetName, asset.price, asset.releaseDate, asset.rating, asset.reviewCount,
-                        asset.wishCount, wishList.id, cart.id))
+    public Page<AssetResponse.AssetListOutDTO.AssetDetail> findAssetListWithUserIdAndPaging(Long userId, Pageable pageable){
+        List <AssetResponse.AssetListOutDTO.AssetDetail> result = queryFactory
+                .select(Projections.constructor(AssetResponse.AssetListOutDTO.AssetDetail.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount,
+                        wishList.id,
+                        cart.id)
+                )
                 .from(asset)
                 .leftJoin(wishList).on(wishList.asset.id.eq(asset.id)).on(wishList.user.id.eq(userId))
                 .leftJoin(cart).on(cart.asset.id.eq(asset.id)).on(cart.user.id.eq(userId))
@@ -41,38 +50,55 @@ public class AssetQueryRepository {
                 .orderBy(assetSort(pageable))
                 .fetch();
 
-        Long totalCount = queryFactory.select(asset.count())
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
                 .from(asset)
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetsWithPaging(Pageable pageable){
-        List <AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
-                .select(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
-                        asset.id, asset.assetName, asset.price, asset.releaseDate, asset.rating, asset.reviewCount,
-                        asset.wishCount))
+    public Page<AssetResponse.AssetListOutDTO.AssetDetail> findAssetListWithPaging(Pageable pageable){
+        List <AssetResponse.AssetListOutDTO.AssetDetail> result = queryFactory
+                .select(Projections.constructor(AssetResponse.AssetListOutDTO.AssetDetail.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount)
+                )
                 .from(asset)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(assetSort(pageable))
                 .fetch();
 
-        Long totalCount = queryFactory.select(asset.count())
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
                 .from(asset)
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithUserIdAndPaginationByCategory(
+    public Page<AssetResponse.AssetListOutDTO.AssetDetail> findAssetListWithUserIdAndPaginationByCategory(
             Long userId, String categoryName, Pageable pageable){
-        List <AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
-                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
-                        asset.id, asset.assetName, asset.price,
-                        asset.releaseDate, asset.rating, asset.reviewCount,
-                        asset.wishCount, wishList.id, cart.id))
+        List <AssetResponse.AssetListOutDTO.AssetDetail> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetDetail.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount,
+                        wishList.id,
+                        cart.id)
+                )
                 .from(asset)
                 .innerJoin(assetCategory).on(assetCategory.asset.eq(asset))
                 .innerJoin(category).on(assetCategory.category.eq(category))
@@ -84,7 +110,7 @@ public class AssetQueryRepository {
                 .orderBy(assetSort(pageable))
                 .fetch();
 
-        Long totalCount = queryFactory.select(asset.count())
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
                 .from(asset)
                 .innerJoin(assetCategory).on(assetCategory.asset.eq(asset))
                 .innerJoin(category).on(category.eq(assetCategory.category))
@@ -95,13 +121,20 @@ public class AssetQueryRepository {
 
     }
 
-    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithPaginationByCategory(
+    public Page<AssetResponse.AssetListOutDTO.AssetDetail> findAssetListWithPaginationByCategory(
             String categoryName, Pageable pageable){
-        List <AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
-                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
-                        asset.id, asset.assetName, asset.price,
-                        asset.releaseDate, asset.rating, asset.reviewCount,
-                        asset.wishCount))
+        List <AssetResponse.AssetListOutDTO.AssetDetail> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetDetail.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount)
+                )
                 .from(asset)
                 .innerJoin(assetCategory).on(assetCategory.asset.eq(asset))
                 .innerJoin(category).on(assetCategory.category.eq(category))
@@ -111,7 +144,7 @@ public class AssetQueryRepository {
                 .orderBy(assetSort(pageable))
                 .fetch();
 
-        Long totalCount = queryFactory.select(asset.count())
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
                 .from(asset)
                 .innerJoin(assetCategory).on(assetCategory.asset.eq(asset))
                 .innerJoin(category).on(category.eq(assetCategory.category))
@@ -122,13 +155,22 @@ public class AssetQueryRepository {
 
     }
 
-    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithUserIdAndPaginationBySubCategory(
+    public Page<AssetResponse.AssetListOutDTO.AssetDetail> findAssetListWithUserIdAndPaginationBySubCategory(
             Long userId, String categoryName, String subCategoryName, Pageable pageable){
-        List <AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
-                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
-                        asset.id, asset.assetName, asset.price,
-                        asset.releaseDate, asset.rating, asset.reviewCount,
-                        asset.wishCount, wishList.id, cart.id))
+        List <AssetResponse.AssetListOutDTO.AssetDetail> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetDetail.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount,
+                        wishList.id,
+                        cart.id)
+                )
                 .from(asset)
                 .innerJoin(assetTag).on(asset.eq(assetTag.asset))
                 .innerJoin(category).on(category.id.eq(assetTag.category.id).and(category.categoryName.eq(categoryName)))
@@ -140,7 +182,7 @@ public class AssetQueryRepository {
                 .orderBy(assetSort(pageable))
                 .fetch();
 
-        Long totalCount = queryFactory.select(asset.count())
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
                 .from(asset)
                 .innerJoin(assetTag).on(asset.eq(assetTag.asset))
                 .innerJoin(category).on(category.id.eq(assetTag.category.id).and(category.categoryName.eq(categoryName)))
@@ -151,13 +193,20 @@ public class AssetQueryRepository {
 
     }
 
-    public Page<AssetResponse.AssetsOutDTO.AssetDetail> findAssetListWithPaginationBySubCategory(
+    public Page<AssetResponse.AssetListOutDTO.AssetDetail> findAssetListWithPaginationBySubCategory(
             String categoryName, String subCategoryName, Pageable pageable){
-        List <AssetResponse.AssetsOutDTO.AssetDetail> result = queryFactory
-                .selectDistinct(Projections.constructor(AssetResponse.AssetsOutDTO.AssetDetail.class,
-                        asset.id, asset.assetName, asset.price,
-                        asset.releaseDate, asset.rating, asset.reviewCount,
-                        asset.wishCount))
+        List <AssetResponse.AssetListOutDTO.AssetDetail> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetDetail.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount)
+                )
                 .from(asset)
                 .innerJoin(assetTag).on(asset.eq(assetTag.asset))
                 .innerJoin(category).on(category.id.eq(assetTag.category.id).and(category.categoryName.eq(categoryName)))
@@ -167,7 +216,7 @@ public class AssetQueryRepository {
                 .orderBy(assetSort(pageable))
                 .fetch();
 
-        Long totalCount = queryFactory.select(asset.count())
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
                 .from(asset)
                 .innerJoin(assetTag).on(asset.eq(assetTag.asset))
                 .innerJoin(category).on(category.id.eq(assetTag.category.id).and(category.categoryName.eq(categoryName)))

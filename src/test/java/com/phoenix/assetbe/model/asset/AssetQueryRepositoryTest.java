@@ -56,7 +56,7 @@ public class AssetQueryRepositoryTest {
         Pageable pageable = PageRequest.of(page, size, Sort.by("releaseDate").descending());
 
         // When
-        Page<AssetResponse.AssetsOutDTO.AssetDetail> result = assetQueryRepository.findAssetsWithUserIdAndPaging(userId, pageable);
+        Page<AssetResponse.AssetListOutDTO.AssetDetail> result = assetQueryRepository.findAssetListWithUserIdAndPaging(userId, pageable);
 
         // Then
         assertThat(result.getContent().size(), is(3));
