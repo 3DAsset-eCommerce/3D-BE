@@ -24,6 +24,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
     private final OrderProductRepository orderProductRepository;
+
+    private final OrderQueryRepository orderQueryRepository;
     private final UserService userService;
     private final AssetService assetService;
 
@@ -56,5 +58,13 @@ public class OrderService {
         orderProductRepository.saveAll(orderProductList);
 
         return new OrderResponse.OrderAssetsOutDTO(order.getId());
+    }
+
+    public List<OrderResponse.OrderOutDTO> getOrderListService(Long userId, MyUserDetails myUserDetails) {
+        userService.authCheck(myUserDetails, userId);
+
+        List<OrderResponse.OrderOutDTO> orderList = orderQueryRepository.getOrderListByUserId(userId);
+
+        return orderList;
     }
 }

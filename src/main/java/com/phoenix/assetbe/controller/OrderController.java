@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +24,13 @@ public class OrderController {
     public ResponseEntity<?> orderAssets(@RequestBody OrderRequest.OrderAssetsInDTO orderAssetsInDTO , @AuthenticationPrincipal MyUserDetails myUserDetails){
         OrderResponse.OrderAssetsOutDTO orderAssetsOutDTO = orderService.orderAssetsService(orderAssetsInDTO, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(orderAssetsOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/s/user/{id}/orders")
+    public ResponseEntity<?> getOrderList(@PathVariable("id") Long id, @AuthenticationPrincipal MyUserDetails myUserDetails){
+        List<OrderResponse.OrderOutDTO> orderListOutDTO = orderService.getOrderListService(id, myUserDetails);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(orderListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 }
