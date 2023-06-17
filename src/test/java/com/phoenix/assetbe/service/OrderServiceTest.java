@@ -6,6 +6,7 @@ import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.dto.order.OrderRequest;
 import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.order.OrderProductRepository;
+import com.phoenix.assetbe.model.order.OrderQueryRepository;
 import com.phoenix.assetbe.model.order.OrderRepository;
 import com.phoenix.assetbe.model.order.PaymentRepository;
 import com.phoenix.assetbe.model.user.User;
@@ -39,6 +40,8 @@ public class OrderServiceTest extends DummyEntity {
     private OrderService orderService;
 
     @Mock
+    private OrderQueryRepository orderQueryRepository;
+    @Mock
     private UserService userService;
 
     @Mock
@@ -47,7 +50,7 @@ public class OrderServiceTest extends DummyEntity {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        orderService = new OrderService(orderRepository, paymentRepository, orderProductRepository, userService, assetService);
+        orderService = new OrderService(orderRepository, paymentRepository, orderProductRepository, orderQueryRepository, userService, assetService);
     }
 
     @Test
@@ -106,5 +109,23 @@ public class OrderServiceTest extends DummyEntity {
         verify(paymentRepository, never()).save(any());
         verify(orderRepository, never()).save(any());
         verify(orderProductRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    @DisplayName("주문 내역 조회 성공")
+    void testGetOrderList() {
+        // given
+        Long userId = 1L;
+
+        User user = newUser("유", "현주");
+        MyUserDetails myUserDetails = new MyUserDetails(user);
+
+        // when
+
+        orderService.getOrderListService(userId, myUserDetails);
+
+        // then
+        verify(userService, times(1)).authCheck(myUserDetails, userId);
+        verify(orderQueryRepository, times(1)).getOrderListByUserId(anyLong());
     }
 }
