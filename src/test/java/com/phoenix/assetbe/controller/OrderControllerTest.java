@@ -5,10 +5,8 @@ import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.order.OrderRequest;
 import com.phoenix.assetbe.model.asset.Asset;
-import com.phoenix.assetbe.model.asset.AssetRepository;
 import com.phoenix.assetbe.model.order.*;
 import com.phoenix.assetbe.model.user.User;
-import com.phoenix.assetbe.model.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +30,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,6 +64,10 @@ public class OrderControllerTest {
     public void setUp() throws Exception {
         List<User> userList = myTestSetUp.saveUser();
         List<Asset> assetList = myTestSetUp.saveAsset();
+
+        myTestSetUp.saveUserScenario(userList, assetList);
+
+
     }
 
     @Test
@@ -151,5 +154,44 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.data.key").value("totalPrice"))
                 .andExpect(jsonPath("$.data.value").value("정확한 금액을 입력해주세요"));
+    }
+
+    @Test
+    @DisplayName("주문 내역 조회 성공")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    public void get_order_List_test() throws Exception {
+        // Given
+        Long userId = 1L;
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/orders", userId));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200));
+
+    }
+
+    @Test
+    @DisplayName("주문 내역 조회 실패 : 권한 체크 실패")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    public void get_order_List_auth_fail_test() throws Exception {
+        // Given
+        Long userId = 2L;
+
+        // When
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/orders", userId));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+        resultActions.andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.msg").value("forbidden"))
+                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+
     }
 }
