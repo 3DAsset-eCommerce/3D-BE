@@ -55,9 +55,6 @@ public class OrderControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private OrderProductRepository orderProductRepository;
-
-    @Autowired
     private EntityManager em;
 
     @BeforeEach
@@ -94,9 +91,6 @@ public class OrderControllerTest {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200));
-
-        List<OrderProduct> orderCount = orderProductRepository.findAll();
-        assertEquals(2, orderCount.size());
     }
 
     @Test

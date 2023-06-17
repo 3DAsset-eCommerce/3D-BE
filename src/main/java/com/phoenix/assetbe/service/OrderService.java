@@ -9,6 +9,8 @@ import com.phoenix.assetbe.model.order.*;
 import com.phoenix.assetbe.model.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,11 +62,12 @@ public class OrderService {
         return new OrderResponse.OrderAssetsOutDTO(order.getId());
     }
 
-    public List<OrderResponse.OrderOutDTO> getOrderListService(Long userId, MyUserDetails myUserDetails) {
+    public OrderResponse.OrderOutDTO getOrderListService(Long userId, Pageable pageable, MyUserDetails myUserDetails) {
         userService.authCheck(myUserDetails, userId);
 
-        List<OrderResponse.OrderOutDTO> orderList = orderQueryRepository.getOrderListByUserId(userId);
+        Page<OrderResponse.OrderOutDTO.OrderListOutDTO> orderList;
+        orderList = orderQueryRepository.getOrderListByUserIdWithPaging(userId, pageable);
 
-        return orderList;
+        return new OrderResponse.OrderOutDTO(orderList);
     }
 }

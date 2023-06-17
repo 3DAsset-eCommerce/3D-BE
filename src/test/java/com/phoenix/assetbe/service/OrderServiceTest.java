@@ -15,6 +15,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -119,13 +122,14 @@ public class OrderServiceTest extends DummyEntity {
 
         User user = newUser("유", "현주");
         MyUserDetails myUserDetails = new MyUserDetails(user);
+        Pageable pageable = PageRequest.of(0, 7, Sort.by(Sort.Direction.DESC, "id"));
 
         // when
 
-        orderService.getOrderListService(userId, myUserDetails);
+        orderService.getOrderListService(userId, pageable, myUserDetails);
 
         // then
         verify(userService, times(1)).authCheck(myUserDetails, userId);
-        verify(orderQueryRepository, times(1)).getOrderListByUserId(anyLong());
+        verify(orderQueryRepository, times(1)).getOrderListByUserIdWithPaging(anyLong(), any());
     }
 }
