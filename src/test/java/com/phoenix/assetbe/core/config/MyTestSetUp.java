@@ -239,8 +239,6 @@ public class MyTestSetUp extends DummyEntity{
         wishListRepository.saveAll(wishListList);
 
         //Order
-        List<Order> orderList = new ArrayList<>();
-        List<Payment> paymentList = new ArrayList<>();
         List<OrderProduct> orderProductList = new ArrayList<>();
         List<MyAsset> myAssetList = new ArrayList<>();
         List<Integer> orderUserIndexList = Arrays.asList(0, 1, 3, 5);
@@ -248,20 +246,18 @@ public class MyTestSetUp extends DummyEntity{
         for (Integer userIndex : orderUserIndexList) {
             User user = userList.get(userIndex);
 
+            Payment payment = Payment.builder().paymentTool("국민카드").totalPrice(21000D).receiptURL("receipt.url").build();
+            Order order = Order.builder().user(user).phoneNumber("010-1234-1234").payment(payment).build();
+            paymentRepository.save(payment);
+            orderRepository.save(order);
+            payment.mappingOrder(order);
+            paymentRepository.save(payment);
+
             for (int i = 0; i < 8; i++) {
                 Asset asset = assetList.get(i);
-
-                Payment payment = Payment.builder().paymentTool("국민카드").totalPrice(21000D).receiptURL("receipt.url").build();
-                paymentRepository.save(payment);
-                Order order = Order.builder().user(user).payment(payment).build();
-                orderRepository.save(order);
-                payment.mappingOrder(order);
-                paymentRepository.save(payment);
                 OrderProduct orderProduct = OrderProduct.builder().order(order).asset(asset).build();
                 MyAsset myAsset = MyAsset.builder().asset(asset).user(user).build();
 
-                paymentList.add(payment);
-                orderList.add(order);
                 orderProductList.add(orderProduct);
                 myAssetList.add(myAsset);
             }

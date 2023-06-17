@@ -210,8 +210,6 @@ public class DataInit extends DummyEntity{
             wishListRepository.saveAll(wishListList);
 
             //Order
-            List<Order> orderList = new ArrayList<>();
-            List<Payment> paymentList = new ArrayList<>();
             List<OrderProduct> orderProductList = new ArrayList<>();
             List<MyAsset> myAssetList = new ArrayList<>();
             List<Integer> orderUserIndexList = Arrays.asList(0, 1, 3, 5);
