@@ -37,4 +37,11 @@ public class OrderController {
         ResponseDTO<?> responseDTO = new ResponseDTO<>(orderOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("/s/user/{userId}/orders/{orderId}")
+    public ResponseEntity<?> getOrderDetails(@PathVariable("userId") Long userId, @PathVariable("orderId") Long orderId, @AuthenticationPrincipal MyUserDetails myUserDetails){
+        OrderResponse.OrderProductWithDetailsOutDTO orderDetailsOutDTO = orderService.getOrderDetailsService(userId, orderId, myUserDetails);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(orderDetailsOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

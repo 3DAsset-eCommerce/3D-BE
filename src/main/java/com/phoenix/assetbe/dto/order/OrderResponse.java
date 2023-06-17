@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.dto.order;
 
+import com.phoenix.assetbe.model.asset.Asset;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,6 +49,57 @@ public class OrderResponse {
                 this.orderId = orderId;
                 String orderNumber = orderDate.toLocalDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toString();
                 this.orderNumber = orderNumber + "-" + String.format("%06d", orderId);;
+                this.orderDate = LocalDate.from(orderDate);
+                this.totalPrice = totalPrice;
+                this.assetCount = assetCount;
+            }
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class OrderProductWithDetailsOutDTO{
+        private List<OrderProductOutDTO> orderProductList;
+        OrderProductWithDetailsOutDTO.OrderDetailsDTO orderDetails;
+
+        public OrderProductWithDetailsOutDTO(List<OrderProductOutDTO> orderProductList, OrderProductWithDetailsOutDTO.OrderDetailsDTO orderDetails) {
+            this.orderProductList = orderProductList;
+            this.orderDetails = orderDetails;
+        }
+
+        @Getter
+        @Setter
+        public static class OrderProductOutDTO {
+            private Long assetId;
+            private String assetName;
+            private String extension;
+            private Double price;
+            private Double discountPrice;
+            private Double size;
+
+            public OrderProductOutDTO(Asset asset) {
+                this.assetId = asset.getId();
+                this.assetName = asset.getAssetName();
+                this.extension = asset.getExtension();
+                this.price = asset.getPrice();
+                this.discountPrice = asset.getDiscountPrice();
+                this.size = asset.getSize();
+            }
+        }
+
+        @Getter
+        @Setter
+        public static class OrderDetailsDTO {
+            private Long orderId;
+            private String orderNumber;
+            private LocalDate orderDate;
+            private Double totalPrice;
+            private Long assetCount;
+
+            public OrderDetailsDTO(Long orderId, LocalDateTime orderDate, Double totalPrice, Long assetCount) {
+                this.orderId = orderId;
+                String orderNumber = orderDate.toLocalDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toString();
+                this.orderNumber = orderNumber + "-" + String.format("%06d", orderId);
                 this.orderDate = LocalDate.from(orderDate);
                 this.totalPrice = totalPrice;
                 this.assetCount = assetCount;

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -69,5 +70,16 @@ public class OrderService {
         orderList = orderQueryRepository.getOrderListByUserIdWithPaging(userId, pageable);
 
         return new OrderResponse.OrderOutDTO(orderList);
+    }
+
+    public OrderResponse.OrderProductWithDetailsOutDTO getOrderDetailsService(Long userId, Long orderId, MyUserDetails myUserDetails) {
+        userService.authCheck(myUserDetails, userId);
+
+        Order order = orderRepository.findByUserIdAndOrderId(userId, orderId).orElseThrow(
+                () -> new Exception400("orderId", "잘못된 요청입니다. "));
+
+        OrderResponse.OrderProductWithDetailsOutDTO orderDetailsOutDTO = orderQueryRepository.getOrderDetailsByUserIdAndOrderId(userId, orderId);
+
+        return orderDetailsOutDTO;
     }
 }
