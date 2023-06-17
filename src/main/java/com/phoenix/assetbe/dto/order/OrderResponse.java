@@ -48,7 +48,7 @@ public class OrderResponse {
             public OrderListOutDTO(Long orderId, LocalDateTime orderDate, Double totalPrice, Long assetCount) {
                 this.orderId = orderId;
                 String orderNumber = orderDate.toLocalDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toString();
-                this.orderNumber = orderNumber + "-" + String.format("%06d", orderId);;
+                this.orderNumber = orderNumber + "-" + String.format("%06d", orderId);
                 this.orderDate = LocalDate.from(orderDate);
                 this.totalPrice = totalPrice;
                 this.assetCount = assetCount;
@@ -60,7 +60,7 @@ public class OrderResponse {
     @Setter
     public static class OrderProductWithDetailsOutDTO{
         private List<OrderProductOutDTO> orderProductList;
-        OrderProductWithDetailsOutDTO.OrderDetailsDTO orderDetails;
+        private OrderProductWithDetailsOutDTO.OrderDetailsDTO orderDetails;
 
         public OrderProductWithDetailsOutDTO(List<OrderProductOutDTO> orderProductList, OrderProductWithDetailsOutDTO.OrderDetailsDTO orderDetails) {
             this.orderProductList = orderProductList;
