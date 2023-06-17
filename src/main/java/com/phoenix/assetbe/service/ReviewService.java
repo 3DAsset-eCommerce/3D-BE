@@ -148,9 +148,12 @@ public class ReviewService {
 
             Asset assetPS = assetService.findAssetById(assetId);
 
-            Double reviewRatingSum = reviewQueryRepository.findSumRatingByAssetId(assetId);
-            assetPS.calculateRatingOnDeleteReview(assetPS, reviewRatingSum);
-
+            Optional<Double> reviewRatingSum = Optional.ofNullable(reviewQueryRepository.findSumRatingByAssetId(assetId));
+            if(reviewRatingSum.isPresent()) {
+                assetPS.calculateRatingOnDeleteReview(assetPS, reviewRatingSum.get());
+            }else{
+                assetPS.calculateRatingOnDeleteReview(assetPS);
+            }
             try {
                 assetRepository.save(assetPS);
             } catch (Exception e) {

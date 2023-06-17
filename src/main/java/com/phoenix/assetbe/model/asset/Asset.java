@@ -95,4 +95,9 @@ public class Asset extends MyTimeBaseUtil {
         this.rating = (double) Math.round(reviewRatingSum * 10 / (asset.getReviewCount() - 1)) / 10;
         this.reviewCount = asset.getReviewCount() - 1;
     }
+
+    public void calculateRatingOnDeleteReview(Asset asset){
+        this.rating = 0D;
+        this.reviewCount = asset.getReviewCount() - 1;
+    }
 }

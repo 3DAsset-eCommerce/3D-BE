@@ -12,8 +12,6 @@ import java.util.List;
 
 public class AssetResponse {
 
-
-
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter

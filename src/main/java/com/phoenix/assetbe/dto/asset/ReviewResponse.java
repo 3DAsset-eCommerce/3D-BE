@@ -1,29 +1,25 @@
 package com.phoenix.assetbe.dto.asset;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class ReviewResponse {
 
-    @Getter
-    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter @Setter
     public static class ReviewsOutDTO {
         private boolean hasAsset;
         private boolean hasReview;
         private boolean hasWishlist;
         private List<Reviews> reviewList;
 
-        public ReviewsOutDTO(boolean hasAsset, boolean hasReview, boolean hasWishlist, List<Reviews> reviewList) {
-            this.hasAsset = hasAsset;
-            this.hasReview = hasReview;
-            this.hasWishlist = hasWishlist;
-            this.reviewList = reviewList;
-        }
-
+        @AllArgsConstructor
+        @NoArgsConstructor
         @Getter @Setter
         public static class Reviews {
             private Long reviewId;
@@ -32,19 +28,11 @@ public class ReviewResponse {
             private Long userId;
             private String firstName;
             private String lastName;
-
-            public Reviews(Long reviewId, Double rating, String content,
-                           Long userId, String firstName, String lastName) {
-                this.reviewId = reviewId;
-                this.rating = rating;
-                this.content = content;
-                this.userId = userId;
-                this.firstName = firstName;
-                this.lastName = lastName;
-            }
         }
     }
 
+    @AllArgsConstructor
+    @NoArgsConstructor
     @Getter @Setter
     public static class ReviewOutDTO {
         private Long userId;
@@ -53,14 +41,5 @@ public class ReviewResponse {
         private String content;
         private Double reviewRating;
         private Double assetRating;
-
-        public ReviewOutDTO(Long userId, Long assetId, Long reviewId, String content, Double reviewRating, Double assetRating) {
-            this.userId = userId;
-            this.assetId = assetId;
-            this.reviewId = reviewId;
-            this.content = content;
-            this.reviewRating = reviewRating;
-            this.assetRating = assetRating;
-        }
     }
 }
