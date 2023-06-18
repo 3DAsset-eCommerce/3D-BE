@@ -61,6 +61,8 @@ public class UserControllerTest extends MyRestDoc {
     public void setUp() throws Exception {
         List<User> userList = myTestSetUp.saveUser();
         List<Asset> assetList = myTestSetUp.saveAsset();
+
+        myTestSetUp.saveUserScenario(userList, assetList);
     }
 
     /**
@@ -90,7 +92,7 @@ public class UserControllerTest extends MyRestDoc {
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
-    @DisplayName("비밀번호 확인 실패 : 비밀번호 불일치") // 비밀번호 일치 X
+    @DisplayName("비밀번호 확인 실패 : 비밀번호 불일치")
     @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void check_password_fail_test() throws Exception {
@@ -138,7 +140,7 @@ public class UserControllerTest extends MyRestDoc {
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
-    @DisplayName("회원탈퇴 실패 : 권한 체크 실패") // id 다른 경우
+    @DisplayName("회원탈퇴 실패 : 권한 체크 실패")
     @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void withdraw_fail_test() throws Exception {
@@ -184,7 +186,7 @@ public class UserControllerTest extends MyRestDoc {
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
-    @DisplayName("회원정보 수정 실패 : 권한 체크 실패") // id 다른 경우
+    @DisplayName("회원정보 수정 실패 : 권한 체크 실패")
     @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void update_fail_test() throws Exception {
@@ -226,7 +228,7 @@ public class UserControllerTest extends MyRestDoc {
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
-    @DisplayName("내 회원정보 조회 실패 : 권한 체크 실패") // id 다른 경우
+    @DisplayName("내 회원정보 조회 실패 : 권한 체크 실패")
     @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_my_info_fail_test() throws Exception {
@@ -247,20 +249,18 @@ public class UserControllerTest extends MyRestDoc {
      * 내 에셋
      */
     @DisplayName("내 에셋 조회 성공")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_my_asset_list_test() throws Exception {
         // given
-        Long id = 2L;
+        Long id = 1L;
         String page = "1";
-        String size = "2";
+        String size = "4";
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets", id)
                 .param("page", page)
                 .param("size", size));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("테스트 : " + responseBody);
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(200));
@@ -268,12 +268,12 @@ public class UserControllerTest extends MyRestDoc {
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
-    @DisplayName("내 에셋 조회 실패 : 권한 체크 실패") // id 다른 경우
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @DisplayName("내 에셋 조회 실패 : 권한 체크 실패")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_my_asset_list_fail_test() throws Exception {
         // given
-        Long id = 1L;
+        Long id = 2L;
         String page = "0";
         String size = "4";
 
@@ -304,8 +304,6 @@ public class UserControllerTest extends MyRestDoc {
                 .param("keyword", keywordList.toArray(new String[0]))
                 .param("page", page)
                 .param("size", size));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("테스트 : " + responseBody);
 
         // then
         resultActions.andExpect(jsonPath("$.status").value(200));

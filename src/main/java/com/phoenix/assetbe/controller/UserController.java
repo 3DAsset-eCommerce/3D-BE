@@ -114,4 +114,5 @@ public class UserController {
         UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.searchMyAssetService(id, keywordList, pageable, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
     }
+
 }
