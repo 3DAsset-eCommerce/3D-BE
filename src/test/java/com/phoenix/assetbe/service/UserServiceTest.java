@@ -21,9 +21,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.mockito.Mock;
+
+import javax.mail.AuthenticationFailedException;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -185,4 +188,30 @@ public class UserServiceTest extends DummyEntity {
         verify(myAssetQueryRepository, times(1)).getMyAssetListWithUserIdAndPaging(userId, pageable);
     }
 
+    @Test
+    public void testSearchMyAsset() throws Exception {
+        // Given
+        Long userId = 2L;
+
+        User 송재근 = newMockUser(2L, "송", "재근");
+
+        when(userRepository.findById(any())).thenReturn(Optional.of(송재근));
+
+        List<String> keywordList = new ArrayList<>();
+        UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO asset1 = new UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO(1L, "Asset 1", "fileUrl1", "thumbnailUrl1");
+        UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO asset2 = new UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO(2L, "Asset 2", "fileUrl2", "thumbnailUrl2");
+        UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO asset3 = new UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO(3L, "Asset 3", "fileUrl3", "thumbnailUrl3");
+        Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> fakePage = new PageImpl<>(List.of(asset1, asset2, asset3));
+
+        Pageable pageable = PageRequest.of(0, 2); // 예시로 페이지 번호 0, 페이지 크기 10으로 설정
+
+        when(myAssetQueryRepository.searchMyAssetListWithUserIdAndPagingAndKeyword(anyLong(), anyList(), any(Pageable.class))).thenReturn(fakePage);
+
+        // When
+        UserResponse.MyAssetListOutDTO result = userService.searchMyAssetService(userId, keywordList, pageable, new MyUserDetails(송재근));
+
+        // Then
+        verify(myAssetQueryRepository, times(1))
+                .searchMyAssetListWithUserIdAndPagingAndKeyword(userId, keywordList, pageable);
+    }
 }
