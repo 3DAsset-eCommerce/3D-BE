@@ -75,7 +75,7 @@ public class OrderService {
     public OrderResponse.OrderProductWithDetailsOutDTO getOrderDetailsService(Long userId, Long orderId, MyUserDetails myUserDetails) {
         userService.authCheck(myUserDetails, userId);
 
-        Order order = orderRepository.findByUserIdAndOrderId(userId, orderId).orElseThrow(
+        Order order = orderRepository.findOrderByUserIdAndOrderId(userId, orderId).orElseThrow(
                 () -> new Exception400("orderId", "잘못된 요청입니다. "));
 
         OrderResponse.OrderProductWithDetailsOutDTO orderDetailsOutDTO = orderQueryRepository.getOrderDetailsByUserIdAndOrderId(userId, orderId);

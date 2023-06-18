@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.id = :orderId")
-    Optional<Order> findByUserIdAndOrderId(@Param("userId") Long userId, @Param("orderId") Long orderId);
+    Optional<Order> findOrderByUserIdAndOrderId(@Param("userId") Long userId, @Param("orderId") Long orderId);
 }
