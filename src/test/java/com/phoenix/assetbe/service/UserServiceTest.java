@@ -5,6 +5,7 @@ import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.user.UserRequest;
 import com.phoenix.assetbe.dto.user.UserResponse;
+import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.asset.AssetRepository;
 import com.phoenix.assetbe.model.asset.MyAssetQueryRepository;
 import com.phoenix.assetbe.model.user.Status;
@@ -22,6 +23,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +41,8 @@ public class UserServiceTest extends DummyEntity {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private AssetRepository assetRepository;
+    @Mock
     private MyAssetQueryRepository myAssetQueryRepository;
     @Spy
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -54,6 +58,7 @@ public class UserServiceTest extends DummyEntity {
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
+        assetRepository = mock(AssetRepository.class);
         assetService = mock(AssetService.class);
         myAssetQueryRepository = mock(MyAssetQueryRepository.class);
         bCryptPasswordEncoder = spy(BCryptPasswordEncoder.class);
@@ -217,5 +222,37 @@ public class UserServiceTest extends DummyEntity {
         // Then
         verify(myAssetQueryRepository, times(1))
                 .searchMyAssetListWithUserIdAndPagingAndKeyword(userId, keywordList, pageable);
+    }
+
+    @Test
+    public void testDownloadMyAssetService() throws Exception {
+        // given
+        Long userId = 1L;
+        List<Long> assets = Arrays.asList(1L, 2L, 5L);
+
+        User 유현주 = newMockUser(1L, "유", "현주");
+
+        List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> myAssetFileUrlOutDTO = new ArrayList<>();
+        myAssetFileUrlOutDTO.add(new UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO(1L, "fileUrl1"));
+        myAssetFileUrlOutDTO.add(new UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO(2L, "fileUrl2"));
+        myAssetFileUrlOutDTO.add(new UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO(5L, "fileUrl5"));
+
+        UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO = new UserRequest.DownloadMyAssetInDTO();
+        downloadMyAssetInDTO.setUserId(userId);
+        downloadMyAssetInDTO.setAssets(assets);
+
+        MyUserDetails myUserDetails = new MyUserDetails(유현주);
+
+        // stub 1
+        when(userRepository.findById(any())).thenReturn(Optional.ofNullable(유현주));
+
+        // stub 2
+        when(myAssetQueryRepository.downloadMyAssetByAssetId(any())).thenReturn(myAssetFileUrlOutDTO);
+
+        // when
+        UserResponse.DownloadMyAssetListOutDTO downloadMyAssetListOutDTO = userService.downloadMyAssetService(downloadMyAssetInDTO, myUserDetails);
+
+        // then
+        assertNotNull(downloadMyAssetListOutDTO);
     }
 }
