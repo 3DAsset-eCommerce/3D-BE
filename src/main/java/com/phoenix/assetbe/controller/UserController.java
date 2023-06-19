@@ -115,4 +115,9 @@ public class UserController {
         return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
     }
 
+    @PostMapping("/s/user/download")
+    public ResponseEntity<?> downloadMyAsset(@RequestBody @Valid UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO, MyUserDetails myUserDetails) {
+        UserResponse.DownloadMyAssetListOutDTO downloadMyAssetListOutDTO = userService.downloadMyAssetService(downloadMyAssetInDTO, myUserDetails);
+        return ResponseEntity.ok(new ResponseDTO<>(downloadMyAssetListOutDTO));
+    }
 }

@@ -44,7 +44,8 @@ public class UserServiceTest extends DummyEntity {
     private AuthenticationManager authenticationManager;
     @Mock
     private JavaMailSender javaMailSender;
-
+    @Mock
+    private AssetService assetService;
     @Spy
     private ObjectMapper objectMapper;
 
@@ -56,7 +57,7 @@ public class UserServiceTest extends DummyEntity {
         authenticationManager = mock(AuthenticationManager.class);
         javaMailSender = mock(JavaMailSender.class);
         objectMapper = spy(ObjectMapper.class);
-        userService = new UserService(authenticationManager, javaMailSender, bCryptPasswordEncoder, userRepository, myAssetQueryRepository);
+        userService = new UserService(authenticationManager, javaMailSender, bCryptPasswordEncoder, userRepository, myAssetQueryRepository, assetService);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.dto.user;
 
+import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -149,6 +150,28 @@ public class UserResponse {
                 this.assetName = assetName;
                 this.fileUrl = fileUrl;
                 this.thumbnailUrl = thumbnailUrl;
+            }
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class DownloadMyAssetListOutDTO {
+        private List<?> myAssetList;
+
+        public DownloadMyAssetListOutDTO(List<MyAssetFileUrlOutDTO> myAssetFileUrlOutDTOS) {
+            this.myAssetList = myAssetFileUrlOutDTOS;
+        }
+
+        @Getter
+        @Setter
+        public static class MyAssetFileUrlOutDTO {
+            private Long assetId;
+            private String fileUrl;
+
+            public MyAssetFileUrlOutDTO(Asset asset) {
+                this.assetId = asset.getId();
+                this.fileUrl = asset.getFileUrl();
             }
         }
     }

@@ -33,20 +33,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class UserService {
+
     private final AuthenticationManager authenticationManager;
     private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
     private final MyAssetQueryRepository myAssetQueryRepository;
+
+    private final AssetService assetService;
 
     /**
      * 로그인, 회원가입
@@ -193,19 +198,29 @@ public class UserService {
      */
     public UserResponse.MyAssetListOutDTO getMyAssetListService(Long userId, Pageable pageable, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
-        Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetOutDTO;
-        getMyAssetOutDTO = myAssetQueryRepository.getMyAssetListWithUserIdAndPaging(userId, pageable);
+        findUserById(userId);
+        Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetOutDTO = myAssetQueryRepository.getMyAssetListWithUserIdAndPaging(userId, pageable);
         return new UserResponse.MyAssetListOutDTO(getMyAssetOutDTO);
     }
 
     public UserResponse.MyAssetListOutDTO searchMyAssetService(Long userId, List<String> keywordList, Pageable pageable, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
-        Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetOutDTO;
-        getMyAssetOutDTO = myAssetQueryRepository.searchMyAssetListWithUserIdAndPagingAndKeyword(userId, keywordList, pageable);
+        findUserById(userId);
+        Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetOutDTO = myAssetQueryRepository.searchMyAssetListWithUserIdAndPagingAndKeyword(userId, keywordList, pageable);
         return new UserResponse.MyAssetListOutDTO(getMyAssetOutDTO);
     }
 
+    public UserResponse.DownloadMyAssetListOutDTO downloadMyAssetService(UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO, MyUserDetails myUserDetails) {
+        Long userId = downloadMyAssetInDTO.getUserId();
+        authCheck(myUserDetails, userId);
+        findUserById(userId);
 
+        for (Long assetId: downloadMyAssetInDTO.getAssets())
+            assetService.findAssetById(assetId);
+
+        List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> myAssetFileUrlOutDTOS = myAssetQueryRepository.downloadMyAssetByAssetId(downloadMyAssetInDTO.getAssets());
+        return new UserResponse.DownloadMyAssetListOutDTO(myAssetFileUrlOutDTOS);
+    }
 
     /**
      * 공통 메소드

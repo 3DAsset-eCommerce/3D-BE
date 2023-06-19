@@ -5,10 +5,6 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.dsl.ComparableExpressionBase;
-import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.phoenix.assetbe.model.asset.QAsset.asset;
@@ -84,7 +79,6 @@ public class MyAssetQueryRepository {
                 .from(myAsset)
                 .innerJoin(myAsset.asset, asset)
                 .where(myAsset.user.id.eq(userId).and(combineExpression))
-                .orderBy()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -99,6 +93,15 @@ public class MyAssetQueryRepository {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
+    public List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> downloadMyAssetByAssetId(List<Long> assets) {
+        List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> result = queryFactory
+                .select(Projections.constructor(UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO.class,
+                        asset.id, asset.fileUrl))
+                .from(asset)
+                .where(asset.id.in(assets))
+                .fetch();
+        return result;
+    }
 
     /**
      * 정렬 기준
@@ -118,21 +121,21 @@ public class MyAssetQueryRepository {
         return null;
     }
 
-    private List<OrderSpecifier<?>> assetSortByKeyword(List<String> keywordList) {
-        if (!keywordList.isEmpty()) {
-            List<ComparableExpressionBase<?>> keywordExpressions = new ArrayList<>();
-            for (String keyword : keywordList) {
-                keywordExpressions.add(asset.assetName.equalsIgnoreCase(keyword));
-            }
-
-            List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
-            for (ComparableExpressionBase<?> expression : keywordExpressions) {
-                orderSpecifiers.add(new OrderSpecifier<>(Order.ASC, expression));
-            }
-
-            return orderSpecifiers;
-        }
-
-        return null;
-    }
+//    private List<OrderSpecifier<?>> assetSortByKeyword(List<String> keywordList) {
+//        if (!keywordList.isEmpty()) {
+//            List<ComparableExpressionBase<?>> keywordExpressions = new ArrayList<>();
+//            for (String keyword : keywordList) {
+//                keywordExpressions.add(asset.assetName.equalsIgnoreCase(keyword));
+//            }
+//
+//            List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+//            for (ComparableExpressionBase<?> expression : keywordExpressions) {
+//                orderSpecifiers.add(new OrderSpecifier<>(Order.ASC, expression));
+//            }
+//
+//            return orderSpecifiers;
+//        }
+//
+//        return null;
+//    }
 }

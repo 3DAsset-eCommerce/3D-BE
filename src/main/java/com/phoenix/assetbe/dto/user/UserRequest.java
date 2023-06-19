@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
+import java.util.List;
 import java.util.UUID;
 
 public class UserRequest {
@@ -46,6 +47,7 @@ public class UserRequest {
         @NotEmpty(message = "인증코드를 입력해주세요.")
         private String code;
     }
+
     @Setter
     @Getter
     @NoArgsConstructor
@@ -73,18 +75,18 @@ public class UserRequest {
     @Getter
     @Setter
     public static class SignupInDTO {
-        @NotEmpty
+        @NotEmpty(message = "firstName을 작성해주세요. ")
         private String firstName;
 
-        @NotEmpty
+        @NotEmpty(message = "lastName을 작성해주세요. ")
         private String lastName;
 
-        @NotEmpty
+        @NotEmpty(message = "비밀번호를 형식에 맞게 작성해주세요. ")
         @Size(min = 8, max = 20)
         private String password;
 
         @NotEmpty
-        @Email(message = "이메일 형식으로 작성해주세요")
+        @Email(message = "이메일 형식으로 작성해주세요. ")
         private String email;
 
 
@@ -102,21 +104,24 @@ public class UserRequest {
         }
     }
 
+    /**
+     * 마이페이지
+     */
     @Getter
     @Setter
     public static class CheckPasswordInDTO {
-        @NotNull
+        @NotEmpty
         private Long id;
 
         @Size(min = 8, max = 20)
-        @NotNull(message = "패스워드를 입력해주세요.")
+        @NotEmpty(message = "패스워드를 입력해주세요. ")
         private String password;
     }
 
     @Getter
     @Setter
     public static class WithdrawInDTO {
-        @NotNull(message = "탈퇴 사유를 적어주세요.")
+        @NotEmpty(message = "탈퇴 사유를 적어주세요. ")
         private String message;
         private boolean deleteConfirm; // true -> 탈퇴된 상태
     }
@@ -124,7 +129,19 @@ public class UserRequest {
     @Getter
     @Setter
     public static class UpdateInDTO {
-        @NotNull(message = "새로운 비밀번호를 입력해주세요.")
+        @NotEmpty(message = "새로운 비밀번호를 입력해주세요. ")
         private String newPassword;
+    }
+
+    /**
+     * 나의 에셋
+     */
+    @Getter
+    @Setter
+    public static class DownloadMyAssetInDTO {
+        @NotEmpty
+        private Long userId;
+        @NotEmpty(message = "내 에셋에서 다운로드할 목록을 입력해주세요. ")
+        private List<Long> assets;
     }
 }
