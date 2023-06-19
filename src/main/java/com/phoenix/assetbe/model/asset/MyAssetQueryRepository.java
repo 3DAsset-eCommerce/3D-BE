@@ -1,6 +1,8 @@
 package com.phoenix.assetbe.model.asset;
 
+import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.dto.user.UserResponse;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +38,7 @@ public class MyAssetQueryRepository {
         return fetchOne != null; // 1개가 있는지 없는지 판단 (없으면 null 이므로 null 체크)
     }
 
+    // 내 정보조회 QueryDSL
     public Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetListWithUserIdAndPaging(Long userId, Pageable pageable) {
         List<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> result = queryFactory
                 .select(Projections.constructor(UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO.class,
@@ -56,6 +60,7 @@ public class MyAssetQueryRepository {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
+    // 검색 QueryDSL
     public Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> searchMyAssetListWithUserIdAndPagingAndKeyword(Long userId, List<String> keywordList, Pageable pageable) {
         List<BooleanExpression> keywordExpressions = new ArrayList<>();
         for (String keyword: keywordList){
@@ -93,14 +98,23 @@ public class MyAssetQueryRepository {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
+    // 다운로드 QueryDSL
     public List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> downloadMyAssetByAssetId(List<Long> assets) {
-        List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> result = queryFactory
-                .select(Projections.constructor(UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO.class,
-                        asset.id, asset.fileUrl))
+        List<Tuple> result = queryFactory // 개별 행의 값을 담는 객체
+                .select(asset.id, asset.fileUrl)
                 .from(asset)
                 .where(asset.id.in(assets))
                 .fetch();
-        return result;
+
+        List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> myAssetFileUrlOutDTOS = new ArrayList<>();
+        for (Tuple tuple : result) {
+            Long assetId = tuple.get(asset.id);
+            String fileUrl = tuple.get(asset.fileUrl);
+            UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO myAssetFileUrlOutDTO = new UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO(assetId, fileUrl);
+            myAssetFileUrlOutDTOS.add(myAssetFileUrlOutDTO);
+        }
+
+        return myAssetFileUrlOutDTOS;
     }
 
     /**
@@ -138,4 +152,23 @@ public class MyAssetQueryRepository {
 //
 //        return null;
 //    }
+
+    /**
+     * 검증
+     */
+    public void validateMyAssets(Long userId, List<Long> assetIds) {
+        QMyAsset qMyAsset = QMyAsset.myAsset;
+
+        BooleanExpression userIdPredicate = qMyAsset.user.id.eq(userId);
+        BooleanExpression assetIdPredicate = qMyAsset.asset.id.in(assetIds);
+
+        long count = queryFactory.select(myAsset)
+                .from(myAsset)
+                .where(userIdPredicate.and(assetIdPredicate))
+                .fetchCount();
+
+        if (count != assetIds.size()) {
+            throw new Exception400("No match", "해당 에셋을 가지고 있지 않습니다. ");
+        }
+    }
 }

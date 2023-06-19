@@ -214,12 +214,11 @@ public class UserService {
         Long userId = downloadMyAssetInDTO.getUserId();
         authCheck(myUserDetails, userId);
         findUserById(userId);
-
         for (Long assetId: downloadMyAssetInDTO.getAssets())
             assetService.findAssetById(assetId);
-
-        List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> myAssetFileUrlOutDTOS = myAssetQueryRepository.downloadMyAssetByAssetId(downloadMyAssetInDTO.getAssets());
-        return new UserResponse.DownloadMyAssetListOutDTO(myAssetFileUrlOutDTOS);
+        myAssetQueryRepository.validateMyAssets(userId, downloadMyAssetInDTO.getAssets());
+        List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> myAssetFileUrlOutDTO = myAssetQueryRepository.downloadMyAssetByAssetId(downloadMyAssetInDTO.getAssets());
+        return new UserResponse.DownloadMyAssetListOutDTO(myAssetFileUrlOutDTO);
     }
 
     /**

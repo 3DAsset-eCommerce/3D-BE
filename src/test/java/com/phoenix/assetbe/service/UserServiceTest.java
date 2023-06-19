@@ -5,6 +5,7 @@ import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.user.UserRequest;
 import com.phoenix.assetbe.dto.user.UserResponse;
+import com.phoenix.assetbe.model.asset.AssetRepository;
 import com.phoenix.assetbe.model.asset.MyAssetQueryRepository;
 import com.phoenix.assetbe.model.user.Status;
 import com.phoenix.assetbe.model.user.User;
@@ -22,6 +23,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.mockito.Mock;
@@ -52,6 +54,7 @@ public class UserServiceTest extends DummyEntity {
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
+        assetService = mock(AssetService.class);
         myAssetQueryRepository = mock(MyAssetQueryRepository.class);
         bCryptPasswordEncoder = spy(BCryptPasswordEncoder.class);
         authenticationManager = mock(AuthenticationManager.class);

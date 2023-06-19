@@ -123,6 +123,7 @@ public class UserRequest {
     public static class WithdrawInDTO {
         @NotEmpty(message = "탈퇴 사유를 적어주세요. ")
         private String message;
+        @NotEmpty
         private boolean deleteConfirm; // true -> 탈퇴된 상태
     }
 
@@ -139,7 +140,7 @@ public class UserRequest {
     @Getter
     @Setter
     public static class DownloadMyAssetInDTO {
-        @NotEmpty
+        @NotEmpty(message = "유저 id를 입력해주세요. ")
         private Long userId;
         @NotEmpty(message = "내 에셋에서 다운로드할 목록을 입력해주세요. ")
         private List<Long> assets;

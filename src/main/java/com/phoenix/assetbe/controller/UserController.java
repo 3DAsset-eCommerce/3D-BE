@@ -69,20 +69,20 @@ public class UserController {
      * 마이페이지
      */
     @PostMapping("/s/user/check")
-    public ResponseEntity<?> checkPassword(@RequestBody @Valid UserRequest.CheckPasswordInDTO checkPasswordInDTO, Errors errors, @AuthenticationPrincipal MyUserDetails myUserDetails) {
+    public ResponseEntity<?> checkPassword(@RequestBody UserRequest.CheckPasswordInDTO checkPasswordInDTO, Errors errors, @AuthenticationPrincipal MyUserDetails myUserDetails) {
         userService.checkPasswordService(checkPasswordInDTO, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
     @PostMapping("/s/user/{id}/withdraw")
-    public ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody @Valid UserRequest.WithdrawInDTO withdrawInDTO, Errors errors,
+    public ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody UserRequest.WithdrawInDTO withdrawInDTO, Errors errors,
                                       @AuthenticationPrincipal MyUserDetails myUserDetails) {
         userService.withdrawService(id, withdrawInDTO, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(null));
     }
 
     @PostMapping("/s/user/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid UserRequest.UpdateInDTO updateInDTO, Errors errors,
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UserRequest.UpdateInDTO updateInDTO, Errors errors,
                                     @AuthenticationPrincipal MyUserDetails myUserDetails) {
         userService.updateService(id, updateInDTO, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(null));
@@ -116,7 +116,7 @@ public class UserController {
     }
 
     @PostMapping("/s/user/download")
-    public ResponseEntity<?> downloadMyAsset(@RequestBody @Valid UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO, MyUserDetails myUserDetails) {
+    public ResponseEntity<?> downloadMyAsset(@RequestBody UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails) {
         UserResponse.DownloadMyAssetListOutDTO downloadMyAssetListOutDTO = userService.downloadMyAssetService(downloadMyAssetInDTO, myUserDetails);
         return ResponseEntity.ok(new ResponseDTO<>(downloadMyAssetListOutDTO));
     }

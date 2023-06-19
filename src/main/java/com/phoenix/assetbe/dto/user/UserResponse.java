@@ -157,10 +157,10 @@ public class UserResponse {
     @Getter
     @Setter
     public static class DownloadMyAssetListOutDTO {
-        private List<?> myAssetList;
+        private List<MyAssetFileUrlOutDTO> myAssetList;
 
-        public DownloadMyAssetListOutDTO(List<MyAssetFileUrlOutDTO> myAssetFileUrlOutDTOS) {
-            this.myAssetList = myAssetFileUrlOutDTOS;
+        public DownloadMyAssetListOutDTO(List<MyAssetFileUrlOutDTO> myAssetList) {
+            this.myAssetList = myAssetList;
         }
 
         @Getter
@@ -169,9 +169,9 @@ public class UserResponse {
             private Long assetId;
             private String fileUrl;
 
-            public MyAssetFileUrlOutDTO(Asset asset) {
-                this.assetId = asset.getId();
-                this.fileUrl = asset.getFileUrl();
+            public MyAssetFileUrlOutDTO(Long assetId, String fileUrl) {
+                this.assetId = assetId;
+                this.fileUrl = fileUrl;
             }
         }
     }
