@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.model.asset;
 
 import com.phoenix.assetbe.dto.asset.AssetResponse;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -250,8 +251,15 @@ public class AssetQueryRepository {
     }
 
     public List<Asset> findAllById(List<Long> userIds) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(asset.status.eq(true));
+        for(Long userId : userIds) {
+            builder.or(asset.id.eq(userId));
+        }
+
         return queryFactory.selectFrom(asset)
-                .where(asset.status.eq(true).and(asset.id.eq(userIds)))
+                .where(builder)
                 .fetch();
     }
 

@@ -2,6 +2,7 @@ package com.phoenix.assetbe.service;
 
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
+import com.phoenix.assetbe.core.exception.Exception404;
 import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.asset.AssetQueryRepository;
 import com.phoenix.assetbe.model.asset.AssetRepository;
@@ -37,6 +38,9 @@ public class AssetService {
             assetList = assetQueryRepository.findAssetListWithUserIdAndPaging(userId, pageable);
         }else {
             assetList = assetQueryRepository.findAssetListWithPaging(pageable);
+        }
+        if (assetList.getContent().isEmpty()) {
+            throw new Exception404("에셋이 존재하지 않습니다. ");
         }
         return new AssetResponse.AssetListOutDTO(assetList);
     }
