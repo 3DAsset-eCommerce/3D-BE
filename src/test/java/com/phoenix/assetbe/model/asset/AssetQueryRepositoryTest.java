@@ -3,6 +3,7 @@ package com.phoenix.assetbe.model.asset;
 import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
+import com.phoenix.assetbe.model.cs.QnaRepository;
 import com.phoenix.assetbe.model.user.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,9 +57,9 @@ public class AssetQueryRepositoryTest {
         Pageable pageable = PageRequest.of(page, size, Sort.by("releaseDate").descending());
 
         // When
-        Page<AssetResponse.AssetListOutDTO.AssetDetail> result = assetQueryRepository.findAssetListWithUserIdAndPaging(userId, pageable);
+        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> result = assetQueryRepository.findAssetListWithUserIdAndPaging(userId, pageable);
 
         // Then
-        assertThat(result.getContent().size(), is(3));
+        assertThat(result.getContent().size(), is(2));
     }
 }

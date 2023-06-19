@@ -10,10 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,15 +22,22 @@ public class AssetController {
 
     private final AssetService assetService;
 
+    /**
+     * 개별 에셋
+     */
     @GetMapping("/assets")
-    public ResponseEntity<?> getAssetList(@PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
-                                       @AuthenticationPrincipal MyUserDetails myUserDetails) {
+    public ResponseEntity<?> getAssetList(
+            @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         AssetResponse.AssetListOutDTO assetListOutDTO = assetService.getAssetListService(pageable, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    /**
+     * 에셋 상세
+     */
     @GetMapping("/assets/{id}/details")
     public ResponseEntity<?> getAssetDetails(@PathVariable Long id,
                                              @AuthenticationPrincipal MyUserDetails myUserDetails) {
@@ -44,6 +48,9 @@ public class AssetController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    /**
+     * 카테고리별 에셋
+     */
     @GetMapping("/assets/{categoryName}")
     public ResponseEntity<?> getAssetListByCategory(
             @PathVariable String categoryName,
@@ -56,6 +63,10 @@ public class AssetController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    /**
+     * 카테고리별
+     * 하위카테고리별 에셋
+     */
     @GetMapping("/assets/{categoryName}/{subCategoryName}")
     public ResponseEntity<?> getAssetListBySubCategory(
             @PathVariable String categoryName,

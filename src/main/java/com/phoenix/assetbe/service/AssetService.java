@@ -31,14 +31,14 @@ public class AssetService {
     private final AssetTagQueryRepository assetTagQueryRepository;
 
     public AssetResponse.AssetListOutDTO getAssetListService(Pageable pageable, MyUserDetails myUserDetails) {
-        Page<AssetResponse.AssetListOutDTO.AssetDetail> assetDetailList;
+        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
         if(myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
-            assetDetailList = assetQueryRepository.findAssetListWithUserIdAndPaging(userId, pageable);
+            assetList = assetQueryRepository.findAssetListWithUserIdAndPaging(userId, pageable);
         }else {
-            assetDetailList = assetQueryRepository.findAssetListWithPaging(pageable);
+            assetList = assetQueryRepository.findAssetListWithPaging(pageable);
         }
-        return new AssetResponse.AssetListOutDTO(assetDetailList);
+        return new AssetResponse.AssetListOutDTO(assetList);
     }
 
     @Transactional
@@ -56,42 +56,42 @@ public class AssetService {
         }catch (Exception e){
             throw new Exception500("view 증가 실패");
         }
-        return new AssetResponse.AssetDetailsOutDTO(assetPS, wishListId, tagNameList);
+        return new AssetResponse.AssetDetailsOutDTO(assetPS, wishListId, null, tagNameList);
     }
 
     public AssetResponse.AssetListOutDTO getAssetListByCategoryService(String categoryName, Pageable pageable, MyUserDetails myUserDetails) {
-        Page<AssetResponse.AssetListOutDTO.AssetDetail> assetDetailList;
+        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
         if(myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
-            assetDetailList = assetQueryRepository.findAssetListWithUserIdAndPaginationByCategory(userId, categoryName, pageable);
+            assetList = assetQueryRepository.findAssetListWithUserIdAndPaginationByCategory(userId, categoryName, pageable);
         }else {
-            assetDetailList = assetQueryRepository.findAssetListWithPaginationByCategory(categoryName, pageable);
+            assetList = assetQueryRepository.findAssetListWithPaginationByCategory(categoryName, pageable);
         }
-        return new AssetResponse.AssetListOutDTO(assetDetailList);
+        return new AssetResponse.AssetListOutDTO(assetList);
     }
 
     public AssetResponse.AssetListOutDTO getAssetListBySubCategoryService(String categoryName, String subCategoryName,
                                                                        Pageable pageable, MyUserDetails myUserDetails) {
-        Page<AssetResponse.AssetListOutDTO.AssetDetail> assetDetailList;
+        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
         if(myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
-            assetDetailList = assetQueryRepository
+            assetList = assetQueryRepository
                     .findAssetListWithUserIdAndPaginationBySubCategory(userId, categoryName, subCategoryName, pageable);
         }else {
-            assetDetailList = assetQueryRepository
+            assetList = assetQueryRepository
                     .findAssetListWithPaginationBySubCategory(categoryName, subCategoryName, pageable);
         }
-        return new AssetResponse.AssetListOutDTO(assetDetailList);
+        return new AssetResponse.AssetListOutDTO(assetList);
     }
 
     public Asset findAssetById(Long assetId){
-        Asset assetPS = assetRepository.findById(assetId).orElseThrow(
+        Asset assetPS = assetQueryRepository.findById(assetId).orElseThrow(
                 () -> new Exception400("id", "존재하지 않는 에셋입니다. "));
         return assetPS;
     }
 
     public List<Asset> findAllAssetById(List<Long> assetIds){
-        List<Asset> assetList = assetRepository.findAllById(assetIds);
+        List<Asset> assetList = assetQueryRepository.findAllById(assetIds);
         return assetList;
     }
 }

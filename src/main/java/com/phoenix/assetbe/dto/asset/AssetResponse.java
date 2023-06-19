@@ -29,9 +29,10 @@ public class AssetResponse {
         private Long wishCount;
         private Long visitCount;
         private Long wishlistId;
+        private List<?> previewList;
         private List<String> tagList;
 
-        public AssetDetailsOutDTO(Asset asset, Long wishlistId, List<String> tagList) {
+        public AssetDetailsOutDTO(Asset asset, Long wishlistId, List<?> previewList, List<String> tagList) {
             this.assetId = asset.getId();
             this.assetName = asset.getAssetName();
             this.price = asset.getPrice();
@@ -45,6 +46,7 @@ public class AssetResponse {
             this.wishCount = asset.getWishCount();
             this.visitCount = asset.getVisitCount();
             this.wishlistId = wishlistId;
+            this.previewList = previewList;
             this.tagList = tagList;
         }
     }
@@ -70,7 +72,7 @@ public class AssetResponse {
         @NoArgsConstructor
         @AllArgsConstructor
         @Getter @Setter
-        public static class AssetDetail {
+        public static class AssetOutDTO {
             private Long assetId;
             private String assetName;
             private Double price;
@@ -84,7 +86,7 @@ public class AssetResponse {
             private Long wishlistId;
             private Long cartId;
 
-            public AssetDetail(Long assetId, String assetName, Double price,
+            public AssetOutDTO(Long assetId, String assetName, Double price,
                                Integer discount, Double discountPrice,
                                LocalDate releaseDate, String thumbnailUrl, Double rating, Long reviewCount,
                                Long wishCount) {

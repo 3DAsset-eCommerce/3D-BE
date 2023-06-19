@@ -16,6 +16,7 @@ import static com.phoenix.assetbe.model.asset.QTag.tag;
 @RequiredArgsConstructor
 @Repository
 public class AssetTagQueryRepository {
+
     private final JPAQueryFactory queryFactory;
 
     public List<String> findTagNameListByAssetId(Long assetId) {
