@@ -336,4 +336,97 @@ public class UserControllerTest extends MyRestDoc {
         resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
+
+    @DisplayName("내 에셋 다운 성공")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void download_my_asset_test() throws Exception {
+        // given
+        Long userId = 1L;
+        List<Long> assets = Arrays.asList(1L, 3L);
+
+
+        UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO = new UserRequest.DownloadMyAssetInDTO();
+        downloadMyAssetInDTO.setUserId(userId);
+        downloadMyAssetInDTO.setAssets(assets);
+
+        String requestBody = objectMapper.writeValueAsString(downloadMyAssetInDTO);
+        System.out.println("테스트 request : " + requestBody);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/user/download")
+                .content(objectMapper.writeValueAsString(downloadMyAssetInDTO))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(200));
+        resultActions.andExpect(jsonPath("$.msg").value("성공"));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("내 에셋 다운 실패 : 권한 체크 실패")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void download_my_asset_fail1_test() throws Exception {
+        // given
+        Long userId = 2L;
+        List<Long> assets = Arrays.asList(1L, 3L);
+
+
+        UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO = new UserRequest.DownloadMyAssetInDTO();
+        downloadMyAssetInDTO.setUserId(userId);
+        downloadMyAssetInDTO.setAssets(assets);
+
+        String requestBody = objectMapper.writeValueAsString(downloadMyAssetInDTO);
+        System.out.println("테스트 request : " + requestBody);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/user/download")
+                .content(objectMapper.writeValueAsString(downloadMyAssetInDTO))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(403));
+        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
+        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("내 에셋 다운 실패 : 해당 에셋 보유 안함")
+    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void download_my_asset_fail2_test() throws Exception {
+        // given
+        Long userId = 1L;
+        List<Long> assets = Arrays.asList(9L, 11L);
+
+
+        UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO = new UserRequest.DownloadMyAssetInDTO();
+        downloadMyAssetInDTO.setUserId(userId);
+        downloadMyAssetInDTO.setAssets(assets);
+
+        String requestBody = objectMapper.writeValueAsString(downloadMyAssetInDTO);
+        System.out.println("테스트 request : " + requestBody);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/user/download")
+                .content(objectMapper.writeValueAsString(downloadMyAssetInDTO))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(400));
+        resultActions.andExpect(jsonPath("$.msg").value("badRequest"));
+        resultActions.andExpect(jsonPath("$.data.key").value("No match"));
+        resultActions.andExpect(jsonPath("$.data.value").value("해당 에셋을 가지고 있지 않습니다. "));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
 }
