@@ -1,7 +1,6 @@
 package com.phoenix.assetbe.core.dummy;
 
 import com.phoenix.assetbe.model.asset.Asset;
-import com.phoenix.assetbe.model.asset.MyAsset;
 import com.phoenix.assetbe.model.user.Role;
 import com.phoenix.assetbe.model.user.SocialType;
 import com.phoenix.assetbe.model.user.Status;
@@ -48,6 +47,7 @@ public class DummyEntity {
         return Asset.builder()
                 .assetName(assetName)
                 .price(price)
+                .description("assetName은 price원입니다. ")
                 .discount(0)
                 .size(size)
                 .extension(".FBX")

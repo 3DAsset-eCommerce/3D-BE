@@ -23,6 +23,8 @@ public class Asset extends MyTimeBaseUtil {
 
     private Double price;
 
+    private String description;
+
     private Integer discount;
 
     private Double discountPrice;
@@ -52,10 +54,11 @@ public class Asset extends MyTimeBaseUtil {
     private String thumbnailUrl;
 
     @Builder
-    public Asset(Long id, String assetName, Double price, Integer discount, Double size, LocalDate releaseDate, String extension, String creator, Double rating, Long wishCount, Long visitCount, Long reviewCount, boolean status, LocalDateTime updatedAt, String fileUrl, String thumbnailUrl) {
+    public Asset(Long id, String assetName, Double price, String description, Integer discount, Double size, LocalDate releaseDate, String extension, String creator, Double rating, Long wishCount, Long visitCount, Long reviewCount, boolean status, LocalDateTime updatedAt, String fileUrl, String thumbnailUrl) {
         this.id = id;
         this.assetName = assetName;
         this.price = price;
+        this.description = description;
         this.discount = discount;
         this.size = size;
         this.releaseDate = releaseDate;
