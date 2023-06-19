@@ -77,6 +77,7 @@ public class AssetResponse {
             private Integer discount;
             private Double discountPrice;
             private LocalDate releaseDate;
+            private String thumbnailUrl;
             private Double rating;
             private Long reviewCount;
             private Long wishCount;
@@ -85,7 +86,7 @@ public class AssetResponse {
 
             public AssetDetail(Long assetId, String assetName, Double price,
                                Integer discount, Double discountPrice,
-                               LocalDate releaseDate, Double rating, Long reviewCount,
+                               LocalDate releaseDate, String thumbnailUrl, Double rating, Long reviewCount,
                                Long wishCount) {
                 this.assetId = assetId;
                 this.assetName = assetName;
@@ -93,6 +94,7 @@ public class AssetResponse {
                 this.discount = discount;
                 this.discountPrice = discountPrice;
                 this.releaseDate = releaseDate;
+                this.thumbnailUrl = thumbnailUrl;
                 this.rating = rating;
                 this.reviewCount = reviewCount;
                 this.wishCount = wishCount;

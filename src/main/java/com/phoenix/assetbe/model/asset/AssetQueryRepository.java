@@ -36,6 +36,7 @@ public class AssetQueryRepository {
                         asset.discount,
                         asset.discountPrice,
                         asset.releaseDate,
+                        asset.thumbnailUrl,
                         asset.rating,
                         asset.reviewCount,
                         asset.wishCount,
@@ -66,6 +67,7 @@ public class AssetQueryRepository {
                         asset.discount,
                         asset.discountPrice,
                         asset.releaseDate,
+                        asset.thumbnailUrl,
                         asset.rating,
                         asset.reviewCount,
                         asset.wishCount)
@@ -93,6 +95,7 @@ public class AssetQueryRepository {
                         asset.discount,
                         asset.discountPrice,
                         asset.releaseDate,
+                        asset.thumbnailUrl,
                         asset.rating,
                         asset.reviewCount,
                         asset.wishCount,
@@ -131,6 +134,7 @@ public class AssetQueryRepository {
                         asset.discount,
                         asset.discountPrice,
                         asset.releaseDate,
+                        asset.thumbnailUrl,
                         asset.rating,
                         asset.reviewCount,
                         asset.wishCount)
@@ -165,6 +169,7 @@ public class AssetQueryRepository {
                         asset.discount,
                         asset.discountPrice,
                         asset.releaseDate,
+                        asset.thumbnailUrl,
                         asset.rating,
                         asset.reviewCount,
                         asset.wishCount,
@@ -203,6 +208,7 @@ public class AssetQueryRepository {
                         asset.discount,
                         asset.discountPrice,
                         asset.releaseDate,
+                        asset.thumbnailUrl,
                         asset.rating,
                         asset.reviewCount,
                         asset.wishCount)
