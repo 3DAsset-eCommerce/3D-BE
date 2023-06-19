@@ -23,7 +23,7 @@ public class MyTestSetUp extends DummyEntity{
 
     private final UserRepository userRepository;
     private final AssetRepository assetRepository;
-
+    private final PreviewRepository previewRepository;
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final TagRepository tagRepository;
@@ -39,6 +39,7 @@ public class MyTestSetUp extends DummyEntity{
 
     public MyTestSetUp(UserRepository userRepository,
                        AssetRepository assetRepository,
+                       PreviewRepository previewRepository,
                        CategoryRepository categoryRepository,
                        SubCategoryRepository subCategoryRepository,
                        TagRepository tagRepository,
@@ -54,6 +55,7 @@ public class MyTestSetUp extends DummyEntity{
 
         this.userRepository = userRepository;
         this.assetRepository = assetRepository;
+        this.previewRepository = previewRepository;
         this.categoryRepository = categoryRepository;
         this.subCategoryRepository = subCategoryRepository;
         this.tagRepository = tagRepository;
@@ -132,6 +134,14 @@ public class MyTestSetUp extends DummyEntity{
             assetList.add(asset);
         }
         assetRepository.saveAll(assetList);
+
+        // Preview
+        List<Preview> previewList = new ArrayList<>();
+        for(Asset asset : assetList){
+            Preview preview = Preview.builder().asset(asset).previewUrl("preview.url").build();
+            previewList.add(preview);
+        }
+        previewRepository.saveAll(previewList);
 
         return assetList;
     }

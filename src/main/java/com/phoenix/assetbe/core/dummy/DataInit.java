@@ -33,6 +33,7 @@ public class DataInit extends DummyEntity{
                            AssetCategoryRepository assetCategoryRepository,
                            AssetSubCategoryRepository assetSubCategoryRepository,
                            AssetTagRepository assetTagRepository,
+                           PreviewRepository previewRepository,
                            CartRepository cartRepository,
                            WishListRepository wishListRepository,
                            OrderRepository orderRepository,
@@ -167,6 +168,14 @@ public class DataInit extends DummyEntity{
                 }
             }
             assetTagRepository.saveAll(assetTagList);
+
+            // Preview
+            List<Preview> previewList = new ArrayList<>();
+            for(Asset asset : assetList){
+                Preview preview = Preview.builder().asset(asset).previewUrl("preview.url").build();
+                previewList.add(preview);
+            }
+            previewRepository.saveAll(previewList);
 
             /**
              * 1L 사용자 -> 1L~8L 구매, 5L~12L 장바구니, 10L~18L 위시
