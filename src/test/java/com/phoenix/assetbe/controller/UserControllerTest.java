@@ -426,7 +426,7 @@ public class UserControllerTest extends MyRestDoc {
         resultActions.andExpect(jsonPath("$.status").value(400));
         resultActions.andExpect(jsonPath("$.msg").value("badRequest"));
         resultActions.andExpect(jsonPath("$.data.key").value("No match"));
-        resultActions.andExpect(jsonPath("$.data.value").value("해당 에셋을 가지고 있지 않습니다. "));
+        resultActions.andExpect(jsonPath("$.data.value").value("잘못된 요청입니다. "));
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 }

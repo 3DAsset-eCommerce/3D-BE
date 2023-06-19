@@ -100,21 +100,12 @@ public class MyAssetQueryRepository {
 
     // 다운로드 QueryDSL
     public List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> downloadMyAssetByAssetId(List<Long> assets) {
-        List<Tuple> result = queryFactory // 개별 행의 값을 담는 객체
-                .select(asset.id, asset.fileUrl)
+        return queryFactory
+                .select(Projections.constructor(UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO.class,
+                        asset.id, asset.fileUrl))
                 .from(asset)
                 .where(asset.id.in(assets))
                 .fetch();
-
-        List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> myAssetFileUrlOutDTOS = new ArrayList<>();
-        for (Tuple tuple : result) {
-            Long assetId = tuple.get(asset.id);
-            String fileUrl = tuple.get(asset.fileUrl);
-            UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO myAssetFileUrlOutDTO = new UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO(assetId, fileUrl);
-            myAssetFileUrlOutDTOS.add(myAssetFileUrlOutDTO);
-        }
-
-        return myAssetFileUrlOutDTOS;
     }
 
     /**
@@ -157,18 +148,15 @@ public class MyAssetQueryRepository {
      * 검증
      */
     public void validateMyAssets(Long userId, List<Long> assetIds) {
-        QMyAsset qMyAsset = QMyAsset.myAsset;
-
-        BooleanExpression userIdPredicate = qMyAsset.user.id.eq(userId);
-        BooleanExpression assetIdPredicate = qMyAsset.asset.id.in(assetIds);
-
         long count = queryFactory.select(myAsset)
                 .from(myAsset)
-                .where(userIdPredicate.and(assetIdPredicate))
-                .fetchCount();
+                .where(myAsset.user.id.eq(userId).and(myAsset.asset.id.in(assetIds)))
+                .fetch()
+                .stream()
+                .count();
 
         if (count != assetIds.size()) {
-            throw new Exception400("No match", "해당 에셋을 가지고 있지 않습니다. ");
+            throw new Exception400("No match", "잘못된 요청입니다. ");
         }
     }
 }
