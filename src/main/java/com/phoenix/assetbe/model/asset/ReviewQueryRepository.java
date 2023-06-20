@@ -16,9 +16,15 @@ import static com.phoenix.assetbe.model.user.QUser.user;
 public class ReviewQueryRepository {
     private final JPAQueryFactory queryFactory;
 
-    public List<ReviewResponse.ReviewsOutDTO.Reviews> findReviewsByAssetId(Long assetId) {
-        return queryFactory.select(Projections.constructor(ReviewResponse.ReviewsOutDTO.Reviews.class,
-                review.id, review.rating, review.content, review.user.id, review.user.firstName, review.user.lastName))
+    public List<ReviewResponse.ReviewListOutDTO.ReviewOutDTO> findReviewListByAssetId(Long assetId) {
+        return queryFactory.select(Projections.constructor(ReviewResponse.ReviewListOutDTO.ReviewOutDTO.class,
+                        review.id,
+                        review.rating,
+                        review.content,
+                        review.user.id,
+                        review.user.firstName,
+                        review.user.lastName)
+                )
                 .from(review)
                 .innerJoin(review.user, user)
                 .where(review.asset.id.eq(assetId))
@@ -28,7 +34,13 @@ public class ReviewQueryRepository {
 
     public ReviewResponse.ReviewOutDTO findReviewByUserIdAndAssetId(Long userId, Long assetId) {
         return queryFactory.select(Projections.constructor(ReviewResponse.ReviewOutDTO.class,
-                review.user.id, review.asset.id, review.id, review.content, review.rating, review.asset.rating))
+                        review.user.id,
+                        review.asset.id,
+                        review.id,
+                        review.content,
+                        review.rating,
+                        review.asset.rating)
+                )
                 .from(review)
                 .innerJoin(review.asset)
                 .where(review.user.id.eq(userId).and(review.asset.id.eq(assetId)))
@@ -37,6 +49,13 @@ public class ReviewQueryRepository {
 
     public Review findReviewByUserIdAndAssetIdWithoutDTO(Long userId, Long assetId) {
         return queryFactory.selectFrom(review)
+                .where(review.user.id.eq(userId).and(review.asset.id.eq(assetId)))
+                .fetchOne();
+    }
+
+    public Long findReviewIdByUserIdAndAssetId(Long userId, Long assetId) {
+        return queryFactory.select(review.id)
+                .from(review)
                 .where(review.user.id.eq(userId).and(review.asset.id.eq(assetId)))
                 .fetchOne();
     }

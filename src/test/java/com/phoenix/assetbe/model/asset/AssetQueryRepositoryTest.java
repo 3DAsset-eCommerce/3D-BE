@@ -60,6 +60,6 @@ public class AssetQueryRepositoryTest {
         Page<AssetResponse.AssetListOutDTO.AssetOutDTO> result = assetQueryRepository.findAssetListWithUserIdAndPaging(userId, pageable);
 
         // Then
-        assertThat(result.getContent().size(), is(2));
+        assertThat(result.getContent().size(), is(3));
     }
 }

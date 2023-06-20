@@ -27,7 +27,6 @@ import static com.phoenix.assetbe.model.asset.QMyAsset.myAsset;
 public class MyAssetQueryRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final AssetQueryRepository assetQueryRepository;
 
     public boolean existsAssetIdAndUserId(Long assetId, Long userId) {
         Integer fetchOne = queryFactory

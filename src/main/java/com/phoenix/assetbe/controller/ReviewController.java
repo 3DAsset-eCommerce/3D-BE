@@ -22,8 +22,8 @@ public class ReviewController {
     public ResponseEntity<?> getReviews(@PathVariable Long id,
                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
-        ReviewResponse.ReviewsOutDTO reviewsOutDTO = reviewService.getReviewsService(id, myUserDetails);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(reviewsOutDTO);
+        ReviewResponse.ReviewListOutDTO reviewListOutDTO = reviewService.getReviewsService(id, myUserDetails);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(reviewListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 

@@ -7,7 +7,6 @@ import com.phoenix.assetbe.model.asset.*;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.model.wish.WishListQueryRepository;
-import com.phoenix.assetbe.model.wish.WishListRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,13 +88,13 @@ public class AssetService {
     }
 
     public Asset findAssetById(Long assetId){
-        Asset assetPS = assetQueryRepository.findById(assetId).orElseThrow(
+        Asset assetPS = assetRepository.findById(assetId).orElseThrow(
                 () -> new Exception400("id", "존재하지 않는 에셋입니다. "));
         return assetPS;
     }
 
     public List<Asset> findAllAssetById(List<Long> assetIds){
-        List<Asset> assetList = assetQueryRepository.findAllById(assetIds);
+        List<Asset> assetList = assetRepository.findAllById(assetIds);
         return assetList;
     }
 }

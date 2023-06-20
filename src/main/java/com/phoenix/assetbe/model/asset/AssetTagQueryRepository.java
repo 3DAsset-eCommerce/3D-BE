@@ -8,10 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.phoenix.assetbe.model.asset.QAsset.asset;
 import static com.phoenix.assetbe.model.asset.QAssetTag.assetTag;
 import static com.phoenix.assetbe.model.asset.QCategory.category;
-import static com.phoenix.assetbe.model.asset.QPreview.preview;
 import static com.phoenix.assetbe.model.asset.QSubCategory.subCategory;
 import static com.phoenix.assetbe.model.asset.QTag.tag;
 

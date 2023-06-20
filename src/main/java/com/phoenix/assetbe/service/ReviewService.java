@@ -3,6 +3,7 @@ package com.phoenix.assetbe.service;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception403;
+import com.phoenix.assetbe.core.exception.Exception404;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.dto.asset.ReviewRequest;
 import com.phoenix.assetbe.dto.asset.ReviewResponse;
@@ -28,6 +29,7 @@ public class ReviewService {
 
     private final AssetRepository assetRepository;
     private final ReviewRepository reviewRepository;
+    private final AssetQueryRepository assetQueryRepository;
     private final MyAssetQueryRepository myAssetQueryRepository;
     private final ReviewQueryRepository reviewQueryRepository;
     private final WishListQueryRepository wishListQueryRepository;
@@ -71,29 +73,34 @@ public class ReviewService {
         return reviewQueryRepository.findReviewByUserIdAndAssetId(userId, assetId);
     }
 
-    public ReviewResponse.ReviewsOutDTO getReviewsService(Long assetId, MyUserDetails myUserDetails) {
-        Long id = assetRepository.findIdByAssetId(assetId).orElseThrow(
-                () -> new Exception400("id", "존재하지 않는 에셋입니다. ")
-        );
+    public ReviewResponse.ReviewListOutDTO getReviewsService(Long assetId, MyUserDetails myUserDetails) {
+        boolean exist = assetQueryRepository.existsAssetByAssetId(assetId);
+        if(!exist){
+            throw new Exception400("id", "존재하지 않는 에셋입니다. ");
+        }
 
         boolean hasAsset = false;
         boolean hasWishlist = false;
         boolean hasReview = false;
 
-        List<ReviewResponse.ReviewsOutDTO.Reviews> reviewsList =
-                reviewQueryRepository.findReviewsByAssetId(assetId);
+        List<ReviewResponse.ReviewListOutDTO.ReviewOutDTO> reviewOutDTOList =
+                reviewQueryRepository.findReviewListByAssetId(assetId);
 
-        if (myUserDetails != null) {
-            Long userId = myUserDetails.getUser().getId();
-            hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(id, userId);
-            hasWishlist = wishListQueryRepository.existsAssetIdAndUserId(id, userId);
-            Optional<ReviewResponse.ReviewsOutDTO.Reviews> foundReview = reviewsList.stream()
-                    .filter(reviews -> reviews.getUserId().equals(userId))
-                    .findFirst();
-            hasReview = foundReview.isPresent();
+        if(!reviewOutDTOList.isEmpty()) {
+            if (myUserDetails != null) {
+                Long userId = myUserDetails.getUser().getId();
+                hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(assetId, userId);
+                hasWishlist = wishListQueryRepository.existsAssetIdAndUserId(assetId, userId);
+                Optional<ReviewResponse.ReviewListOutDTO.ReviewOutDTO> foundReview = reviewOutDTOList.stream()
+                        .filter(review -> review.getUserId().equals(userId))
+                        .findFirst();
+                hasReview = foundReview.isPresent();
+            }
+        }else{
+            throw new Exception404("리뷰가 존재하지 않습니다. ");
         }
 
-        return new ReviewResponse.ReviewsOutDTO(hasAsset, hasReview, hasWishlist, reviewsList);
+        return new ReviewResponse.ReviewListOutDTO(hasAsset, hasReview, hasWishlist, reviewOutDTOList);
     }
 
     @Transactional
@@ -138,29 +145,38 @@ public class ReviewService {
         Long userId = deleteReviewInDTO.getUserId();
         userService.authCheck(myUserDetails, userId);
 
-        Review reviewPS = reviewQueryRepository.findReviewByUserIdAndAssetIdWithoutDTO(userId, assetId);
-        if(reviewPS.getId().equals(reviewId)) {
-            try {
-                reviewRepository.delete(reviewPS);
-            }catch (Exception e){
-                throw new Exception500("리뷰 삭제 실패");
-            }
+        boolean hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(assetId, userId);
+        if(hasAsset) {
+            Long reviewIdPS = reviewQueryRepository.findReviewIdByUserIdAndAssetId(userId, assetId);
+            if(reviewIdPS != null) {
+                if (reviewIdPS.equals(reviewId)) {
+                    try {
+                        reviewRepository.deleteById(reviewIdPS);
+                    } catch (Exception e) {
+                        throw new Exception500("리뷰 삭제 실패");
+                    }
 
-            Asset assetPS = assetService.findAssetById(assetId);
+                    Asset assetPS = assetService.findAssetById(assetId);
 
-            Optional<Double> reviewRatingSum = Optional.ofNullable(reviewQueryRepository.findSumRatingByAssetId(assetId));
-            if(reviewRatingSum.isPresent()) {
-                assetPS.calculateRatingOnDeleteReview(assetPS, reviewRatingSum.get());
+                    Optional<Double> reviewRatingSum = Optional.ofNullable(reviewQueryRepository.findSumRatingByAssetId(assetId));
+                    if (reviewRatingSum.isPresent()) {
+                        assetPS.calculateRatingOnDeleteReview(assetPS, reviewRatingSum.get());
+                    } else {
+                        assetPS.calculateRatingOnDeleteReview(assetPS);
+                    }
+                    try {
+                        assetRepository.save(assetPS);
+                    } catch (Exception e) {
+                        throw new Exception500("에셋 수정 실패 : " + e.getMessage());
+                    }
+                } else {
+                    throw new Exception400("reviewId", "잘못된 요청입니다. ");
+                }
             }else{
-                assetPS.calculateRatingOnDeleteReview(assetPS);
-            }
-            try {
-                assetRepository.save(assetPS);
-            } catch (Exception e) {
-                throw new Exception500("에셋 수정 실패 : " + e.getMessage());
+                throw new Exception403("리뷰가 존재하지 않습니다. ");
             }
         }else{
-            throw new Exception400("reviewId", "잘못된 요청입니다. ");
+            throw new Exception403("이 에셋을 구매하지 않았습니다. ");
         }
     }
 }

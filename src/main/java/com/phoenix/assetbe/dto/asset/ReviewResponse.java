@@ -12,16 +12,16 @@ public class ReviewResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter @Setter
-    public static class ReviewsOutDTO {
+    public static class ReviewListOutDTO {
         private boolean hasAsset;
         private boolean hasReview;
         private boolean hasWishlist;
-        private List<Reviews> reviewList;
+        private List<ReviewOutDTO> reviewList;
 
         @AllArgsConstructor
         @NoArgsConstructor
         @Getter @Setter
-        public static class Reviews {
+        public static class ReviewOutDTO {
             private Long reviewId;
             private Double rating;
             private String content;
