@@ -85,12 +85,12 @@ public class AssetController {
 
     @GetMapping("/assets/search")
     public ResponseEntity<?> getAssetListBySearch(
-            @RequestParam(value = "keyword", required = false) List<String> keyword,
+            @RequestParam(value = "keyword", required = false) List<String> keywordList,
             @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         AssetResponse.AssetListOutDTO assetsOutDTO =
-                assetService.getAssetListBySearchService(keyword, pageable, myUserDetails);
+                assetService.getAssetListBySearchService(keywordList, pageable, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(assetsOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }

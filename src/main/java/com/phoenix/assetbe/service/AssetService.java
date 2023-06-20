@@ -90,27 +90,38 @@ public class AssetService {
     }
 
     public AssetResponse.AssetListOutDTO getAssetListBySearchService(List<String> keywordList,
-                                                                  Pageable pageable, MyUserDetails myUserDetails) {
+                                                                     Pageable pageable, MyUserDetails myUserDetails) {
 
-        HashSet<String> keywordSet = new LinkedHashSet<>(keywordList);
+        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
 
-        for (String keyword : keywordList) {
-            keywordSet.addAll(Arrays.asList(keyword.split(" ")));
+        if(!keywordList.isEmpty()) {
+
+            HashSet<String> keywordSet = new LinkedHashSet<>(keywordList);
+
+            for (String keyword : keywordList) {
+                keywordSet.addAll(Arrays.asList(keyword.split(" ")));
+            }
+
+            List<String> splitKeywordList = new ArrayList<>(keywordSet);
+
+            if (myUserDetails != null) {
+                Long userId = myUserDetails.getUser().getId();
+                assetList = assetQueryRepository
+                        .findAssetListWithUserIdAndPaginationBySearch(userId, splitKeywordList, pageable);
+            } else {
+                assetList = assetQueryRepository
+                        .findAssetListWithPaginationBySearch(splitKeywordList, pageable);
+            }
+
+            if(assetList.getContent().isEmpty()) {
+                throw new Exception404("에셋이 존재하지 않습니다. ");
+            }
+
+        }else{
+            throw new Exception400("keyword", "잘못된 요청입니다. ");
         }
 
-        List<String> splitKeywordList = new ArrayList<>(keywordSet);
-
-        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetDetailList;
-        if(myUserDetails != null) {
-            Long userId = myUserDetails.getUser().getId();
-            assetDetailList = assetQueryRepository
-                    .findAssetListWithUserIdAndPaginationBySearch(userId, splitKeywordList, pageable);
-        }else {
-            assetDetailList = assetQueryRepository
-                    .findAssetListWithPaginationBySearch(splitKeywordList, pageable);
-        }
-
-        return new AssetResponse.AssetListOutDTO(assetDetailList);
+        return new AssetResponse.AssetListOutDTO(assetList);
     }
 
     public Asset findAssetById(Long assetId){
