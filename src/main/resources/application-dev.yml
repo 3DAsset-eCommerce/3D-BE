@@ -9,8 +9,8 @@ server:
     key-alias: spring
   tomcat:
     uri-encoding: UTF-8
-  port: 443
-  #  port: 8080
+#  port: 443
+  port: 8080
   servlet:
     encoding:
       charset: utf-8
