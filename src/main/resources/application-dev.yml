@@ -4,7 +4,7 @@ server:
   ssl:
     enabled: true
     key-store: classpath:keystore.p12
-    key-store-password: ${{SSL_PASSWORD}}
+    key-store-password: fastcampus1!
     key-store-type: PKCS12
     key-alias: spring
   tomcat:
