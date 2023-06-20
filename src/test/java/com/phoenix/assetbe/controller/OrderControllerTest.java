@@ -69,13 +69,13 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("주문 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void order_assets_test() throws Exception {
         // Given
         List<Long> orderAssetList = Arrays.asList(1L, 2L);
 
         OrderRequest.OrderAssetsInDTO orderAssetsInDTO
-                = new OrderRequest.OrderAssetsInDTO(orderAssetList, "유현주@nate.com", "현주", "유", "010-1234-1234", 3000D, "카드");
+                = new OrderRequest.OrderAssetsInDTO(orderAssetList, "yuhyunju1@nate.com", "hyunju1", "yu", "010-1234-1234", 3000D, "카드");
 
         String request = objectMapper.writeValueAsString(orderAssetsInDTO);
         System.out.println("테스트 request : " + request);
@@ -95,13 +95,13 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("주문 실패 : 유저 조회 실패")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void order_assets_fail1_test() throws Exception {
         // Given
         List<Long> orderAssetList = Arrays.asList(1L, 2L);
 
         OrderRequest.OrderAssetsInDTO orderAssetsInDTO
-                = new OrderRequest.OrderAssetsInDTO(orderAssetList, "최현주@nate.com", "현주", "유", "010-1234-1234", 20000D, "카드");
+                = new OrderRequest.OrderAssetsInDTO(orderAssetList, "chehyunju@nate.com", "hyunju1", "yu", "010-1234-1234", 20000D, "카드");
 
         String request = objectMapper.writeValueAsString(orderAssetsInDTO);
         System.out.println("테스트 request : " + request);
@@ -124,13 +124,13 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("주문 실패 : 총 금액 불일치")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void order_assets_fail2_test() throws Exception {
         // Given
         List<Long> orderAssetList = Arrays.asList(1L, 2L);
 
         OrderRequest.OrderAssetsInDTO orderAssetsInDTO
-                = new OrderRequest.OrderAssetsInDTO(orderAssetList, "유현주@nate.com", "현주", "유", "010-1234-1234", 10000D, "카드");
+                = new OrderRequest.OrderAssetsInDTO(orderAssetList, "yuhyunju1@nate.com", "hyunju1", "yu", "010-1234-1234", 10000D, "카드");
 
         String request = objectMapper.writeValueAsString(orderAssetsInDTO);
         System.out.println("테스트 request : " + request);
@@ -152,7 +152,7 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("주문 내역 조회 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void get_order_List_test() throws Exception {
         // Given
         Long userId = 1L;
@@ -171,7 +171,7 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("주문 내역 조회 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void get_order_List_auth_fail_test() throws Exception {
         // Given
         Long userId = 2L;
@@ -191,7 +191,7 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("주문 상세 조회 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void get_order_product_List_test() throws Exception {
         // Given
         Long userId = 1L;
@@ -211,7 +211,7 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("주문 상세 조회 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void get_order_product_List_auth_fail_test() throws Exception {
         // Given
         Long userId = 2L;
@@ -232,7 +232,7 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("주문 상세 조회 실패 : 내 주문 내역 아님")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void get_order_product_List_fail_others_test() throws Exception {
         // Given
         Long userId = 1L;
@@ -254,7 +254,7 @@ public class OrderControllerTest {
 
     @Test
     @DisplayName("주문 상세 조회 실패 : 없는 주문 내역")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void get_order_product_List_auth_fail_others_test() throws Exception {
         // Given
         Long userId = 1L;

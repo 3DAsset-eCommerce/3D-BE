@@ -13,6 +13,7 @@ import com.phoenix.assetbe.dto.user.UserResponse.LoginWithJWTOutDTO;
 import com.phoenix.assetbe.dto.user.UserResponse.PasswordChangeOutDTO;
 import com.phoenix.assetbe.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -24,45 +25,59 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserController {
+
     private final UserService userService;
 
+    /**
+     * 로그인
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginInDTO loginInDTO, Errors errors){
-        LoginWithJWTOutDTO loginWithJWTOutDTO = userService.loginService(loginInDTO);
-        return ResponseEntity.ok().header(MyJwtProvider.HEADER, loginWithJWTOutDTO.getJwt()).body(new ResponseDTO<>(new LoginOutDTO(loginWithJWTOutDTO.getId())));
+        UserResponse.LoginWithJWTOutDTO loginWithJWTOutDTO = userService.loginService(loginInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(new LoginOutDTO(loginWithJWTOutDTO.getId()));
+        return ResponseEntity.ok().header(MyJwtProvider.HEADER, loginWithJWTOutDTO.getJwt()).body(responseDTO);
     }
 
     @PostMapping("/login/send")
     public ResponseEntity<?> verifyingCodeSend(@RequestBody @Valid UserRequest.CodeInDTO codeInDTO, Errors errors){
-        CodeOutDTO codeOutDTO = userService.codeSendService(codeInDTO);
-        return ResponseEntity.ok(new ResponseDTO<>(codeOutDTO));
+        UserResponse.CodeOutDTO codeOutDTO = userService.codeSendService(codeInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(codeOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/login/check")
     public ResponseEntity<?> verifyingCodeCheck(@RequestBody @Valid UserRequest.CodeCheckInDTO codeCheckInDTO, Errors errors){
-        CodeCheckOutDTO codeCheckOutDTO = userService.codeCheckService(codeCheckInDTO);
-        return ResponseEntity.ok(new ResponseDTO<>(codeCheckOutDTO));
+        UserResponse.CodeCheckOutDTO codeCheckOutDTO = userService.codeCheckService(codeCheckInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(codeCheckOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/login/change")
     public ResponseEntity<?> passwordChange(@RequestBody @Valid UserRequest.PasswordChangeInDTO passwordChangeInDTO, Errors errors){
-        PasswordChangeOutDTO passwordChangeOutDTO = userService.passwordChangeService(passwordChangeInDTO);
-        return ResponseEntity.ok(new ResponseDTO<>(passwordChangeOutDTO));
+        UserResponse.PasswordChangeOutDTO passwordChangeOutDTO = userService.passwordChangeService(passwordChangeInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(passwordChangeOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
+    /**
+     * 회원가입
+     */
     @PostMapping("/signup/duplicate")
     public ResponseEntity<?> emailIsDuplicate(@RequestBody @Valid UserRequest.EmailCheckInDTO emailCheckInDTO, Errors errors){
-        EmailCheckOutDTO emailCheckOutDTO = userService.emailCheckService(emailCheckInDTO);
-        return ResponseEntity.ok(new ResponseDTO<>(emailCheckOutDTO));
+        UserResponse.EmailCheckOutDTO emailCheckOutDTO = userService.emailCheckService(emailCheckInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(emailCheckOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid UserRequest.SignupInDTO signupInDTO, Errors errors) {
         UserResponse.SignupOutDTO signupOutDTO = userService.signupService(signupInDTO);
-        return ResponseEntity.ok(new ResponseDTO<>(signupOutDTO));
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(signupOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     /**
@@ -71,29 +86,32 @@ public class UserController {
     @PostMapping("/s/user/check")
     public ResponseEntity<?> checkPassword(@RequestBody UserRequest.CheckPasswordInDTO checkPasswordInDTO, Errors errors, @AuthenticationPrincipal MyUserDetails myUserDetails) {
         userService.checkPasswordService(checkPasswordInDTO, myUserDetails);
-        return ResponseEntity.ok(new ResponseDTO<>(null));
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/s/user/{id}/withdraw")
     public ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody UserRequest.WithdrawInDTO withdrawInDTO, Errors errors,
                                       @AuthenticationPrincipal MyUserDetails myUserDetails) {
         userService.withdrawService(id, withdrawInDTO, myUserDetails);
-        return ResponseEntity.ok(new ResponseDTO<>(null));
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/s/user/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UserRequest.UpdateInDTO updateInDTO, Errors errors,
                                     @AuthenticationPrincipal MyUserDetails myUserDetails) {
         userService.updateService(id, updateInDTO, myUserDetails);
-        return ResponseEntity.ok(new ResponseDTO<>(null));
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/s/user/{id}")
     public ResponseEntity<?> getMyInfo(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
         UserResponse.GetMyInfoOutDTO getMyInfoOutDTO = userService.getMyInfoService(id, myUserDetails);
-        return ResponseEntity.ok(new ResponseDTO<>(getMyInfoOutDTO));
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(getMyInfoOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
-
 
     /**
      * 나의 에셋
@@ -103,7 +121,8 @@ public class UserController {
                                             @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.ASC) Pageable pageable,
                                             @AuthenticationPrincipal MyUserDetails myUserDetails) {
         UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.getMyAssetListService(id, pageable, myUserDetails);
-        return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(myAssetListOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping("/s/user/{id}/assets/search")
@@ -112,12 +131,14 @@ public class UserController {
                                            @PageableDefault(size = 14, page = 0) Pageable pageable,
                                            @AuthenticationPrincipal MyUserDetails myUserDetails) {
         UserResponse.MyAssetListOutDTO myAssetListOutDTO = userService.searchMyAssetService(id, keywordList, pageable, myUserDetails);
-        return ResponseEntity.ok(new ResponseDTO<>(myAssetListOutDTO));
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(myAssetListOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/s/user/download")
     public ResponseEntity<?> downloadMyAsset(@RequestBody UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails) {
         UserResponse.DownloadMyAssetListOutDTO downloadMyAssetListOutDTO = userService.downloadMyAssetService(downloadMyAssetInDTO, myUserDetails);
-        return ResponseEntity.ok(new ResponseDTO<>(downloadMyAssetListOutDTO));
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(downloadMyAssetListOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 }

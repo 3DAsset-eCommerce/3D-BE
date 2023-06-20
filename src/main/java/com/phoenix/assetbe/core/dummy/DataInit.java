@@ -42,14 +42,14 @@ public class DataInit extends DummyEntity{
                            MyAssetRepository myAssetRepository){
         return args -> {
 
-            // User 1L 유현주@nate.com 1234
-            User user1 = newUser("유", "현주");
-            User user2 = newUser("송", "재근");
-            User user3 = newUser("양", "진호");
-            User user4 = newUser("이", "지훈");
-            User user5 = newUser("이", "로운");
-            User user6 = newUser("이", "찬영");
-            User user7 =  newUser("송", "지윤");
+            // User  1L  yu  hyunju1   yuhyunju1@nate.com  qwe123!@#
+            User user1 = newUser("yu", "hyunju1");
+            User user2 = newUser("song", "jaegeun2");
+            User user3 = newUser("yang", "jinho3");
+            User user4 = newUser("lee", "jihun4");
+            User user5 = newUser("lee", "roun5");
+            User user6 = newUser("lee", "chanyung6");
+            User user7 =  newUser("song", "jiyun7");
 
             List<User> userList = Arrays.asList(user1, user2, user3, user4, user5, user6, user7);
             userRepository.saveAll(userList);
@@ -185,7 +185,6 @@ public class DataInit extends DummyEntity{
              * 5L 사용자 -> 1L~8L 구매
              * 6L 사용자 -> 10L~18L 위시
              * 7L 사용자 -> 5L~12L 장바구니
-             * 8L 사용자
              */
 
             //Cart
@@ -221,7 +220,7 @@ public class DataInit extends DummyEntity{
             //Order
             List<OrderProduct> orderProductList = new ArrayList<>();
             List<MyAsset> myAssetList = new ArrayList<>();
-            List<Integer> orderUserIndexList = Arrays.asList(0, 1, 3, 5);
+            List<Integer> orderUserIndexList = Arrays.asList(0, 2, 3, 4);
 
             for(Integer userIndex : orderUserIndexList ){
                 User user = userList.get(userIndex);

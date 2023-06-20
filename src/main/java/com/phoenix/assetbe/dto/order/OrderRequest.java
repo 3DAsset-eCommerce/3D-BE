@@ -11,8 +11,7 @@ import java.util.List;
 
 public class OrderRequest {
 
-    @Getter
-    @Setter
+    @Getter @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class OrderAssetsInDTO{
@@ -20,16 +19,17 @@ public class OrderRequest {
         @NotEmpty(message = "주문할 에셋을 입력해주세요. ")
         private List<Long> assetList;
 
-        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
-        @NotEmpty(message = "이메일을 입력해주세요.")
+        @NotEmpty
+        @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                message = "50자가 넘지 않도록 이메일 형식에 맞춰 작성해주세요. ")
         private String email;
 
-        @Pattern(regexp = "^[가-힣a-zA-Z]*$", message = "한글 또는 영어만 입력하세요.")
-        @NotEmpty(message = "이름을 입력해주세요")
+        @Pattern(regexp = "^[A-Za-z가-힣]{2,20}$", message = "영문/한글 2~20자 이내로 이름을 작성해주세요. ")
+        @NotEmpty
         private String firstName;
 
-        @Pattern(regexp = "^[가-힣a-zA-Z]*$", message = "한글 또는 영어만 입력하세요.")
-        @NotEmpty(message = "성을 입력해주세요")
+        @Pattern(regexp = "^[A-Za-z가-힣]{2,20}$", message = "영문/한글 2~20자 이내로 성을 작성해주세요. ")
+        @NotEmpty
         private String lastName;
 
         private String phoneNumber;

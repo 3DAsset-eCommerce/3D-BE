@@ -11,6 +11,7 @@ public class ReviewRequest {
     @NoArgsConstructor
     @Getter @Setter
     public static class ReviewInDTO {
+
         private Long userId;
         private Double rating;
         private String content;
@@ -20,6 +21,7 @@ public class ReviewRequest {
     @NoArgsConstructor
     @Getter @Setter
     public static class DeleteReviewInDTO {
+
         private Long userId;
     }
 }

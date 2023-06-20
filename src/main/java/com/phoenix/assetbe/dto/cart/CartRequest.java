@@ -8,8 +8,7 @@ import java.util.List;
 
 public class CartRequest {
 
-    @Getter
-    @Setter
+    @Getter @Setter
     public static class AddCartInDTO{
 
         @NotEmpty(message = "유저 id를 입력해주세요. ")
@@ -19,8 +18,7 @@ public class CartRequest {
         private List<Long> assets;
     }
 
-    @Getter
-    @Setter
+    @Getter @Setter
     public static class DeleteCartInDTO{
 
         @NotEmpty(message = "유저 id를 입력해주세요. ")

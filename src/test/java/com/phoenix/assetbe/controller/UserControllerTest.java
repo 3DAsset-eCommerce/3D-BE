@@ -72,15 +72,15 @@ public class UserControllerTest extends MyRestDoc {
      * 마이페이지
      */
     @DisplayName("비밀번호 확인 성공")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void check_password_test() throws Exception {
         // given
         Long userId = 2L;
 
         UserRequest.CheckPasswordInDTO checkPasswordInDTO = new UserRequest.CheckPasswordInDTO();
-        checkPasswordInDTO.setId(userId);
-        checkPasswordInDTO.setPassword("1234");
+        checkPasswordInDTO.setUserId(userId);
+        checkPasswordInDTO.setPassword("qwe123!@#");
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/user/check")
@@ -96,15 +96,15 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("비밀번호 확인 실패 : 비밀번호 불일치")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void check_password_fail_test() throws Exception {
         // given
         Long userId = 2L;
 
         UserRequest.CheckPasswordInDTO checkPasswordInDTO = new UserRequest.CheckPasswordInDTO();
-        checkPasswordInDTO.setId(userId);
-        checkPasswordInDTO.setPassword("5678");
+        checkPasswordInDTO.setUserId(userId);
+        checkPasswordInDTO.setPassword("qwe123!@#$");
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/user/check")
@@ -121,7 +121,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("회원탈퇴 성공")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void withdraw_test() throws Exception {
         // given
@@ -144,7 +144,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("회원탈퇴 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void withdraw_fail_test() throws Exception {
         // given
@@ -167,14 +167,14 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("회원정보 수정 성공")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void update_test() throws Exception {
         // given
         Long id = 2L;
 
         UserRequest.UpdateInDTO updateInDTO = new UserRequest.UpdateInDTO();
-        updateInDTO.setNewPassword("5678");
+        updateInDTO.setNewPassword("qwe123!@#$");
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/user/{id}", id)
@@ -190,7 +190,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("회원정보 수정 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void update_fail_test() throws Exception {
         // given
@@ -212,7 +212,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("내 회원정보 조회 성공")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_my_info_test() throws Exception {
         // given
@@ -225,14 +225,14 @@ public class UserControllerTest extends MyRestDoc {
         resultActions.andExpect(jsonPath("$.status").value(200));
         resultActions.andExpect(jsonPath("$.msg").value("성공"));
         resultActions.andExpect(jsonPath("$.data.id").value(2));
-        resultActions.andExpect(jsonPath("$.data.firstName").value("재근"));
-        resultActions.andExpect(jsonPath("$.data.lastName").value("송"));
-        resultActions.andExpect(jsonPath("$.data.email").value("송재근@nate.com"));
+        resultActions.andExpect(jsonPath("$.data.firstName").value("jaegeun2"));
+        resultActions.andExpect(jsonPath("$.data.lastName").value("song"));
+        resultActions.andExpect(jsonPath("$.data.email").value("songjaegeun2@nate.com"));
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @DisplayName("내 회원정보 조회 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_my_info_fail_test() throws Exception {
         // given
@@ -252,7 +252,7 @@ public class UserControllerTest extends MyRestDoc {
      * 내 에셋
      */
     @DisplayName("내 에셋 조회 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_my_asset_list_test() throws Exception {
         // given
@@ -272,7 +272,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("내 에셋 조회 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_my_asset_list_fail_test() throws Exception {
         // given
@@ -293,7 +293,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("내 에셋 검색 성공")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void search_my_asset_test() throws Exception {
         // given
@@ -315,7 +315,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("내 에셋 검색 실패 : 권한 체크 실패") // id 다른 경우
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void search_my_asset_fail_test() throws Exception {
         // given
@@ -338,7 +338,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("내 에셋 다운 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void download_my_asset_test() throws Exception {
         // given
@@ -368,7 +368,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("내 에셋 다운 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void download_my_asset_fail1_test() throws Exception {
         // given
@@ -399,7 +399,7 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("내 에셋 다운 실패 : 해당 에셋 보유 안함")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void download_my_asset_fail2_test() throws Exception {
         // given

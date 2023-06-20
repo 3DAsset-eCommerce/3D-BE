@@ -10,6 +10,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class UserResponse {
+
+    /**
+     * 로그인
+     */
     @Getter
     @Setter
     public static class LoginWithJWTOutDTO {
@@ -21,6 +25,7 @@ public class UserResponse {
             this.jwt = jwt;
         }
     }
+
     @Getter
     @Setter
     public static class LoginOutDTO {
@@ -29,6 +34,7 @@ public class UserResponse {
             this.userId = userId;
         }
     }
+
     @Setter
     @Getter
     public static class CodeOutDTO {
@@ -66,7 +72,7 @@ public class UserResponse {
     }
 
     /**
-     * 마이페이지
+     * 회원가입
      */
     @Setter
     @Getter
@@ -94,6 +100,9 @@ public class UserResponse {
         }
     }
 
+    /**
+     * 마이페이지
+     */
     @Getter
     @Setter
     public static class GetMyInfoOutDTO {

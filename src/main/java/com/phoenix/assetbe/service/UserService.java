@@ -52,9 +52,9 @@ public class UserService {
     private final AssetService assetService;
 
     /**
-     * 로그인, 회원가입
+     * 로그인
      */
-    public LoginWithJWTOutDTO loginService(UserRequest.LoginInDTO loginInDTO) {
+    public UserResponse.LoginWithJWTOutDTO loginService(UserRequest.LoginInDTO loginInDTO) {
         User userPS = findUserByEmail(loginInDTO.getEmail());
         if (!userPS.isEmailVerified()) {
             throw new Exception400("verified", "이메일 인증이 필요합니다. ");
@@ -66,14 +66,14 @@ public class UserService {
             Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             MyUserDetails myUserDetails = (MyUserDetails) authentication.getPrincipal();
 
-            return new LoginWithJWTOutDTO(myUserDetails.getUser().getId(), MyJwtProvider.create(myUserDetails.getUser()));
+            return new UserResponse.LoginWithJWTOutDTO(myUserDetails.getUser().getId(), MyJwtProvider.create(myUserDetails.getUser()));
         }catch (Exception e){
             throw new Exception401("아이디 혹은 비밀번호를 확인해주세요. ");
         }
     }
 
     @Transactional
-    public CodeOutDTO codeSendService(UserRequest.CodeInDTO codeInDTO){
+    public UserResponse.CodeOutDTO codeSendService(UserRequest.CodeInDTO codeInDTO){
         User userPS = findUserByEmail(codeInDTO.getEmail());
         userPS.generateEmailCheckToken();
 
@@ -83,23 +83,23 @@ public class UserService {
         mailMessage.setText(userPS.getEmailCheckToken());
         javaMailSender.send(mailMessage);
 
-        return new CodeOutDTO(userPS);
+        return new UserResponse.CodeOutDTO(userPS);
     }
 
     @Transactional
-    public CodeCheckOutDTO codeCheckService(CodeCheckInDTO codeCheckInDTO) {
+    public UserResponse.CodeCheckOutDTO codeCheckService(CodeCheckInDTO codeCheckInDTO) {
         Optional<User> userPS = userRepository.findByEmail(codeCheckInDTO.getEmail());
         if (!userPS.isPresent()) {
             throw new Exception400("code", "먼저 이메일 인증코드를 전송해주세요. ");
         }
         if (userPS.get().getEmailCheckToken().equals(codeCheckInDTO.getCode())) {
-            return new CodeCheckOutDTO(userPS.get().getEmail(), true);
+            return new UserResponse.CodeCheckOutDTO(userPS.get().getEmail(), true);
         }
         throw new Exception400("code", "이메일 인증코드가 틀렸습니다. ");
     }
 
     @Transactional
-    public PasswordChangeOutDTO passwordChangeService(PasswordChangeInDTO passwordChangeInDTO) {
+    public UserResponse.PasswordChangeOutDTO passwordChangeService(PasswordChangeInDTO passwordChangeInDTO) {
         User userPS = findUserByEmail(passwordChangeInDTO.getEmail());
         if (userPS.getEmailCheckToken() == null) {
             throw new Exception400("email", "이메일 인증을 먼저 해야 합니다. ");
@@ -109,14 +109,17 @@ public class UserService {
             userPS.setEmailCheckToken("");
             userPS.setTokenCreatedAt();
 
-            return new PasswordChangeOutDTO(userPS.getEmail());
+            return new UserResponse.PasswordChangeOutDTO(userPS.getEmail());
         }
         throw new Exception400("code", "이메일 인증 코드가 틀렸습니다. ");
     }
 
-    public EmailCheckOutDTO emailCheckService(EmailCheckInDTO emailCheckInDTO) {
+    /**
+     * 회원가입
+     */
+    public UserResponse.EmailCheckOutDTO emailCheckService(EmailCheckInDTO emailCheckInDTO) {
         existsUserByEmail(emailCheckInDTO.getEmail());
-        return new EmailCheckOutDTO(emailCheckInDTO.getEmail());
+        return new UserResponse.EmailCheckOutDTO(emailCheckInDTO.getEmail());
     }
 
     @Transactional
@@ -137,7 +140,7 @@ public class UserService {
             mailMessage.setText("/check-email-token?token=" + userPS.getEmailCheckToken() + "&email=" + userPS.getEmail());
             javaMailSender.send(mailMessage);
 
-            return new SignupOutDTO(userPS);
+            return new UserResponse.SignupOutDTO(userPS);
         } catch (Exception e) {
             throw new Exception500("회원가입 실패 : " + e.getMessage());
         }
@@ -147,8 +150,8 @@ public class UserService {
      * 마이페이지
      */
     public void checkPasswordService(UserRequest.CheckPasswordInDTO checkPasswordInDTO, MyUserDetails myUserDetails) {
-        Long userId = checkPasswordInDTO.getId();
-        authCheck(myUserDetails, checkPasswordInDTO.getId());
+        Long userId = checkPasswordInDTO.getUserId();
+        authCheck(myUserDetails, checkPasswordInDTO.getUserId());
         User userPS = findUserById(userId);
         if (!passwordEncoder.matches(checkPasswordInDTO.getPassword(), userPS.getPassword())) {
             throw new Exception400("password", "비밀번호가 일치하지 않습니다. ");

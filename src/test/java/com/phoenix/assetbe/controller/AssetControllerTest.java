@@ -84,7 +84,7 @@ public class AssetControllerTest {
     }
 
     @DisplayName("에셋 상세정보 로그인유저 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_asset_details_with_user_test() throws Exception {
         // Given
@@ -133,7 +133,7 @@ public class AssetControllerTest {
     }
 
     @DisplayName("개별에셋 로그인유저 성공")
-    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_asset_list_with_user_test() throws Exception {
         // Given
@@ -182,7 +182,7 @@ public class AssetControllerTest {
     }
 
     @DisplayName("카테고리별 에셋 조회 로그인유저 성공")
-    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_asset_list_with_user_id_and_pagination_by_category_test() throws Exception {
         // Given
@@ -232,7 +232,7 @@ public class AssetControllerTest {
     }
 
     @DisplayName("하위 카테고리별 에셋 조회 로그인 성공")
-    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void find_asset_list_with_user_id_and_pagination_by_sub_category_test() throws Exception {
         // Given

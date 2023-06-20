@@ -76,8 +76,8 @@ public class UserServiceTest extends DummyEntity {
         // given
         Long userId = 1L;
         UserRequest.CheckPasswordInDTO checkPasswordInDTO = new UserRequest.CheckPasswordInDTO();
-        checkPasswordInDTO.setId(userId);
-        checkPasswordInDTO.setPassword("1234");
+        checkPasswordInDTO.setUserId(userId);
+        checkPasswordInDTO.setPassword("qwe123!@#");
 
         String requestBody = objectMapper.writeValueAsString(checkPasswordInDTO);
         System.out.println("request 테스트: " + requestBody);

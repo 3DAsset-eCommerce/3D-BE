@@ -13,22 +13,32 @@ import java.util.List;
 import java.util.UUID;
 
 public class UserRequest {
-    @Setter
-    @Getter
+
+    /**
+     * 로그인
+     */
+    @Getter @Setter
     public static class LoginInDTO {
-        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
-        @NotEmpty(message = "이메일을 입력해주세요.")
+
+        @NotEmpty
+        @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                message = "50자가 넘지 않도록 이메일 형식에 맞춰 작성해주세요. ")
         private String email;
-        @NotEmpty(message = "패스워드를 입력해주세요.")
-        @Size(min = 4, max = 20)
+
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,20}$",
+                message = "영문, 숫자, 특수문자를 각각 1개 이상 사용하여 8~20자 이내로 작성해주세요. ")
+        @NotEmpty
         private String password;
     }
-    @Setter
-    @Getter
+
+    @Getter @Setter
     public static class CodeInDTO {
-        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
-        @NotEmpty(message = "이메일을 입력해주세요.")
+
+        @NotEmpty
+        @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                message = "50자가 넘지 않도록 이메일 형식에 맞춰 작성해주세요. ")
         private String email;
+
         public User toEntity() {
             return User.builder()
                     .email(email)
@@ -37,58 +47,69 @@ public class UserRequest {
         }
     }
 
-    @Setter
-    @Getter
+    @Getter @Setter
     public static class CodeCheckInDTO {
-        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
-        @NotEmpty(message = "이메일을 입력해주세요.")
+
+        @NotEmpty
+        @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                message = "50자가 넘지 않도록 이메일 형식에 맞춰 작성해주세요. ")
         private String email;
 
         @NotEmpty(message = "인증코드를 입력해주세요.")
         private String code;
     }
 
-    @Setter
-    @Getter
+    @Getter @Setter
     @NoArgsConstructor
     public static class PasswordChangeInDTO {
-        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
-        @NotEmpty(message = "이메일을 입력해주세요.")
+
+        @NotEmpty
+        @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                message = "50자가 넘지 않도록 이메일 형식에 맞춰 작성해주세요. ")
         private String email;
-        @NotEmpty(message = "패스워드를 입력해주세요.")
-        @Size(min = 4, max = 20)
+
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,20}$",
+                message = "영문, 숫자, 특수문자를 각각 1개 이상 사용하여 8~20자 이내로 작성해주세요. ")
+        @NotEmpty
         private String password;
 
         @NotEmpty(message = "인증코드를 입력해주세요.")
         private String code;
     }
 
-    @Setter
-    @Getter
+    /**
+     * 회원가입
+     */
+    @Getter @Setter
     @NoArgsConstructor
     public static class EmailCheckInDTO {
-        @Pattern(regexp = "^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식으로 작성해주세요")
-        @NotEmpty(message = "이메일을 입력해주세요.")
+
+        @NotEmpty
+        @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                message = "50자가 넘지 않도록 이메일 형식에 맞춰 작성해주세요. ")
         private String email;
     }
 
-    @Getter
-    @Setter
+    @Getter @Setter
     public static class SignupInDTO {
-        @NotEmpty(message = "firstName을 작성해주세요. ")
+
+        @Pattern(regexp = "^[A-Za-z가-힣]{2,20}$", message = "영문/한글 2~20자 이내로 이름을 작성해주세요. ")
+        @NotEmpty
         private String firstName;
 
-        @NotEmpty(message = "lastName을 작성해주세요. ")
+        @Pattern(regexp = "^[A-Za-z가-힣]{2,20}$", message = "영문/한글 2~20자 이내로 성을 작성해주세요. ")
+        @NotEmpty
         private String lastName;
 
-        @NotEmpty(message = "비밀번호를 형식에 맞게 작성해주세요. ")
-        @Size(min = 8, max = 20)
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,20}$",
+                message = "영문, 숫자, 특수문자를 각각 1개 이상 사용하여 8~20자 이내로 작성해주세요. ")
+        @NotEmpty
         private String password;
 
         @NotEmpty
-        @Email(message = "이메일 형식으로 작성해주세요. ")
+        @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                message = "50자가 넘지 않도록 이메일 형식에 맞춰 작성해주세요. ")
         private String email;
-
 
         public User toEntity() {
             return User.builder()
@@ -107,42 +128,47 @@ public class UserRequest {
     /**
      * 마이페이지
      */
-    @Getter
-    @Setter
+    @Getter @Setter
     public static class CheckPasswordInDTO {
-        @NotEmpty
-        private Long id;
 
-        @Size(min = 8, max = 20)
-        @NotEmpty(message = "패스워드를 입력해주세요. ")
+        @NotEmpty(message = "유저 id를 입력해주세요. ")
+        private Long userId;
+
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,20}$",
+                message = "영문, 숫자, 특수문자를 각각 1개 이상 사용하여 8~20자 이내로 작성해주세요. ")
+        @NotEmpty
         private String password;
     }
 
-    @Getter
-    @Setter
+    @Getter @Setter
     public static class WithdrawInDTO {
-        @NotEmpty(message = "탈퇴 사유를 적어주세요. ")
+
+        @Size(min = 0, max = 200, message = "0~200자 이내로 작성해주세요. ")
         private String message;
+
         @NotEmpty
         private boolean deleteConfirm; // true -> 탈퇴된 상태
     }
 
-    @Getter
-    @Setter
+    @Getter @Setter
     public static class UpdateInDTO {
-        @NotEmpty(message = "새로운 비밀번호를 입력해주세요. ")
+
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,20}$",
+                message = "영문, 숫자, 특수문자를 각각 1개 이상 사용하여 8~20자 이내로 작성해주세요. ")
+        @NotEmpty
         private String newPassword;
     }
 
     /**
      * 나의 에셋
      */
-    @Getter
-    @Setter
+    @Getter @Setter
     public static class DownloadMyAssetInDTO {
+
         @NotEmpty(message = "유저 id를 입력해주세요. ")
         private Long userId;
-        @NotEmpty(message = "내 에셋에서 다운로드할 목록을 입력해주세요. ")
+
+        @NotEmpty(message = "내 에셋에서 다운로드할 목록을 선택해주세요. ")
         private List<Long> assets;
     }
 }

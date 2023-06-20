@@ -53,25 +53,25 @@ public class User extends MyTimeBaseUtil {
     @UpdateTimestamp
     private LocalDateTime tokenCreatedAt;
 
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setTokenCreatedAt() {
-        this.tokenCreatedAt = null;
-    }
-
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
+    /**
+     * 메소드
+     */
     public void generateEmailCheckToken() {this.emailCheckToken= UUID.randomUUID().toString();}
     public void setEmailCheckToken(String s) {this.emailCheckToken=s;}
     public void changeWithdrawalMassage(String message) {this.reason = message;}
     public void changePassword(String password) {this.password = password;}
     public void changeStatus() {
         this.status = Status.INACTIVE;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public void setTokenCreatedAt() {
+        this.tokenCreatedAt = null;
     }
 }

@@ -71,7 +71,7 @@ public class CartControllerTest {
 
     @Test
     @DisplayName("장바구니 담기 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void add_cart_test() throws Exception {
         // Given
         Long userId = 1L;
@@ -101,7 +101,7 @@ public class CartControllerTest {
 
     @Test
     @DisplayName("장바구니 담기 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void add_cart_auth_fail_test() throws Exception {
         // Given
         Long userId = 2L;
@@ -129,7 +129,7 @@ public class CartControllerTest {
 
     @Test
     @DisplayName("장바구니 삭제 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void delete_cart_test() throws Exception {
         //Given
         Long userId = 1L;
@@ -158,7 +158,7 @@ public class CartControllerTest {
 
     @Test
     @DisplayName("장바구니 삭제 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void delete_cart_auth_fail_test() throws Exception {
         //Given
         Long userId = 2L;
@@ -185,7 +185,7 @@ public class CartControllerTest {
 
     @Test
     @DisplayName("장바구니 개수 조회 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void count_cart_test() throws Exception {
         // Given
         Long id = 1L;
@@ -204,7 +204,7 @@ public class CartControllerTest {
 
     @Test
     @DisplayName("장바구니 개수 조회 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void count_cart_auth_fail_test() throws Exception {
         // Given
         Long id = 2L;
@@ -223,7 +223,7 @@ public class CartControllerTest {
 
     @Test
     @DisplayName("장바구니 조회 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void show_cart_test() throws Exception {
         // Given
         Long id = 1L;
@@ -241,7 +241,7 @@ public class CartControllerTest {
 
     @Test
     @DisplayName("장바구니 조회 성공 : 0개 조회")
-    @WithUserDetails(value = "이지훈@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "leejihun4@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void show_cart_0_test() throws Exception {
         // Given
         Long id = 4L;
@@ -260,7 +260,7 @@ public class CartControllerTest {
 
     @Test
     @DisplayName("장바구니 조회 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     public void show_cart_auth_fail_test() throws Exception {
         // Given
         Long id = 2L;

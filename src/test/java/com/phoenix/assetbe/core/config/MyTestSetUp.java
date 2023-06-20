@@ -79,13 +79,13 @@ public class MyTestSetUp extends DummyEntity{
 
     public List<User> saveUser() {
         List<User> userList = Arrays.asList(
-                newUser("유", "현주"),
-                newUser("송", "재근"),
-                newUser("양", "진호"),
-                newUser("이", "지훈"),
-                newUser("이", "로운"),
-                newUser("이", "찬영"),
-                newUser("송", "지윤")
+                newUser("yu", "hyunju1"),
+                newUser("song", "jaegeun2"),
+                newUser("yang", "jinho3"),
+                newUser("lee", "jihun4"),
+                newUser("lee", "roun5"),
+                newUser("lee", "chanyung6"),
+                newUser("song", "jiyun7")
         );
         userRepository.saveAll(userList);
 
@@ -215,7 +215,6 @@ public class MyTestSetUp extends DummyEntity{
          * 5L 사용자 -> 1L~8L 구매
          * 6L 사용자 -> 10L~18L 위시
          * 7L 사용자 -> 5L~12L 장바구니
-         * 8L 사용자
          */
 
         //Cart
@@ -251,7 +250,7 @@ public class MyTestSetUp extends DummyEntity{
         //Order
         List<OrderProduct> orderProductList = new ArrayList<>();
         List<MyAsset> myAssetList = new ArrayList<>();
-        List<Integer> orderUserIndexList = Arrays.asList(0, 1, 3, 5);
+        List<Integer> orderUserIndexList = Arrays.asList(0, 2, 3, 4);
 
         for (Integer userIndex : orderUserIndexList) {
             User user = userList.get(userIndex);

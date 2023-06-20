@@ -112,7 +112,7 @@ public class ReviewControllerTest {
     }
 
     @DisplayName("리뷰보기 로그인유저 성공")
-    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_reviews_with_user_test() throws Exception {
         // Given
@@ -132,7 +132,7 @@ public class ReviewControllerTest {
     }
 
     @DisplayName("리뷰작성 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void add_review_test() throws Exception {
         // Given
@@ -170,7 +170,7 @@ public class ReviewControllerTest {
     }
 
     @DisplayName("리뷰작성 실패 : 에셋 구매 안함")
-    @WithUserDetails(value = "송재근@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void add_review_fail_hasAsset_false_test() throws Exception {
         // Given
@@ -195,7 +195,7 @@ public class ReviewControllerTest {
     }
 
     @DisplayName("리뷰작성 실패 : 이전에 리뷰 작성함")
-    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void add_review_fail_hasReview_true_test() throws Exception {
         // Given
@@ -220,7 +220,7 @@ public class ReviewControllerTest {
     }
 
     @DisplayName("리뷰수정 성공")
-    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void update_review_test() throws Exception {
         // Given
@@ -257,7 +257,7 @@ public class ReviewControllerTest {
     }
 
     @DisplayName("리뷰삭제 성공")
-    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void delete_review_test() throws Exception {
         // Given
