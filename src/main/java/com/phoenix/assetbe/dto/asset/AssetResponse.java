@@ -29,10 +29,10 @@ public class AssetResponse {
         private Long wishCount;
         private Long visitCount;
         private Long wishlistId;
-        private List<?> previewList;
+        private List<String> previewList;
         private List<String> tagList;
 
-        public AssetDetailsOutDTO(Asset asset, Long wishlistId, List<?> previewList, List<String> tagList) {
+        public AssetDetailsOutDTO(Asset asset, Long wishlistId, List<String> previewList, List<String> tagList) {
             this.assetId = asset.getId();
             this.assetName = asset.getAssetName();
             this.price = asset.getPrice();

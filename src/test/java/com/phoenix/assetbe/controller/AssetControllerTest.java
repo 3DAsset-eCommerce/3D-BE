@@ -4,6 +4,7 @@ import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.model.asset.*;
 import com.phoenix.assetbe.model.user.*;
+import com.phoenix.assetbe.service.AssetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,6 +44,12 @@ public class AssetControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private AssetService assetService;
+
+    @Autowired
+    private PreviewRepository previewRepository;
+
     @BeforeEach
     public void setUp() throws Exception {
         List<User> userList = myTestSetUp.saveUser();
@@ -56,6 +63,11 @@ public class AssetControllerTest {
     @Test
     public void get_asset_details_test() throws Exception {
         // Given
+        Asset asset = assetService.findAssetById(3L);
+        Preview preview1 = Preview.builder().asset(asset).previewUrl("asset3_1_previewUrl").build();
+        Preview preview2 = Preview.builder().asset(asset).previewUrl("asset3_2_previewUrl").build();
+        Preview preview3 = Preview.builder().asset(asset).previewUrl("asset3_3_previewUrl").build();
+        previewRepository.saveAll(Arrays.asList(preview1, preview2, preview3));
         Long id = 3L;
 
         // When
@@ -76,6 +88,11 @@ public class AssetControllerTest {
     @Test
     public void get_asset_details_with_user_test() throws Exception {
         // Given
+        Asset asset = assetService.findAssetById(10L);
+        Preview preview1 = Preview.builder().asset(asset).previewUrl("asset10_1_previewUrl").build();
+        Preview preview2 = Preview.builder().asset(asset).previewUrl("asset10_2_previewUrl").build();
+        Preview preview3 = Preview.builder().asset(asset).previewUrl("asset10_3_previewUrl").build();
+        previewRepository.saveAll(Arrays.asList(preview1, preview2, preview3));
         Long id = 10L;
 
         // When

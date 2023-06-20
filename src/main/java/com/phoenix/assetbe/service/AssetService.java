@@ -3,12 +3,10 @@ package com.phoenix.assetbe.service;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception404;
-import com.phoenix.assetbe.model.asset.Asset;
-import com.phoenix.assetbe.model.asset.AssetQueryRepository;
-import com.phoenix.assetbe.model.asset.AssetRepository;
+import com.phoenix.assetbe.model.asset.*;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.core.exception.Exception500;
-import com.phoenix.assetbe.model.asset.AssetTagQueryRepository;
+import com.phoenix.assetbe.model.wish.WishListQueryRepository;
 import com.phoenix.assetbe.model.wish.WishListRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +26,9 @@ public class AssetService {
 
     private final AssetRepository assetRepository;
     private final AssetQueryRepository assetQueryRepository;
-    private final WishListRepository wishListRepository;
+    private final WishListQueryRepository wishListQueryRepository;
     private final AssetTagQueryRepository assetTagQueryRepository;
+    private final PreviewQueryRepository previewQueryRepository;
 
     public AssetResponse.AssetListOutDTO getAssetListService(Pageable pageable, MyUserDetails myUserDetails) {
         Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
@@ -50,17 +49,18 @@ public class AssetService {
         Long wishListId = null;
         if (myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
-            wishListId = wishListRepository.findIdByAssetIdAndUserId(assetId, userId);
+            wishListId = wishListQueryRepository.findIdByAssetIdAndUserId(assetId, userId);
         }
         Asset assetPS = findAssetById(assetId);
         List<String> tagNameList = assetTagQueryRepository.findTagNameListByAssetId(assetId);
+        List<String> previewList = previewQueryRepository.findPreviewListByAssetId(assetId);
         assetPS.increaseVisitCount();
         try {
             assetRepository.save(assetPS);
         }catch (Exception e){
             throw new Exception500("view 증가 실패");
         }
-        return new AssetResponse.AssetDetailsOutDTO(assetPS, wishListId, null, tagNameList);
+        return new AssetResponse.AssetDetailsOutDTO(assetPS, wishListId, previewList, tagNameList);
     }
 
     public AssetResponse.AssetListOutDTO getAssetListByCategoryService(String categoryName, Pageable pageable, MyUserDetails myUserDetails) {
