@@ -9,8 +9,8 @@ server:
     key-alias: spring
   tomcat:
     uri-encoding: UTF-8
-#  port: 443
-  port: 8080
+  port: 443
+#  port: 8080
   servlet:
     encoding:
       charset: utf-8
@@ -35,7 +35,7 @@ spring:
       default_batch_fetch_size: 100
     # db session controller까지 가져오기
     open-in-view: false
-  # hibernateLazyInitializer 오류 해결법
+  #hibernateLazyInitializer 오류 해결법
   jackson:
     serialization:
       fail-on-empty-beans: false
