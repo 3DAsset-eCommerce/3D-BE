@@ -6,6 +6,7 @@ import com.phoenix.assetbe.core.exception.Exception401;
 import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.core.util.MyFilterResponseUtil;
 import com.phoenix.assetbe.dto.ResponseDTO;
+import com.phoenix.assetbe.model.user.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 @Slf4j
 @Configuration
@@ -85,9 +87,7 @@ public class MySecurityConfig {
         // 11. 인증, 권한 필터 설정
         http.authorizeRequests(
                 authorize -> authorize.antMatchers("/s/**").authenticated()
-                        .antMatchers("/manager/**")
-                        .access("hasRole('ADMIN') or hasRole('MANAGER')")
-                        .antMatchers("/admin/**").hasRole("ADMIN")
+                        .antMatchers("/**/admin/**").hasRole(String.valueOf(Role.ADMIN))
                         .anyRequest().permitAll()
         );
 
@@ -119,7 +119,7 @@ public class MySecurityConfig {
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*"); // GET, POST, PUT, DELETE (Javascript 요청 허용)
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST")); // GET, POST만 허용
         configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용 (프론트 앤드 IP만 허용 react)
         configuration.setAllowCredentials(true); // 클라이언트에서 쿠키 요청 허용
         configuration.addExposedHeader("Authorization"); // 옛날에는 디폴트 였다. 지금은 아닙니다.
