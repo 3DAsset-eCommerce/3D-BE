@@ -43,15 +43,16 @@ public class DataInit extends DummyEntity{
         return args -> {
 
             // User  1L  yu  hyunju1   yuhyunju1@nate.com  qwe123!@#
-            User user1 = newUser("yu", "hyunju1");
-            User user2 = newUser("song", "jaegeun2");
-            User user3 = newUser("yang", "jinho3");
-            User user4 = newUser("lee", "jihun4");
-            User user5 = newUser("lee", "roun5");
-            User user6 = newUser("lee", "chanyung6");
-            User user7 =  newUser("song", "jiyun7");
-
-            List<User> userList = Arrays.asList(user1, user2, user3, user4, user5, user6, user7);
+            List<User> userList = Arrays.asList(
+                    newUser("yu", "hyunju1"),
+                    newUser("song", "jaegeun2"),
+                    newUser("yang", "jinho3"),
+                    newUser("lee", "jihun4"),
+                    newUser("lee", "roun5"),
+                    newUser("lee", "chanyung6"),
+                    newUser("song", "jiyun7"),
+                    newAdmin("kuan", "liza8")
+            );
             userRepository.saveAll(userList);
 
             // 에셋 내용 리스팅

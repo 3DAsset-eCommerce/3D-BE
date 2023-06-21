@@ -43,6 +43,21 @@ public class DummyEntity {
                 .build();
     }
 
+    public User newAdmin(String lastName, String firstName){
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return User.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .password(passwordEncoder.encode("qwe123!@#"))
+                .email(lastName + firstName +"@nate.com")
+                .provider(SocialType.COMMON)
+                .role(Role.ADMIN)
+                .status(Status.ACTIVE)
+                .emailVerified(true)
+                .emailCheckToken(null)
+                .build();
+    }
+
     public Asset newAsset(String assetName, Double price, Double size, LocalDate date, Double rating) {
         return Asset.builder()
                 .assetName(assetName)

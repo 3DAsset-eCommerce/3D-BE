@@ -85,7 +85,8 @@ public class MyTestSetUp extends DummyEntity{
                 newUser("lee", "jihun4"),
                 newUser("lee", "roun5"),
                 newUser("lee", "chanyung6"),
-                newUser("song", "jiyun7")
+                newUser("song", "jiyun7"),
+                newAdmin("kuan", "liza8")
         );
         userRepository.saveAll(userList);
 
