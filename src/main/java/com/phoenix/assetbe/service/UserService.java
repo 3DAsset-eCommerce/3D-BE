@@ -113,9 +113,11 @@ public class UserService {
     /**
      * 회원가입
      */
-    public UserResponse.EmailCheckOutDTO emailCheckService(EmailCheckInDTO emailCheckInDTO) {
-        existsUserByEmail(emailCheckInDTO.getEmail());
-        return new UserResponse.EmailCheckOutDTO(emailCheckInDTO.getEmail());
+    public void emailDuplicateCheckService(EmailCheckInDTO emailCheckInDTO) {
+        boolean emailExist = existsUserByEmail(emailCheckInDTO.getEmail());
+        if (emailExist){
+            throw new Exception400("email", "이미 존재하는 이메일입니다. ");
+        }
     }
 
     @Transactional
@@ -236,11 +238,9 @@ public class UserService {
     }
 
     // 요청한 사용자 email이 존재하는지 확인하는 공통 메소드
-    public void existsUserByEmail(String email) {
-        boolean userCheck = userRepository.existsByEmail(email);
-        if(userCheck){
-            throw new Exception400("email","이미 존재하는 이메일입니다. ");
-        }
+    public boolean existsUserByEmail(String email) {
+        boolean emailExist = userRepository.existsByEmailAndStatus(email, Status.ACTIVE);
+        return emailExist;
     }
 
     // 요청한 사용자가 권한이 있는지 확인하는 공통 메소드

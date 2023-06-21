@@ -62,9 +62,9 @@ public class UserController {
      * 회원가입
      */
     @PostMapping("/signup/duplicate")
-    public ResponseEntity<?> emailIsDuplicate(@RequestBody @Valid UserRequest.EmailCheckInDTO emailCheckInDTO, Errors errors){
-        UserResponse.EmailCheckOutDTO emailCheckOutDTO = userService.emailCheckService(emailCheckInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(emailCheckOutDTO);
+    public ResponseEntity<?> emailDuplicateCheck(@RequestBody @Valid UserRequest.EmailCheckInDTO emailCheckInDTO, Errors errors){
+        userService.emailDuplicateCheckService(emailCheckInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
 

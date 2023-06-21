@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    boolean existsByEmail(String email);
+    boolean existsByEmailAndStatus(String email, Status status);
 
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.status = :status")
     Optional<User> findByUserWithEmailAndStatus(String email, Status status);

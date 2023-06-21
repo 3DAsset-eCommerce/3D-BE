@@ -38,15 +38,6 @@ public class UserResponse {
     /**
      * 회원가입
      */
-    @Setter
-    @Getter
-    public static class EmailCheckOutDTO {
-        private String email;
-
-        public EmailCheckOutDTO(String email) {
-            this.email = email;
-        }
-    }
 
     @Getter
     @Setter
