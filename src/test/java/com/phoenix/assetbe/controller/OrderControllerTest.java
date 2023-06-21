@@ -6,7 +6,6 @@ import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.order.OrderRequest;
 import com.phoenix.assetbe.model.asset.Asset;
-import com.phoenix.assetbe.model.order.*;
 import com.phoenix.assetbe.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,10 +25,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -157,10 +156,12 @@ public class OrderControllerTest extends MyRestDoc {
     public void get_order_List_test() throws Exception {
         // Given
         Long userId = 1L;
+        String startDate = LocalDate.of(2023, 6, 1).toString();
+        String endDate = LocalDate.of(2023, 6, 10).toString();
+
 
         // When
-        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/orders", userId));
-
+        ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/orders", userId).param("startDate", startDate).param("endDate", endDate));
         // Then
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         System.out.println("테스트 response : " + responseBody);

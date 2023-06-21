@@ -14,9 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -63,11 +63,11 @@ public class OrderService {
         return new OrderResponse.OrderAssetsOutDTO(order.getId());
     }
 
-    public OrderResponse.OrderOutDTO getOrderListService(Long userId, Pageable pageable, MyUserDetails myUserDetails) {
+    public OrderResponse.OrderOutDTO getOrderListService(Long userId, Pageable pageable, LocalDate startDate, LocalDate endDate, MyUserDetails myUserDetails) {
         userService.authCheck(myUserDetails, userId);
 
         Page<OrderResponse.OrderOutDTO.OrderListOutDTO> orderList;
-        orderList = orderQueryRepository.getOrderListByUserIdWithPaging(userId, pageable);
+        orderList = orderQueryRepository.getOrderListByUserIdWithPaging(userId, pageable, startDate, endDate);
 
         return new OrderResponse.OrderOutDTO(orderList);
     }

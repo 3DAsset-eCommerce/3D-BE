@@ -125,15 +125,18 @@ public class OrderServiceTest extends DummyEntity {
         int pageSize = 10;
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
+        LocalDate startDate = LocalDate.of(2023, 6, 1);
+        LocalDate endDate = LocalDate.of(2023, 6, 10);
+
         // when
         Page<OrderResponse.OrderOutDTO.OrderListOutDTO> orderList = new PageImpl<>(new ArrayList<OrderResponse.OrderOutDTO.OrderListOutDTO>());
-        when(orderQueryRepository.getOrderListByUserIdWithPaging(userId, pageable)).thenReturn(orderList);
+        when(orderQueryRepository.getOrderListByUserIdWithPaging(userId, pageable, startDate, endDate)).thenReturn(orderList);
 
-        orderService.getOrderListService(userId, pageable, myUserDetails);
+        orderService.getOrderListService(userId, pageable, startDate, endDate, myUserDetails);
 
         // then
         verify(userService, times(1)).authCheck(any(), anyLong());
-        verify(orderQueryRepository, times(1)).getOrderListByUserIdWithPaging(anyLong(), any());
+        verify(orderQueryRepository, times(1)).getOrderListByUserIdWithPaging(anyLong(), any(), startDate, endDate);
     }
 
     @Test
@@ -148,16 +151,19 @@ public class OrderServiceTest extends DummyEntity {
         int pageSize = 10;
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
+        LocalDate startDate = LocalDate.of(2023, 6, 1);
+        LocalDate endDate = LocalDate.of(2023, 6, 10);
+
         // when
         doThrow(new Exception403("권한이 없습니다."))
                 .when(userService).authCheck(myUserDetails, userId);
 
-        assertThrows(Exception403.class, () -> orderService.getOrderListService(userId, pageable, myUserDetails));
+        assertThrows(Exception403.class, () -> orderService.getOrderListService(userId, pageable, startDate, endDate, myUserDetails));
 
 
         // then
         verify(userService, times(1)).authCheck(any(), anyLong());
-        verify(orderQueryRepository, never()).getOrderListByUserIdWithPaging(anyLong(), any());
+        verify(orderQueryRepository, never()).getOrderListByUserIdWithPaging(anyLong(), any(), startDate, endDate);
     }
 
     @Test

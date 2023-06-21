@@ -34,7 +34,6 @@ public class QOrder extends EntityPathBase<Order> {
     public final StringPath phoneNumber = createString("phoneNumber");
 
     public final com.phoenix.assetbe.model.user.QUser user;
-    public Object orderProduct;
 
     public QOrder(String variable) {
         this(Order.class, forVariable(variable), INITS);

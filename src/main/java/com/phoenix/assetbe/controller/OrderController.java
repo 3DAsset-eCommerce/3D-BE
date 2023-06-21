@@ -7,15 +7,16 @@ import com.phoenix.assetbe.dto.order.OrderResponse;
 import com.phoenix.assetbe.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Slf4j
 @RestController
@@ -32,8 +33,19 @@ public class OrderController {
     }
 
     @GetMapping("/s/user/{id}/orders")
-    public ResponseEntity<?> getOrderList(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, @PathVariable("id") Long id, @AuthenticationPrincipal MyUserDetails myUserDetails){
-        OrderResponse.OrderOutDTO orderOutDTO = orderService.getOrderListService(id, pageable, myUserDetails);
+    public ResponseEntity<?> getOrderList(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                                          @PathVariable("id") Long id,
+                                          @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                          @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                          @AuthenticationPrincipal MyUserDetails myUserDetails){
+        if (startDate == null) {
+            startDate = LocalDate.now().minus(1, ChronoUnit.YEARS);
+        }
+        if (endDate == null) {
+            endDate = LocalDate.now();
+        }
+
+        OrderResponse.OrderOutDTO orderOutDTO = orderService.getOrderListService(id, pageable, startDate, endDate, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(orderOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
