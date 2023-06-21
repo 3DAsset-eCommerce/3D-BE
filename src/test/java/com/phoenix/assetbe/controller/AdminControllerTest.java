@@ -85,8 +85,9 @@ public class AdminControllerTest extends MyRestDoc {
         ResultActions resultActions = mockMvc.perform(get("/s/admin/category"));
 
         // then
-        resultActions.andExpect(status().isForbidden());
-        resultActions.andExpect(status().is4xxClientError());
+        resultActions.andExpect(jsonPath("$.status").value(403));
+        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
+        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
     }
 
     /**

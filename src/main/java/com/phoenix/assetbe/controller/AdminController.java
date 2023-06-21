@@ -1,7 +1,6 @@
 package com.phoenix.assetbe.controller;
 
 import com.phoenix.assetbe.dto.ResponseDTO;
-import com.phoenix.assetbe.dto.admin.AdminRequest;
 import com.phoenix.assetbe.dto.admin.AdminResponse;
 import com.phoenix.assetbe.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +20,18 @@ public class AdminController {
      */
     @GetMapping("/s/admin/category")
     public ResponseEntity<?> getCategoryList() {
-        AdminResponse.CategoryOutDTO categoryOutDTO = adminService.getCategoryListService();
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(categoryOutDTO);
+        AdminResponse.GetCategoryListOutDTO getCategoryListOutDTO = adminService.getCategoryListService();
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(getCategoryListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    /**
+     * 서브 카테고리
+     */
+    @GetMapping("/s/admin/{categoryName}/subcategory")
+    public ResponseEntity<?> getSubCategoryList(@PathVariable String categoryName) {
+        AdminResponse.GetSubCategoryListOutDTO getSubCategoryListOutDTO = adminService.getSubCategoryListService(categoryName);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(getSubCategoryListOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

@@ -3,19 +3,14 @@ package com.phoenix.assetbe.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.admin.AdminResponse;
-import com.phoenix.assetbe.model.asset.AssetRepository;
 import com.phoenix.assetbe.model.asset.Category;
-import com.phoenix.assetbe.model.asset.MyAssetQueryRepository;
-import com.phoenix.assetbe.model.user.UserRepository;
+import com.phoenix.assetbe.model.asset.SubQueryCategory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +24,17 @@ public class AdminServiceTest extends DummyEntity {
     private AdminService adminService;
     @Mock
     private CategoryService categoryService;
+    @Mock
+    private SubQueryCategory subQueryCategory;
     @Spy
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        adminService = new AdminService(categoryService);
+        adminService = new AdminService(categoryService, subQueryCategory);
     }
-
-
+    
     @Test
     public void testGetCategoryListService() throws Exception {
         // given
@@ -48,7 +44,7 @@ public class AdminServiceTest extends DummyEntity {
         when(categoryService.getCategoryList()).thenReturn(mockCategoryList);
 
         // when
-        AdminResponse.CategoryOutDTO result = adminService.getCategoryListService();
+        AdminResponse.GetCategoryListOutDTO result = adminService.getCategoryListService();
 
         // then
         verify(categoryService, times(1)).getCategoryList();
