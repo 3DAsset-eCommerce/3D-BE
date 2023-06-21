@@ -70,8 +70,8 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid UserRequest.SignupInDTO signupInDTO, Errors errors) {
-        UserResponse.SignupOutDTO signupOutDTO = userService.signupService(signupInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(signupOutDTO);
+        userService.signupService(signupInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
 

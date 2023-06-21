@@ -106,15 +106,15 @@ public class UserRequest {
         @NotEmpty
         private String lastName;
 
-        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,20}$",
-                message = "영문, 숫자, 특수문자를 각각 1개 이상 사용하여 8~20자 이내로 작성해주세요. ")
-        @NotEmpty
-        private String password;
-
         @NotEmpty
         @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
                 message = "50자가 넘지 않도록 이메일 형식에 맞춰 작성해주세요. ")
         private String email;
+
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,20}$",
+                message = "영문, 숫자, 특수문자를 각각 1개 이상 사용하여 8~20자 이내로 작성해주세요. ")
+        @NotEmpty
+        private String password;
 
         public User toEntity() {
             return User.builder()

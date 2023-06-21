@@ -121,24 +121,17 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse.SignupOutDTO signupService(UserRequest.SignupInDTO signupInDTO) {
-        existsUserByEmail(signupInDTO.getEmail());
+    public void signupService(UserRequest.SignupInDTO signupInDTO) {
+        boolean exists = existsUserByEmail(signupInDTO.getEmail());
+        if (exists){
+            throw new Exception400("email", "이미 존재하는 이메일입니다. ");
+        }
 
-        String encPassword = passwordEncoder.encode(signupInDTO.getPassword()); // 60Byte
-        signupInDTO.setPassword(encPassword);
-        System.out.println("encPassword : " + encPassword);
+        User userPS = signupInDTO.toEntity();
+        userPS.changePassword(userPS.getPassword());
 
-        // 디비 save 되는 쪽만 try catch로 처리하자.
         try {
-            User userPS = userRepository.save(signupInDTO.toEntity());
-            userPS.generateEmailCheckToken();
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(userPS.getEmail());
-            mailMessage.setSubject("3D 에셋 스토어, 회원 가입 인증");
-            mailMessage.setText("/check-email-token?token=" + userPS.getEmailCheckToken() + "&email=" + userPS.getEmail());
-            javaMailSender.send(mailMessage);
-
-            return new UserResponse.SignupOutDTO(userPS);
+            userRepository.save(signupInDTO.toEntity());
         } catch (Exception e) {
             throw new Exception500("회원가입 실패 : " + e.getMessage());
         }
