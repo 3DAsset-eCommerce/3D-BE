@@ -12,13 +12,12 @@ import com.phoenix.assetbe.dto.user.UserRequest.EmailCheckInDTO;
 import com.phoenix.assetbe.dto.user.UserRequest.PasswordChangeInDTO;
 import com.phoenix.assetbe.dto.user.UserResponse;
 import com.phoenix.assetbe.model.asset.MyAssetQueryRepository;
-import com.phoenix.assetbe.model.user.Status;
-import com.phoenix.assetbe.model.user.User;
-import com.phoenix.assetbe.model.user.UserRepository;
+import com.phoenix.assetbe.model.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -120,21 +119,41 @@ public class UserService {
         }
     }
 
-    @Transactional
-    public void signupService(UserRequest.SignupInDTO signupInDTO) {
-        boolean exists = existsUserByEmail(signupInDTO.getEmail());
-        if (exists){
-            throw new Exception400("email", "이미 존재하는 이메일입니다. ");
-        }
+    public void signupCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO) {
+        User user = User.builder()
+                .firstName(codeSendInDTO.getFirstName())
+                .lastName(codeSendInDTO.getLastName())
+                .email(codeSendInDTO.getEmail())
+                .role(Role.USER.getRole())
+                .provider(SocialType.COMMON)
+                .status(Status.INACTIVE)
+                .build();
 
-        User userPS = signupInDTO.toEntity();
-        userPS.changePassword(userPS.getPassword());
+        user.generateEmailCheckToken();
 
         try {
-            userRepository.save(signupInDTO.toEntity());
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(user.getEmail());
+            mailMessage.setSubject("3D 에셋 스토어, 회원가입을 위한 이메일 인증");
+            mailMessage.setText(user.getEmailCheckToken());
+            javaMailSender.send(mailMessage);
+        } catch (MailException e) {
+            throw new Exception500("이메일 전송 실패 : " + e.getMessage());
+        }
+
+        try {
+            userRepository.save(user);
         } catch (Exception e) {
             throw new Exception500("회원가입 실패 : " + e.getMessage());
         }
+    }
+
+    @Transactional
+    public void signupService(UserRequest.SignupInDTO signupInDTO) {
+        User userPS = findValidUserByEmail(signupInDTO.getEmail());
+
+        userPS.changePassword(userPS.getPassword());
+
     }
 
     /**

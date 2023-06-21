@@ -116,18 +116,6 @@ public class UserRequest {
         @NotEmpty
         private String password;
 
-        public User toEntity() {
-            return User.builder()
-                    .firstName(firstName)
-                    .lastName(lastName)
-                    .password(password)
-                    .email(email)
-                    .role(Role.USER.getRole())
-                    .provider(SocialType.COMMON)
-                    .status(Status.ACTIVE)
-                    .emailVerified(false)
-                    .build();
-        }
     }
 
     /**

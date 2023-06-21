@@ -68,6 +68,13 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @PostMapping("/signup/check")
+    public ResponseEntity<?> signupCodeSend(@RequestBody @Valid UserRequest.CodeSendInDTO codeSendInDTO, Errors errors){
+        userService.signupCodeSendService(codeSendInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>();
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid UserRequest.SignupInDTO signupInDTO, Errors errors) {
         userService.signupService(signupInDTO);
