@@ -66,7 +66,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse.CodeSendOutDTO verifyingCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO){
+    public void verifyingCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO){
         User userPS = findValidUserByEmail(codeSendInDTO.getEmail());
         userPS.generateEmailCheckToken();
 
@@ -75,12 +75,10 @@ public class UserService {
         mailMessage.setSubject("3D 에셋 스토어, 비밀번호 재설정을 위한 이메일 인증");
         mailMessage.setText(userPS.getEmailCheckToken());
         javaMailSender.send(mailMessage);
-
-        return new UserResponse.CodeSendOutDTO(userPS);
     }
 
     @Transactional
-    public UserResponse.CodeCheckOutDTO verifyingCodeCheckService(CodeCheckInDTO codeCheckInDTO) {
+    public void verifyingCodeCheckService(CodeCheckInDTO codeCheckInDTO) {
         User userPS = findValidUserByEmail(codeCheckInDTO.getEmail());
 
         LocalDateTime emailTokenCreatedAt = userPS.getEmailCheckTokenCreatedAt();
@@ -88,9 +86,7 @@ public class UserService {
         LocalDateTime tenMinutesLater = emailTokenCreatedAt.plusMinutes(10);
 
         if(currentTime.isBefore(tenMinutesLater)) {
-            if (userPS.getEmailCheckToken().equals(codeCheckInDTO.getCode())){
-                return new UserResponse.CodeCheckOutDTO(userPS.getEmail(), true);
-            }else{
+            if (!userPS.getEmailCheckToken().equals(codeCheckInDTO.getCode())){
                 throw new Exception400("code", "잘못된 인증코드 입니다. ");
             }
         }else{
@@ -99,7 +95,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse.PasswordChangeOutDTO passwordChangeService(PasswordChangeInDTO passwordChangeInDTO) {
+    public void passwordChangeService(PasswordChangeInDTO passwordChangeInDTO) {
         User userPS = findUserByEmail(passwordChangeInDTO.getEmail());
         if (userPS.getEmailCheckToken() == null) {
             throw new Exception400("email", "이메일 인증을 먼저 해야 합니다. ");
@@ -109,7 +105,6 @@ public class UserService {
             userPS.setEmailCheckToken("");
             userPS.setTokenCreatedAt();
 
-            return new UserResponse.PasswordChangeOutDTO(userPS.getEmail());
         }
         throw new Exception400("code", "이메일 인증 코드가 틀렸습니다. ");
     }

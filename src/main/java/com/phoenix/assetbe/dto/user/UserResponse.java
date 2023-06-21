@@ -35,42 +35,6 @@ public class UserResponse {
         }
     }
 
-    @Setter
-    @Getter
-    public static class CodeSendOutDTO {
-        private Long id;
-        private String email;
-        private String emailCheckToken;
-
-        public CodeSendOutDTO(User user) {
-            this.id = user.getId();
-            this.email = user.getEmail();
-            this.emailCheckToken = user.getEmailCheckToken();
-        }
-    }
-
-    @Setter
-    @Getter
-    public static class CodeCheckOutDTO {
-        private String email;
-        private boolean verified;
-
-        public CodeCheckOutDTO(String email, boolean verified) {
-            this.email = email;
-            this.verified = verified;
-        }
-    }
-
-    @Setter
-    @Getter
-    public static class PasswordChangeOutDTO{
-        private String email;
-
-        public PasswordChangeOutDTO(String email) {
-            this.email = email;
-        }
-    }
-
     /**
      * 회원가입
      */

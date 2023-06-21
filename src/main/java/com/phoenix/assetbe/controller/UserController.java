@@ -39,22 +39,22 @@ public class UserController {
 
     @PostMapping("/login/send")
     public ResponseEntity<?> verifyingCodeSend(@RequestBody @Valid UserRequest.CodeSendInDTO codeSendInDTO, Errors errors){
-        UserResponse.CodeSendOutDTO codeSendOutDTO = userService.verifyingCodeSendService(codeSendInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(codeSendOutDTO);
+        userService.verifyingCodeSendService(codeSendInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/login/check")
     public ResponseEntity<?> verifyingCodeCheck(@RequestBody @Valid UserRequest.CodeCheckInDTO codeCheckInDTO, Errors errors){
-        UserResponse.CodeCheckOutDTO codeCheckOutDTO = userService.verifyingCodeCheckService(codeCheckInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(codeCheckOutDTO);
+        userService.verifyingCodeCheckService(codeCheckInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/login/change")
     public ResponseEntity<?> passwordChange(@RequestBody @Valid UserRequest.PasswordChangeInDTO passwordChangeInDTO, Errors errors){
-        UserResponse.PasswordChangeOutDTO passwordChangeOutDTO = userService.passwordChangeService(passwordChangeInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(passwordChangeOutDTO);
+        userService.passwordChangeService(passwordChangeInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
 
