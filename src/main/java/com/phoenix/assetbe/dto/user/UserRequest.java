@@ -117,7 +117,7 @@ public class UserRequest {
                     .lastName(lastName)
                     .password(password)
                     .email(email)
-                    .role(Role.USER)
+                    .role(Role.USER.getRole())
                     .provider(SocialType.COMMON)
                     .status(Status.ACTIVE)
                     .emailVerified(false)

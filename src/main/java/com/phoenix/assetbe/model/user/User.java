@@ -33,9 +33,8 @@ public class User extends MyTimeBaseUtil {
     @Column(nullable = false)
     private Status status; // 활성화 여부
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private String role;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

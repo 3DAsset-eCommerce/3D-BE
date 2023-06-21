@@ -13,6 +13,7 @@ import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,7 @@ import javax.mail.AuthenticationFailedException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@DisplayName("유저 서비스 TEST")
 public class UserServiceTest extends DummyEntity {
 
     private UserService userService;
