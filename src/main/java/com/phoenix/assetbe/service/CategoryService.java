@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,6 +16,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CategoryService {
 
+    private final CategoryRepository categoryRepository;
     private final AssetTagQueryRepository assetTagQueryRepository;
 
     public CategoryResponse.CategoryOutDTO getCategoryListService() {
@@ -109,6 +107,14 @@ public class CategoryService {
         }
 
         return new CategoryResponse.CategoryOutDTO(categoryDTOList);
+    }
+
+    /**
+     * 관리자 카테고리
+     */
+    public List<Category> getCategoryList(){
+        List<Category> categoryList = categoryRepository.findAll();
+        return categoryList;
     }
 }
 
