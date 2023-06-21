@@ -38,9 +38,9 @@ public class UserController {
     }
 
     @PostMapping("/login/send")
-    public ResponseEntity<?> verifyingCodeSend(@RequestBody @Valid UserRequest.CodeInDTO codeInDTO, Errors errors){
-        UserResponse.CodeOutDTO codeOutDTO = userService.codeSendService(codeInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(codeOutDTO);
+    public ResponseEntity<?> verifyingCodeSend(@RequestBody @Valid UserRequest.VerifyCodeInDTO verifyCodeInDTO, Errors errors){
+        UserResponse.VerifyCodeOutDTO verifyCodeOutDTO = userService.verifyingCodeSendService(verifyCodeInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(verifyCodeOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 

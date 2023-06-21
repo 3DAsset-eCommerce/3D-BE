@@ -50,7 +50,7 @@ public class UserService {
      * 로그인
      */
     public UserResponse.LoginOutDTOWithJWT loginService(UserRequest.LoginInDTO loginInDTO) {
-        User userPS = findUserByEmail(loginInDTO.getEmail());
+        User userPS = findValidUserByEmail(loginInDTO.getEmail());
 
         try {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
@@ -65,8 +65,8 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse.CodeOutDTO codeSendService(UserRequest.CodeInDTO codeInDTO){
-        User userPS = findUserByEmail(codeInDTO.getEmail());
+    public UserResponse.VerifyCodeOutDTO verifyingCodeSendService(UserRequest.VerifyCodeInDTO verifyCodeInDTO){
+        User userPS = findValidUserByEmail(verifyCodeInDTO.getEmail());
         userPS.generateEmailCheckToken();
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -75,7 +75,7 @@ public class UserService {
         mailMessage.setText(userPS.getEmailCheckToken());
         javaMailSender.send(mailMessage);
 
-        return new UserResponse.CodeOutDTO(userPS);
+        return new UserResponse.VerifyCodeOutDTO(userPS);
     }
 
     @Transactional
@@ -224,7 +224,7 @@ public class UserService {
     }
 
     // 요청한 사용자가 email의 주인인지 확인하는 공통 메소드
-    public User findUserByEmail(String email) {
+    public User findValidUserByEmail(String email) {
         User userPS = userRepository.findByUserWithEmailAndStatus(email, Status.ACTIVE).orElseThrow(
                 () -> new Exception400("email", "존재하지 않는 유저입니다. ")
         );

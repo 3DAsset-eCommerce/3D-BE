@@ -49,8 +49,7 @@ public class User extends MyTimeBaseUtil {
 
     private String emailCheckToken;
 
-    @UpdateTimestamp
-    private LocalDateTime tokenCreatedAt;
+    private LocalDateTime emailCheckTokenCreatedAt;
 
     @PreUpdate
     protected void onUpdate() {
@@ -60,7 +59,10 @@ public class User extends MyTimeBaseUtil {
     /**
      * 메소드
      */
-    public void generateEmailCheckToken() {this.emailCheckToken= UUID.randomUUID().toString();}
+    public void generateEmailCheckToken() {
+        this.emailCheckToken= UUID.randomUUID().toString();
+        this.emailCheckTokenCreatedAt=LocalDateTime.now();
+    }
     public void setEmailCheckToken(String s) {this.emailCheckToken=s;}
     public void changeWithdrawalMassage(String message) {this.reason = message;}
     public void changePassword(String password) {this.password = password;}
@@ -69,8 +71,5 @@ public class User extends MyTimeBaseUtil {
     }
     public void setPassword(String password) {
         this.password = password;
-    }
-    public void setTokenCreatedAt() {
-        this.tokenCreatedAt = null;
     }
 }
