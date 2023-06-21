@@ -67,8 +67,6 @@ public class AdminControllerTest extends MyRestDoc {
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/s/admin/category"));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("테스트 : " + responseBody);
 
         // then
         resultActions.andExpect(status().isOk())
@@ -77,7 +75,7 @@ public class AdminControllerTest extends MyRestDoc {
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
-    @DisplayName("관리자 카테고리 조회 실패 : ")
+    @DisplayName("관리자 카테고리 조회 실패 : 권한 체크 실패")
     @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_category_list_fail_test() throws Exception {
@@ -85,8 +83,6 @@ public class AdminControllerTest extends MyRestDoc {
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/s/admin/category"));
-        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        System.out.println("테스트 : " + responseBody);
 
         // then
         resultActions.andExpect(status().isForbidden());
