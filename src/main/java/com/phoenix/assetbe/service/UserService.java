@@ -96,17 +96,18 @@ public class UserService {
 
     @Transactional
     public void passwordChangeService(PasswordChangeInDTO passwordChangeInDTO) {
-        User userPS = findUserByEmail(passwordChangeInDTO.getEmail());
-        if (userPS.getEmailCheckToken() == null) {
-            throw new Exception400("email", "이메일 인증을 먼저 해야 합니다. ");
-        }
-        if (userPS.getEmailCheckToken().equals(passwordChangeInDTO.getCode())) {
-            userPS.setPassword(passwordEncoder.encode(passwordChangeInDTO.getPassword()));
-            userPS.setEmailCheckToken("");
-            userPS.setTokenCreatedAt();
+        User userPS = findValidUserByEmail(passwordChangeInDTO.getEmail());
 
+        if (passwordChangeInDTO.getCode() == null) {
+            throw new Exception400("code", "인증코드를 입력해주세요. ");
         }
-        throw new Exception400("code", "이메일 인증 코드가 틀렸습니다. ");
+
+        if (userPS.getEmailCheckToken().equals(passwordChangeInDTO.getCode())) {
+            userPS.changePassword(passwordEncoder.encode(passwordChangeInDTO.getPassword()));
+
+        }else{
+            throw new Exception400("code", "잘못된 인증코드 입니다. ");
+        }
     }
 
     /**
