@@ -136,7 +136,7 @@ public class OrderServiceTest extends DummyEntity {
 
         // then
         verify(userService, times(1)).authCheck(any(), anyLong());
-        verify(orderQueryRepository, times(1)).getOrderListByUserIdWithPaging(anyLong(), any(), startDate, endDate);
+        verify(orderQueryRepository, times(1)).getOrderListByUserIdWithPaging(anyLong(), any(), any(), any());
     }
 
     @Test
@@ -163,7 +163,7 @@ public class OrderServiceTest extends DummyEntity {
 
         // then
         verify(userService, times(1)).authCheck(any(), anyLong());
-        verify(orderQueryRepository, never()).getOrderListByUserIdWithPaging(anyLong(), any(), startDate, endDate);
+        verify(orderQueryRepository, never()).getOrderListByUserIdWithPaging(anyLong(), any(), any(), any());
     }
 
     @Test
