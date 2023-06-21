@@ -37,17 +37,19 @@ public class UserRequest {
     @Getter @Setter
     public static class CodeSendInDTO {
 
+        @Pattern(regexp = "^[A-Za-z가-힣]{2,20}$", message = "영문/한글 2~20자 이내로 이름을 작성해주세요. ")
+        @NotEmpty
+        private String firstName;
+
+        @Pattern(regexp = "^[A-Za-z가-힣]{2,20}$", message = "영문/한글 2~20자 이내로 성을 작성해주세요. ")
+        @NotEmpty
+        private String lastName;
+
         @NotEmpty
         @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
                 message = "50자가 넘지 않도록 이메일 형식에 맞춰 작성해주세요. ")
         private String email;
 
-        public User toEntity() {
-            return User.builder()
-                    .email(email)
-                    .emailCheckToken(UUID.randomUUID().toString())
-                    .build();
-        }
     }
 
     @Getter @Setter
