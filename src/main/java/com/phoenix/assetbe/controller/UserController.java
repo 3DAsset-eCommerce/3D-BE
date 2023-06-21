@@ -68,9 +68,16 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @PostMapping("/signup/check")
+    @PostMapping("/signup/send")
     public ResponseEntity<?> signupCodeSend(@RequestBody @Valid UserRequest.CodeSendInDTO codeSendInDTO, Errors errors){
         userService.signupCodeSendService(codeSendInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>();
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PostMapping("/signup/check")
+    public ResponseEntity<?> signupCodeCheck(@RequestBody @Valid UserRequest.CodeCheckInDTO codeCheckInDTO, Errors errors){
+        userService.signupCodeCheckService(codeCheckInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }

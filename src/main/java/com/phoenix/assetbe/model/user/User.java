@@ -66,8 +66,12 @@ public class User extends MyTimeBaseUtil {
     public void setEmailCheckToken(String s) {this.emailCheckToken=s;}
     public void changeWithdrawalMassage(String message) {this.reason = message;}
     public void changePassword(String password) {this.password = password;}
-    public void changeStatus() {
+    public void changeStatusToINACTIVE() {
         this.status = Status.INACTIVE;
+    }
+
+    public void changeStatusToACTIVE() {
+        this.status = Status.ACTIVE;
     }
     public void setPassword(String password) {
         this.password = password;

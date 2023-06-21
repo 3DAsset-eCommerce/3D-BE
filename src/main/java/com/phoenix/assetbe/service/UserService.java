@@ -119,6 +119,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void signupCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO) {
         User user = User.builder()
                 .firstName(codeSendInDTO.getFirstName())
@@ -149,6 +150,25 @@ public class UserService {
     }
 
     @Transactional
+    public void signupCodeCheckService(CodeCheckInDTO codeCheckInDTO) {
+        User userPS = findValidUserByEmail(codeCheckInDTO.getEmail());
+
+        LocalDateTime emailTokenCreatedAt = userPS.getEmailCheckTokenCreatedAt();
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime tenMinutesLater = emailTokenCreatedAt.plusMinutes(10);
+
+        if(currentTime.isBefore(tenMinutesLater)) {
+            if (!userPS.getEmailCheckToken().equals(codeCheckInDTO.getCode())){
+                throw new Exception400("code", "잘못된 인증코드 입니다. ");
+            }else{
+                userPS.changeStatusToACTIVE();
+            }
+        }else{
+            throw new Exception400("code", "유효하지 않은 인증코드 입니다. ");
+        }
+    }
+
+    @Transactional
     public void signupService(UserRequest.SignupInDTO signupInDTO) {
         User userPS = findValidUserByEmail(signupInDTO.getEmail());
 
@@ -175,7 +195,7 @@ public class UserService {
         if (withdrawInDTO.isDeleteConfirm()) { // true 상태
             throw new Exception400("deleteConfirm", "이미 탈퇴되어 있습니다. ");
         }
-        userPS.changeStatus();
+        userPS.changeStatusToINACTIVE();
         userPS.changeWithdrawalMassage(withdrawInDTO.getMessage());
 
         try {
