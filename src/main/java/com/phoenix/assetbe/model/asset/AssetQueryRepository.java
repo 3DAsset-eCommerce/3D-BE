@@ -29,7 +29,10 @@ public class AssetQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserIdAndPaging(Long userId, Pageable pageable){
+    /**
+     * 개별 에셋, 로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserAndPage(Long userId, Pageable pageable){
         List <AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
                 .select(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
                         asset.id,
@@ -62,7 +65,10 @@ public class AssetQueryRepository {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPaging(Pageable pageable){
+    /**
+     * 개별 에셋, 비로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPage(Pageable pageable){
         List <AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
                 .select(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
                         asset.id,
@@ -91,7 +97,10 @@ public class AssetQueryRepository {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserIdAndPaginationByCategory(
+    /**
+     * 카테고리별 에셋 조회, 로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserAndPageByCategory(
             Long userId, String categoryName, Pageable pageable){
         List <AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
                 .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
@@ -130,7 +139,10 @@ public class AssetQueryRepository {
 
     }
 
-    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPaginationByCategory(
+    /**
+     * 카테고리별 에셋 조회, 비로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPageByCategory(
             String categoryName, Pageable pageable){
         List <AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
                 .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
@@ -165,7 +177,91 @@ public class AssetQueryRepository {
 
     }
 
-    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserIdAndPaginationBySubCategory(
+    /**
+     * 카테고리별 에셋 검색, 로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserAndPageAndSearchByCategory(
+            Long userId, String categoryName, List<String> keywordList, Pageable pageable){
+
+        List <AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.thumbnailUrl,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount,
+                        wishList.id,
+                        cart.id)
+                )
+                .from(asset)
+                .innerJoin(assetCategory).on(assetCategory.asset.id.eq(asset.id))
+                .innerJoin(category).on(assetCategory.category.id.eq(category.id))
+                .where(category.categoryName.eq(categoryName), asset.status.eq(true), totalCondition(keywordList))
+                .leftJoin(wishList).on(wishList.asset.id.eq(asset.id).and(wishList.user.id.eq(userId)))
+                .leftJoin(cart).on(cart.asset.id.eq(asset.id).and(cart.user.id.eq(userId)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSortByIncludedKeywordCount(keywordList).desc(), assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
+                .from(asset)
+                .innerJoin(assetCategory).on(assetCategory.asset.id.eq(asset.id))
+                .innerJoin(category).on(assetCategory.category.id.eq(category.id))
+                .where(category.categoryName.eq(categoryName), asset.status.eq(true), totalCondition(keywordList))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+    }
+
+    /**
+     * 카테고리별 에셋 검색, 비로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPageAndSearchByCategory(
+            String categoryName, List<String> keywordList,Pageable pageable){
+
+        List <AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.thumbnailUrl,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount)
+                )
+                .from(asset)
+                .innerJoin(assetCategory).on(assetCategory.asset.id.eq(asset.id))
+                .innerJoin(category).on(assetCategory.category.id.eq(category.id))
+                .where(category.categoryName.eq(categoryName), asset.status.eq(true), totalCondition(keywordList))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSortByIncludedKeywordCount(keywordList).desc(), assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
+                .from(asset)
+                .innerJoin(assetCategory).on(assetCategory.asset.id.eq(asset.id))
+                .innerJoin(category).on(assetCategory.category.id.eq(category.id))
+                .where(category.categoryName.eq(categoryName), asset.status.eq(true), totalCondition(keywordList))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+
+    }
+
+    /**
+     * 서브카테고리별 에셋 조회, 로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserAndPageBySubCategory(
             Long userId, String categoryName, String subCategoryName, Pageable pageable){
         List <AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
                 .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
@@ -206,7 +302,10 @@ public class AssetQueryRepository {
 
     }
 
-    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPaginationBySubCategory(
+    /**
+     * 서브카테고리별 에셋 조회, 비로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPageBySubCategory(
             String categoryName, String subCategoryName, Pageable pageable){
         List <AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
                 .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
@@ -242,7 +341,95 @@ public class AssetQueryRepository {
         return new PageImpl<>(result, pageable, totalCount);
 
     }
-    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserIdAndPaginationBySearch(
+
+    /**
+     * 서브카테고리별 에셋 검색, 로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserAndPageAndSearchBySubCategory(
+            Long userId, String categoryName, String subCategoryName, List<String> keywordList, Pageable pageable){
+        List <AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.thumbnailUrl,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount,
+                        wishList.id,
+                        cart.id)
+                )
+                .from(asset)
+                .innerJoin(assetTag).on(asset.eq(assetTag.asset))
+                .innerJoin(category).on(category.id.eq(assetTag.category.id))
+                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
+                .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.eq(asset)))
+                .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.eq(asset)))
+                .where(category.categoryName.eq(categoryName), subCategory.subCategoryName.eq(subCategoryName), asset.status.eq(true), totalCondition(keywordList))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSortByIncludedKeywordCount(keywordList).desc(), assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
+                .from(asset)
+                .innerJoin(assetTag).on(asset.eq(assetTag.asset))
+                .innerJoin(category).on(category.id.eq(assetTag.category.id))
+                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
+                .where(category.categoryName.eq(categoryName), subCategory.subCategoryName.eq(subCategoryName), asset.status.eq(true), totalCondition(keywordList))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+
+    }
+
+    /**
+     * 서브카테고리별 에셋 검색, 비로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPageAndSearchBySubCategory(
+            String categoryName, String subCategoryName, List<String> keywordList, Pageable pageable){
+        List <AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
+                .selectDistinct(Projections.constructor(AssetResponse.AssetListOutDTO.AssetOutDTO.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        asset.discount,
+                        asset.discountPrice,
+                        asset.releaseDate,
+                        asset.thumbnailUrl,
+                        asset.rating,
+                        asset.reviewCount,
+                        asset.wishCount)
+                )
+                .from(asset)
+                .innerJoin(assetTag).on(asset.eq(assetTag.asset))
+                .innerJoin(category).on(category.id.eq(assetTag.category.id))
+                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
+                .where(category.categoryName.eq(categoryName), subCategory.subCategoryName.eq(subCategoryName), asset.status.eq(true), totalCondition(keywordList))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSortByIncludedKeywordCount(keywordList).desc(), assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
+                .from(asset)
+                .innerJoin(assetTag).on(asset.eq(assetTag.asset))
+                .innerJoin(category).on(category.id.eq(assetTag.category.id))
+                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
+                .where(category.categoryName.eq(categoryName), subCategory.subCategoryName.eq(subCategoryName), asset.status.eq(true), totalCondition(keywordList))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+
+    }
+
+    /**
+     * 에셋 검색, 로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithUserAndPageBySearch(
             Long userId, List<String> keywordList,Pageable pageable){
 
         List<AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
@@ -263,7 +450,7 @@ public class AssetQueryRepository {
                 .from(asset)
                 .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.eq(asset)))
                 .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.eq(asset)))
-                .where(totalCondition(keywordList))
+                .where(asset.status.eq(true), totalCondition(keywordList))
                 .orderBy(assetSortByIncludedKeywordCount(keywordList).desc(), assetSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -271,13 +458,16 @@ public class AssetQueryRepository {
 
         Long totalCount = queryFactory.select(asset.count())
                 .from(asset)
-                .where(totalCondition(keywordList))
+                .where(asset.status.eq(true), totalCondition(keywordList))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPaginationBySearch(
+    /**
+     * 에셋 검색, 비로그인 유저, 페이지네이션
+     */
+    public Page<AssetResponse.AssetListOutDTO.AssetOutDTO> findAssetListWithPageBySearch(
             List<String> keywordList, Pageable pageable){
 
         List<AssetResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
@@ -294,7 +484,7 @@ public class AssetQueryRepository {
                         asset.wishCount)
                 )
                 .from(asset)
-                .where(totalCondition(keywordList))
+                .where(asset.status.eq(true), totalCondition(keywordList))
                 .orderBy(assetSortByIncludedKeywordCount(keywordList).desc(), assetSort(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -302,26 +492,10 @@ public class AssetQueryRepository {
 
         Long totalCount = queryFactory.select(asset.count())
                 .from(asset)
-                .where(totalCondition(keywordList))
+                .where(asset.status.eq(true), totalCondition(keywordList))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
-    }
-
-    private BooleanBuilder totalCondition(List<String> splitKeywordList){
-        BooleanBuilder builder = new BooleanBuilder();
-
-        builder.and(asset.status.eq(true));
-
-        for(String keyword : splitKeywordList){
-            builder.or(assetNameLike(keyword));
-        }
-
-        return builder;
-    }
-
-    private BooleanExpression assetNameLike(String keyword){
-        return StringUtils.hasText(keyword) ? asset.assetName.containsIgnoreCase(keyword) : null;
     }
 
     public Optional<Asset> findById(Long userId) {
@@ -337,6 +511,20 @@ public class AssetQueryRepository {
                 .where(asset.status.eq(true).and(asset.id.eq(assetId)))
                 .fetchFirst(); // limit 1
         return fetchOne != null; // 1개가 있는지 없는지 판단 (없으면 null 이므로 null 체크)
+    }
+
+    private BooleanBuilder totalCondition(List<String> splitKeywordList){
+        BooleanBuilder builder = new BooleanBuilder();
+
+        for(String keyword : splitKeywordList){
+            builder.or(assetNameLike(keyword));
+        }
+
+        return builder;
+    }
+
+    private BooleanExpression assetNameLike(String keyword){
+        return StringUtils.hasText(keyword) ? asset.assetName.containsIgnoreCase(keyword) : null;
     }
 
     /**
@@ -367,6 +555,9 @@ public class AssetQueryRepository {
         return null;
     }
 
+    /**
+     * 포함된 키워드 수 순서로 정렬, 키워드 4개이상 부터는 정렬기준 동일.
+     */
     private NumberExpression<Integer> assetSortByIncludedKeywordCount(List<String> keywordList){
 
         NumberExpression<Integer> expression;

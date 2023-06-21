@@ -8,7 +8,6 @@ import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.model.wish.WishListQueryRepository;
 
-import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Slf4j
@@ -31,13 +29,16 @@ public class AssetService {
     private final AssetTagQueryRepository assetTagQueryRepository;
     private final PreviewQueryRepository previewQueryRepository;
 
+    /**
+     * 개별 에셋
+     */
     public AssetResponse.AssetListOutDTO getAssetListService(Pageable pageable, MyUserDetails myUserDetails) {
         Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
         if(myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
-            assetList = assetQueryRepository.findAssetListWithUserIdAndPaging(userId, pageable);
+            assetList = assetQueryRepository.findAssetListWithUserAndPage(userId, pageable);
         }else {
-            assetList = assetQueryRepository.findAssetListWithPaging(pageable);
+            assetList = assetQueryRepository.findAssetListWithPage(pageable);
         }
         if (assetList.getContent().isEmpty()) {
             throw new Exception404("에셋이 존재하지 않습니다. ");
@@ -45,6 +46,9 @@ public class AssetService {
         return new AssetResponse.AssetListOutDTO(assetList);
     }
 
+    /**
+     * 에셋 상세보기
+     */
     @Transactional
     public AssetResponse.AssetDetailsOutDTO getAssetDetailsService(Long assetId, MyUserDetails myUserDetails) {
         Long wishListId = null;
@@ -64,31 +68,83 @@ public class AssetService {
         return new AssetResponse.AssetDetailsOutDTO(assetPS, wishListId, previewList, tagNameList);
     }
 
-    public AssetResponse.AssetListOutDTO getAssetListByCategoryService(String categoryName, Pageable pageable, MyUserDetails myUserDetails) {
-        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
-        if(myUserDetails != null) {
-            Long userId = myUserDetails.getUser().getId();
-            assetList = assetQueryRepository.findAssetListWithUserIdAndPaginationByCategory(userId, categoryName, pageable);
-        }else {
-            assetList = assetQueryRepository.findAssetListWithPaginationByCategory(categoryName, pageable);
-        }
-        return new AssetResponse.AssetListOutDTO(assetList);
-    }
-
-    public AssetResponse.AssetListOutDTO getAssetListBySubCategoryService(String categoryName, String subCategoryName,
+    /**
+     * 카테고리별 에셋 조회
+     */
+    public AssetResponse.AssetListOutDTO getAssetListByCategoryService(String categoryName, List<String> keywordList,
                                                                        Pageable pageable, MyUserDetails myUserDetails) {
         Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
-        if(myUserDetails != null) {
-            Long userId = myUserDetails.getUser().getId();
-            assetList = assetQueryRepository
-                    .findAssetListWithUserIdAndPaginationBySubCategory(userId, categoryName, subCategoryName, pageable);
+
+        if(keywordList == null) {
+            if (myUserDetails != null) {
+                Long userId = myUserDetails.getUser().getId();
+                assetList = assetQueryRepository.findAssetListWithUserAndPageByCategory(userId, categoryName, pageable);
+            } else {
+                assetList = assetQueryRepository.findAssetListWithPageByCategory(categoryName, pageable);
+            }
         }else {
-            assetList = assetQueryRepository
-                    .findAssetListWithPaginationBySubCategory(categoryName, subCategoryName, pageable);
+            HashSet<String> keywordSet = new LinkedHashSet<>(keywordList);
+            for (String keyword : keywordList) {
+                keywordSet.addAll(Arrays.asList(keyword.split(" ")));
+            }
+            List<String> splitKeywordList = new ArrayList<>(keywordSet);
+
+            if (myUserDetails != null) {
+                Long userId = myUserDetails.getUser().getId();
+                assetList = assetQueryRepository.findAssetListWithUserAndPageAndSearchByCategory(userId, categoryName, splitKeywordList, pageable);
+            } else {
+                assetList = assetQueryRepository.findAssetListWithPageAndSearchByCategory(categoryName, splitKeywordList, pageable);
+            }
+        }
+        if(assetList.getContent().isEmpty()) {
+            throw new Exception404("에셋이 존재하지 않습니다. ");
         }
         return new AssetResponse.AssetListOutDTO(assetList);
     }
 
+    /**
+     * 서브카테고리별 에셋 조회
+     */
+    public AssetResponse.AssetListOutDTO getAssetListBySubCategoryService(
+                                            String categoryName, String subCategoryName, List<String> keywordList,
+                                            Pageable pageable, MyUserDetails myUserDetails) {
+
+        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
+        if(keywordList == null) {
+            if (myUserDetails != null) {
+                Long userId = myUserDetails.getUser().getId();
+                assetList = assetQueryRepository
+                        .findAssetListWithUserAndPageBySubCategory(userId, categoryName, subCategoryName, pageable);
+            } else {
+                assetList = assetQueryRepository
+                        .findAssetListWithPageBySubCategory(categoryName, subCategoryName, pageable);
+            }
+        }else {
+            HashSet<String> keywordSet = new LinkedHashSet<>(keywordList);
+            for (String keyword : keywordList) {
+                keywordSet.addAll(Arrays.asList(keyword.split(" ")));
+            }
+            List<String> splitKeywordList = new ArrayList<>(keywordSet);
+
+            if (myUserDetails != null) {
+                Long userId = myUserDetails.getUser().getId();
+                assetList = assetQueryRepository
+                        .findAssetListWithUserAndPageAndSearchBySubCategory(userId, categoryName, subCategoryName, splitKeywordList, pageable);
+            } else {
+                assetList = assetQueryRepository
+                        .findAssetListWithPageAndSearchBySubCategory(categoryName, subCategoryName, splitKeywordList, pageable);
+            }
+        }
+        if(assetList.getContent().isEmpty()) {
+            throw new Exception404("에셋이 존재하지 않습니다. ");
+        }
+
+        return new AssetResponse.AssetListOutDTO(assetList);
+    }
+
+    /**
+     * 에셋 검색
+     */
     public AssetResponse.AssetListOutDTO getAssetListBySearchService(List<String> keywordList,
                                                                      Pageable pageable, MyUserDetails myUserDetails) {
 
@@ -107,10 +163,10 @@ public class AssetService {
             if (myUserDetails != null) {
                 Long userId = myUserDetails.getUser().getId();
                 assetList = assetQueryRepository
-                        .findAssetListWithUserIdAndPaginationBySearch(userId, splitKeywordList, pageable);
+                        .findAssetListWithUserAndPageBySearch(userId, splitKeywordList, pageable);
             } else {
                 assetList = assetQueryRepository
-                        .findAssetListWithPaginationBySearch(splitKeywordList, pageable);
+                        .findAssetListWithPageBySearch(splitKeywordList, pageable);
             }
 
             if(assetList.getContent().isEmpty()) {
