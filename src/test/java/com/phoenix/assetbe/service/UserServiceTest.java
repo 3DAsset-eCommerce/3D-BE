@@ -59,14 +59,7 @@ public class UserServiceTest extends DummyEntity {
 
     @BeforeEach
     void setUp() {
-        userRepository = mock(UserRepository.class);
-        assetRepository = mock(AssetRepository.class);
-        assetService = mock(AssetService.class);
-        myAssetQueryRepository = mock(MyAssetQueryRepository.class);
-        bCryptPasswordEncoder = spy(BCryptPasswordEncoder.class);
-        authenticationManager = mock(AuthenticationManager.class);
-        javaMailSender = mock(JavaMailSender.class);
-        objectMapper = spy(ObjectMapper.class);
+        MockitoAnnotations.openMocks(this);
         userService = new UserService(authenticationManager, javaMailSender, bCryptPasswordEncoder, userRepository, myAssetQueryRepository, assetService);
     }
 
