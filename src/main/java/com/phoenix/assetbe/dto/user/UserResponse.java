@@ -37,12 +37,12 @@ public class UserResponse {
 
     @Setter
     @Getter
-    public static class VerifyCodeOutDTO {
+    public static class CodeSendOutDTO {
         private Long id;
         private String email;
         private String emailCheckToken;
 
-        public VerifyCodeOutDTO(User user) {
+        public CodeSendOutDTO(User user) {
             this.id = user.getId();
             this.email = user.getEmail();
             this.emailCheckToken = user.getEmailCheckToken();

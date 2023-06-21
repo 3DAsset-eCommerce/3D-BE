@@ -28,6 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,8 +66,8 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse.VerifyCodeOutDTO verifyingCodeSendService(UserRequest.VerifyCodeInDTO verifyCodeInDTO){
-        User userPS = findValidUserByEmail(verifyCodeInDTO.getEmail());
+    public UserResponse.CodeSendOutDTO verifyingCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO){
+        User userPS = findValidUserByEmail(codeSendInDTO.getEmail());
         userPS.generateEmailCheckToken();
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -75,19 +76,26 @@ public class UserService {
         mailMessage.setText(userPS.getEmailCheckToken());
         javaMailSender.send(mailMessage);
 
-        return new UserResponse.VerifyCodeOutDTO(userPS);
+        return new UserResponse.CodeSendOutDTO(userPS);
     }
 
     @Transactional
-    public UserResponse.CodeCheckOutDTO codeCheckService(CodeCheckInDTO codeCheckInDTO) {
-        Optional<User> userPS = userRepository.findByEmail(codeCheckInDTO.getEmail());
-        if (!userPS.isPresent()) {
-            throw new Exception400("code", "먼저 이메일 인증코드를 전송해주세요. ");
+    public UserResponse.CodeCheckOutDTO verifyingCodeCheckService(CodeCheckInDTO codeCheckInDTO) {
+        User userPS = findValidUserByEmail(codeCheckInDTO.getEmail());
+
+        LocalDateTime emailTokenCreatedAt = userPS.getEmailCheckTokenCreatedAt();
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime tenMinutesLater = emailTokenCreatedAt.plusMinutes(10);
+
+        if(currentTime.isBefore(tenMinutesLater)) {
+            if (userPS.getEmailCheckToken().equals(codeCheckInDTO.getCode())){
+                return new UserResponse.CodeCheckOutDTO(userPS.getEmail(), true);
+            }else{
+                throw new Exception400("code", "잘못된 인증코드 입니다. ");
+            }
+        }else{
+            throw new Exception400("code", "유효하지 않은 인증코드 입니다. ");
         }
-        if (userPS.get().getEmailCheckToken().equals(codeCheckInDTO.getCode())) {
-            return new UserResponse.CodeCheckOutDTO(userPS.get().getEmail(), true);
-        }
-        throw new Exception400("code", "이메일 인증코드가 틀렸습니다. ");
     }
 
     @Transactional

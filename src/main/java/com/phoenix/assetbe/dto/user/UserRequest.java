@@ -35,7 +35,7 @@ public class UserRequest {
     }
 
     @Getter @Setter
-    public static class VerifyCodeInDTO {
+    public static class CodeSendInDTO {
 
         @NotEmpty
         @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",

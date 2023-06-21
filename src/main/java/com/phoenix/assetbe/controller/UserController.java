@@ -38,15 +38,15 @@ public class UserController {
     }
 
     @PostMapping("/login/send")
-    public ResponseEntity<?> verifyingCodeSend(@RequestBody @Valid UserRequest.VerifyCodeInDTO verifyCodeInDTO, Errors errors){
-        UserResponse.VerifyCodeOutDTO verifyCodeOutDTO = userService.verifyingCodeSendService(verifyCodeInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(verifyCodeOutDTO);
+    public ResponseEntity<?> verifyingCodeSend(@RequestBody @Valid UserRequest.CodeSendInDTO codeSendInDTO, Errors errors){
+        UserResponse.CodeSendOutDTO codeSendOutDTO = userService.verifyingCodeSendService(codeSendInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(codeSendOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/login/check")
     public ResponseEntity<?> verifyingCodeCheck(@RequestBody @Valid UserRequest.CodeCheckInDTO codeCheckInDTO, Errors errors){
-        UserResponse.CodeCheckOutDTO codeCheckOutDTO = userService.codeCheckService(codeCheckInDTO);
+        UserResponse.CodeCheckOutDTO codeCheckOutDTO = userService.verifyingCodeCheckService(codeCheckInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(codeCheckOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
