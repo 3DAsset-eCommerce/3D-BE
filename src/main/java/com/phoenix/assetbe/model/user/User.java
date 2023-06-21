@@ -44,9 +44,6 @@ public class User extends MyTimeBaseUtil {
 
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
-    private boolean emailVerified;
-
     private String emailCheckToken;
 
     private LocalDateTime emailCheckTokenCreatedAt;

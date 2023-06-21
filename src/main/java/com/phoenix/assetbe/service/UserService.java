@@ -173,7 +173,6 @@ public class UserService {
         User userPS = findValidUserByEmail(signupInDTO.getEmail());
 
         userPS.changePassword(userPS.getPassword());
-
     }
 
     /**
