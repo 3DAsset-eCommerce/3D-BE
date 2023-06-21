@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phoenix.assetbe.core.MyRestDoc;
 import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.order.OrderRequest;
@@ -41,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @Transactional
-public class OrderControllerTest {
+public class OrderControllerTest extends MyRestDoc {
 
     private DummyEntity dummy = new DummyEntity();
 
