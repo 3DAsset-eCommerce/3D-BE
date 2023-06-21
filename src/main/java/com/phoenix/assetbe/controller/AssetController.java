@@ -57,12 +57,13 @@ public class AssetController {
     @GetMapping("/assets/{categoryName}")
     public ResponseEntity<?> getAssetListByCategory(
             @PathVariable String categoryName,
+            @RequestParam(value = "tag", required = false) List<String> tagList,
             @RequestParam(value = "keyword", required = false) List<String> keywordList,
             @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         AssetResponse.AssetListOutDTO assetListOutDTO =
-                assetService.getAssetListByCategoryService(categoryName, keywordList, pageable, myUserDetails);
+                assetService.getAssetListByCategoryService(categoryName, tagList, keywordList, pageable, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -75,12 +76,13 @@ public class AssetController {
     public ResponseEntity<?> getAssetListBySubCategory(
             @PathVariable String categoryName,
             @PathVariable String subCategoryName,
+            @RequestParam(value = "tag", required = false) List<String> tagList,
             @RequestParam(value = "keyword", required = false) List<String> keywordList,
             @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         AssetResponse.AssetListOutDTO assetListOutDTO =
-                assetService.getAssetListBySubCategoryService(categoryName, subCategoryName, keywordList, pageable, myUserDetails);
+                assetService.getAssetListBySubCategoryService(categoryName, subCategoryName, tagList, keywordList, pageable, myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }

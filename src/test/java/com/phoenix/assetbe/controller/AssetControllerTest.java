@@ -60,7 +60,7 @@ public class AssetControllerTest extends MyRestDoc {
         myTestSetUp.saveCategoryAndSubCategoryAndTag(assetList);
     }
 
-    @DisplayName("에셋 상세정보 비로그인유저 성공")
+    @DisplayName("에셋 상세정보: 비로그인유저 - 성공")
     @Test
     public void get_asset_details_test() throws Exception {
         // Given
@@ -84,7 +84,7 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.assetId").value(3L));
     }
 
-    @DisplayName("에셋 상세정보 로그인유저 성공")
+    @DisplayName("에셋 상세정보: 로그인유저 - 성공")
     @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_asset_details_with_user_test() throws Exception {
@@ -110,7 +110,7 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.wishlistId").value(1L));
     }
 
-    @DisplayName("개별에셋 비로그인유저 성공")
+    @DisplayName("개별 에셋: 비로그인유저 - 성공")
     @Test
     public void get_asset_list_test() throws Exception {
         // Given
@@ -133,7 +133,7 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.assetList[0].cartId").doesNotExist());
     }
 
-    @DisplayName("개별에셋 로그인유저 성공")
+    @DisplayName("개별 에셋: 로그인유저 - 성공")
     @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void get_asset_list_with_user_test() throws Exception {
@@ -157,9 +157,9 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.assetList[0].cartId").value(18L));
     }
 
-    @DisplayName("카테고리별 에셋 조회 비로그인유저 성공")
+    @DisplayName("카테고리별 에셋 조회: 비로그인유저 - 성공")
     @Test
-    public void get_asset_list_with_pagination_by_category_test() throws Exception {
+    public void get_asset_list_by_category_test() throws Exception {
         // Given
         String categoryName = "luxury";
         String page = "0";
@@ -184,11 +184,10 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.assetList[0].cartId").doesNotExist());
     }
 
-    @DisplayName("카테고리별 에셋 조회 로그인유저 성공")
+    @DisplayName("카테고리별 에셋 조회: 로그인유저 - 성공")
     @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-
     @Test
-    public void get_asset_list_with_user_id_and_pagination_by_category_test() throws Exception {
+    public void get_asset_list_with_user_by_category_test() throws Exception {
         // Given
         String categoryName = "pretty";
         String page = "0";
@@ -208,13 +207,13 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data.assetList[0].assetId").value(12L))
-                .andExpect(jsonPath("$.data.assetList[0].wishlistId").value(3L))
-                .andExpect(jsonPath("$.data.assetList[0].cartId").value(8L));
+                .andExpect(jsonPath("$.data.assetList[0].wishlistId").doesNotExist())
+                .andExpect(jsonPath("$.data.assetList[0].cartId").value(24L));
     }
 
-    @DisplayName("카테고리별 에셋 검색 비로그인유저 성공")
+    @DisplayName("카테고리별 에셋 검색: 비로그인유저 - 성공")
     @Test
-    public void get_asset_list_with_pagination_and_search_by_category_test() throws Exception {
+    public void get_asset_list_by_category_with_search_test() throws Exception {
         // Given
         String categoryName = "luxury";
         String page = "0";
@@ -239,10 +238,10 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.assetList[0].cartId").doesNotExist());
     }
 
-    @DisplayName("카테고리별 에셋 검색 로그인유저 성공")
-    @WithUserDetails(value = "유현주@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @DisplayName("카테고리별 에셋 검색: 로그인유저 - 성공")
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    public void get_asset_list_with_user_id_and_pagination_and_search_by_category_test() throws Exception {
+    public void get_asset_list_with_user_by_category_with_search_test() throws Exception {
         // Given
         String categoryName = "pretty";
         String page = "0";
@@ -262,14 +261,14 @@ public class AssetControllerTest extends MyRestDoc {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.assetList[0].assetId").value(12L))
-                .andExpect(jsonPath("$.data.assetList[0].wishlistId").value(3L))
-                .andExpect(jsonPath("$.data.assetList[0].cartId").value(8L));
+                .andExpect(jsonPath("$.data.assetList[0].assetId").value(8L))
+                .andExpect(jsonPath("$.data.assetList[0].wishlistId").doesNotExist())
+                .andExpect(jsonPath("$.data.assetList[0].cartId").value(4L));
     }
 
-    @DisplayName("하위 카테고리별 에셋 조회 비로그인 성공")
+    @DisplayName("하위 카테고리별 에셋 조회: 비로그인유저 성공")
     @Test
-    public void find_asset_list_with_pagination_by_sub_category_test() throws Exception {
+    public void find_asset_list_by_sub_category_test() throws Exception {
         // Given
         String categoryName = "luxury";
         String subCategoryName = "man";
@@ -292,10 +291,10 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.totalElement").value(1L));
     }
 
-    @DisplayName("하위 카테고리별 에셋 조회 로그인 성공")
+    @DisplayName("하위 카테고리별 에셋 조회: 로그인유저 - 성공")
     @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    public void find_asset_list_with_user_id_and_pagination_by_sub_category_test() throws Exception {
+    public void find_asset_list_with_user_by_sub_category_test() throws Exception {
         // Given
         String categoryName = "luxury";
         String subCategoryName = "man";
@@ -318,9 +317,9 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.totalElement").value(1L));
     }
 
-    @DisplayName("에셋 검색 비로그인 성공")
+    @DisplayName("에셋 검색: 비로그인유저 - 성공")
     @Test
-    public void find_asset_list_with_pagination_by_search_test() throws Exception {
+    public void find_asset_list_by_search_test() throws Exception {
         // given
         String page = "0";
         String size = "4";
@@ -340,10 +339,10 @@ public class AssetControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.status").value(200));
     }
 
-    @DisplayName("에셋 검색 로그인 성공")
-    @WithUserDetails(value = "양진호@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @DisplayName("에셋 검색: 로그인유저 - 성공")
+    @WithUserDetails(value = "yangjinho3@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    public void find_asset_list_with_user_id_and_pagination_by_search_test() throws Exception {
+    public void find_asset_list_with_user_by_search_test() throws Exception {
         // given
         String page = "0";
         String size = "22";
@@ -361,5 +360,61 @@ public class AssetControllerTest extends MyRestDoc {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200));
+    }
+
+    @DisplayName("카테고리별 에셋 조회: 태그, 비로그인유저 - 성공")
+    @Test
+    public void get_asset_list_by_category_with_tag_test() throws Exception {
+        // Given
+        String categoryName = "luxury";
+        String page = "0";
+        String size = "28";
+
+        // When
+        ResultActions resultActions = mockMvc.perform(
+                get("/assets/{categoryName}", categoryName)
+                        .param("page", page)
+                        .param("size", size)
+                        .param("tag", "tag1"));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.assetList.size()").value(6L))
+                .andExpect(jsonPath("$.data.assetList[0].wishlistId").doesNotExist())
+                .andExpect(jsonPath("$.data.assetList[0].cartId").doesNotExist());
+    }
+
+    @DisplayName("카테고리별 에셋 조회: 태그, 로그인유저 - 성공")
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void get_asset_list_with_user_by_category_with_tag_test() throws Exception {
+        // Given
+        String categoryName = "pretty";
+        String page = "0";
+        String size = "28";
+
+        // When
+        ResultActions resultActions = mockMvc.perform(
+                get("/assets/{categoryName}", categoryName)
+                        .param("page", page)
+                        .param("size", size)
+                        .param("tag", "tag1"));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.assetList.size()").value(6L))
+                .andExpect(jsonPath("$.data.assetList[0].assetId").value(12L))
+                .andExpect(jsonPath("$.data.assetList[0].wishlistId").value(3L))
+                .andExpect(jsonPath("$.data.assetList[0].cartId").value(8L));
     }
 }

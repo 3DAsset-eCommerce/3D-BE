@@ -2,7 +2,6 @@ package com.phoenix.assetbe.service;
 
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.exception.Exception400;
-import com.phoenix.assetbe.core.exception.Exception404;
 import com.phoenix.assetbe.model.asset.*;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.core.exception.Exception500;
@@ -34,15 +33,14 @@ public class AssetService {
      */
     public AssetResponse.AssetListOutDTO getAssetListService(Pageable pageable, MyUserDetails myUserDetails) {
         Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
+
         if(myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
-            assetList = assetQueryRepository.findAssetListWithUserAndPage(userId, pageable);
+            assetList = assetQueryRepository.findAssetListWithUser(userId, null, pageable);
         }else {
-            assetList = assetQueryRepository.findAssetListWithPage(pageable);
+            assetList = assetQueryRepository.findAssetList(null, pageable);
         }
-        if (assetList.getContent().isEmpty()) {
-            throw new Exception404("에셋이 존재하지 않습니다. ");
-        }
+
         return new AssetResponse.AssetListOutDTO(assetList);
     }
 
@@ -69,88 +67,75 @@ public class AssetService {
     }
 
     /**
-     * 카테고리별 에셋 조회
+     * 카테고리별 에셋 조회 및 검색(tag,keyword)
      */
-    public AssetResponse.AssetListOutDTO getAssetListByCategoryService(String categoryName, List<String> keywordList,
-                                                                       Pageable pageable, MyUserDetails myUserDetails) {
+    public AssetResponse.AssetListOutDTO getAssetListByCategoryService(String categoryName, List<String> tagList,
+                                                                       List<String> keywordList, Pageable pageable,
+                                                                       MyUserDetails myUserDetails) {
         Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
 
-        if(keywordList == null) {
-            if (myUserDetails != null) {
-                Long userId = myUserDetails.getUser().getId();
-                assetList = assetQueryRepository.findAssetListWithUserAndPageByCategory(userId, categoryName, pageable);
-            } else {
-                assetList = assetQueryRepository.findAssetListWithPageByCategory(categoryName, pageable);
-            }
-        }else {
+        List<String> splitKeywordList = null;
+
+        if(keywordList != null) {
             HashSet<String> keywordSet = new LinkedHashSet<>(keywordList);
             for (String keyword : keywordList) {
                 keywordSet.addAll(Arrays.asList(keyword.split(" ")));
             }
-            List<String> splitKeywordList = new ArrayList<>(keywordSet);
-
-            if (myUserDetails != null) {
-                Long userId = myUserDetails.getUser().getId();
-                assetList = assetQueryRepository.findAssetListWithUserAndPageAndSearchByCategory(userId, categoryName, splitKeywordList, pageable);
-            } else {
-                assetList = assetQueryRepository.findAssetListWithPageAndSearchByCategory(categoryName, splitKeywordList, pageable);
-            }
+            splitKeywordList = new ArrayList<>(keywordSet);
         }
-        if(assetList.getContent().isEmpty()) {
-            throw new Exception404("에셋이 존재하지 않습니다. ");
-        }
-        return new AssetResponse.AssetListOutDTO(assetList);
-    }
 
-    /**
-     * 서브카테고리별 에셋 조회
-     */
-    public AssetResponse.AssetListOutDTO getAssetListBySubCategoryService(
-                                            String categoryName, String subCategoryName, List<String> keywordList,
-                                            Pageable pageable, MyUserDetails myUserDetails) {
-
-        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
-        if(keywordList == null) {
-            if (myUserDetails != null) {
-                Long userId = myUserDetails.getUser().getId();
-                assetList = assetQueryRepository
-                        .findAssetListWithUserAndPageBySubCategory(userId, categoryName, subCategoryName, pageable);
-            } else {
-                assetList = assetQueryRepository
-                        .findAssetListWithPageBySubCategory(categoryName, subCategoryName, pageable);
-            }
-        }else {
-            HashSet<String> keywordSet = new LinkedHashSet<>(keywordList);
-            for (String keyword : keywordList) {
-                keywordSet.addAll(Arrays.asList(keyword.split(" ")));
-            }
-            List<String> splitKeywordList = new ArrayList<>(keywordSet);
-
-            if (myUserDetails != null) {
-                Long userId = myUserDetails.getUser().getId();
-                assetList = assetQueryRepository
-                        .findAssetListWithUserAndPageAndSearchBySubCategory(userId, categoryName, subCategoryName, splitKeywordList, pageable);
-            } else {
-                assetList = assetQueryRepository
-                        .findAssetListWithPageAndSearchBySubCategory(categoryName, subCategoryName, splitKeywordList, pageable);
-            }
-        }
-        if(assetList.getContent().isEmpty()) {
-            throw new Exception404("에셋이 존재하지 않습니다. ");
+        if (myUserDetails != null) {
+            Long userId = myUserDetails.getUser().getId();
+            assetList = assetQueryRepository.findAssetListWithUserByCategoryOrSubCategory(userId, categoryName, null, tagList, splitKeywordList, pageable);
+        } else {
+            assetList = assetQueryRepository.findAssetListByCategoryOrSubCategory(categoryName, null, tagList, splitKeywordList, pageable);
         }
 
         return new AssetResponse.AssetListOutDTO(assetList);
     }
 
     /**
-     * 에셋 검색
+     * 서브카테고리별 에셋 조회 및 검색(tag,keyword)
+     */
+    public AssetResponse.AssetListOutDTO getAssetListBySubCategoryService(String categoryName, String subCategoryName,
+                                                                          List<String> tagList, List<String> keywordList,
+                                                                          Pageable pageable, MyUserDetails myUserDetails) {
+
+        Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
+
+        List<String> splitKeywordList = null;
+
+        if(keywordList != null) {
+            HashSet<String> keywordSet = new LinkedHashSet<>(keywordList);
+            for (String keyword : keywordList) {
+                keywordSet.addAll(Arrays.asList(keyword.split(" ")));
+            }
+            splitKeywordList = new ArrayList<>(keywordSet);
+        }
+
+        if (myUserDetails != null) {
+            Long userId = myUserDetails.getUser().getId();
+            assetList = assetQueryRepository
+                    .findAssetListWithUserByCategoryOrSubCategory(userId, categoryName, subCategoryName, tagList, splitKeywordList, pageable);
+        } else {
+            assetList = assetQueryRepository
+                    .findAssetListByCategoryOrSubCategory(categoryName, subCategoryName, tagList, splitKeywordList, pageable);
+        }
+
+        return new AssetResponse.AssetListOutDTO(assetList);
+    }
+
+    /**
+     * 에셋 검색(keyword)
      */
     public AssetResponse.AssetListOutDTO getAssetListBySearchService(List<String> keywordList,
                                                                      Pageable pageable, MyUserDetails myUserDetails) {
 
         Page<AssetResponse.AssetListOutDTO.AssetOutDTO> assetList;
 
-        if(!keywordList.isEmpty()) {
+        if (keywordList == null || keywordList.isEmpty()) {
+            throw new Exception400("keyword", "잘못된 요청입니다. ");
+        } else {
 
             HashSet<String> keywordSet = new LinkedHashSet<>(keywordList);
 
@@ -163,18 +148,12 @@ public class AssetService {
             if (myUserDetails != null) {
                 Long userId = myUserDetails.getUser().getId();
                 assetList = assetQueryRepository
-                        .findAssetListWithUserAndPageBySearch(userId, splitKeywordList, pageable);
+                        .findAssetListWithUser(userId, splitKeywordList, pageable);
             } else {
                 assetList = assetQueryRepository
-                        .findAssetListWithPageBySearch(splitKeywordList, pageable);
+                        .findAssetList(splitKeywordList, pageable);
             }
 
-            if(assetList.getContent().isEmpty()) {
-                throw new Exception404("에셋이 존재하지 않습니다. ");
-            }
-
-        }else{
-            throw new Exception400("keyword", "잘못된 요청입니다. ");
         }
 
         return new AssetResponse.AssetListOutDTO(assetList);
