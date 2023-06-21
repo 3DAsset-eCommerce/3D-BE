@@ -20,13 +20,19 @@ public class AdminService {
     private final CategoryService categoryService;
     private final SubQueryCategory subQueryCategory;
 
+    /**
+     * 카테고리
+     */
     public AdminResponse.GetCategoryListOutDTO getCategoryListService(){
         List<Category> categoryList = categoryService.getCategoryList();
         return new AdminResponse.GetCategoryListOutDTO(categoryList);
     }
 
+    /**
+     * 서브 카테고리
+     */
     public AdminResponse.GetSubCategoryListOutDTO getSubCategoryListService(String categoryName) {
-        AdminResponse.GetSubCategoryListOutDTO getSubCategoryListOutDTO = subQueryCategory.getSubCategoryByCategoryName(categoryName);
-        return getSubCategoryListOutDTO;
+        List<SubCategory> subCategoryList = subQueryCategory.getSubCategoryByCategoryName(categoryName);
+        return new AdminResponse.GetSubCategoryListOutDTO(subCategoryList);
     }
 }

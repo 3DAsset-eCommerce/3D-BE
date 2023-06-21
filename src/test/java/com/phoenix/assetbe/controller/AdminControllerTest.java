@@ -93,4 +93,36 @@ public class AdminControllerTest extends MyRestDoc {
     /**
      * 관리자 서브 카테고리
      */
+    @DisplayName("관리자 서브 카테고리 조회 성공")
+    @WithUserDetails(value = "kuanliza8@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void get_sub_category_list_test() throws Exception {
+        // given
+        String categoryName = "pretty";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/s/admin/{categoryName}/subcategory", categoryName));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.msg").value("성공"));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("관리자 서브 카테고리 조회 실패 : 권한 체크 실패")
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void get_sub_category_list_fail_test() throws Exception {
+        // given
+        String categoryName = "pretty";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/s/admin/{categoryName}/subcategory", categoryName));
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(403));
+        resultActions.andExpect(jsonPath("$.msg").value("forbidden"));
+        resultActions.andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+    }
 }

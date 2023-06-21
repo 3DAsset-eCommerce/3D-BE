@@ -15,18 +15,19 @@ import static com.phoenix.assetbe.model.asset.QSubCategory.subCategory;
 @RequiredArgsConstructor
 @Repository
 public class SubQueryCategory {
+
     private final JPAQueryFactory queryFactory;
 
-    public AdminResponse.GetSubCategoryListOutDTO getSubCategoryByCategoryName(String categoryName) {
-        List<SubCategory> subCategories = queryFactory.select(subCategory)
+    /**
+     * 서브 카테고리
+     */
+    public List<SubCategory> getSubCategoryByCategoryName(String categoryName) {
+        List<SubCategory> result = queryFactory.select(subCategory)
                 .from(assetSubCategory)
                 .join(assetSubCategory.category, category)
                 .join(assetSubCategory.subCategory, subCategory)
                 .where(category.categoryName.eq(categoryName))
                 .fetch();
-
-        return new AdminResponse.GetSubCategoryListOutDTO(subCategories);
+        return result;
     }
-    // .innerJoin(manager.areaManagers,areaManager).fetchJoin()
-    //.innerJoin(areaManager.areaManagerKey.area,area).fetchJoin()
 }

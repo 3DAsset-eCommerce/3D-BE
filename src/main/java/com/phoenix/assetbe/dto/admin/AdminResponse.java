@@ -9,6 +9,9 @@ import java.util.List;
 
 public class AdminResponse {
 
+    /**
+     * 카테고리
+     */
     @Getter @Setter
     public static class GetCategoryListOutDTO {
         private List<Category> categoryList;
@@ -18,6 +21,9 @@ public class AdminResponse {
         }
     }
 
+    /**
+     * 서브 카테고리
+     */
     @Getter @Setter
     public static class GetSubCategoryListOutDTO {
         private List<SubCategory> subCategoryList;

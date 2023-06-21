@@ -5,11 +5,4 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class AdminRequest {
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    public static class addCategoryDTO{
-        private String categoryName;
-    }
 }
