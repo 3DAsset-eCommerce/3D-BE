@@ -29,6 +29,9 @@ public class UserRequest {
                 message = "영문, 숫자, 특수문자를 각각 1개 이상 사용하여 8~20자 이내로 작성해주세요. ")
         @NotEmpty
         private String password;
+
+        @NotEmpty
+        private Boolean keepLogin;
     }
 
     @Getter @Setter

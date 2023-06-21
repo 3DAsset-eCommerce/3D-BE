@@ -16,11 +16,11 @@ public class UserResponse {
      */
     @Getter
     @Setter
-    public static class LoginWithJWTOutDTO {
+    public static class LoginOutDTOWithJWT {
         private Long id;
         private String jwt;
 
-        public LoginWithJWTOutDTO(Long id, String jwt) {
+        public LoginOutDTOWithJWT(Long id, String jwt) {
             this.id = id;
             this.jwt = jwt;
         }

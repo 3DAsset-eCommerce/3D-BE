@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum Status {
-    ACTIVE("활성"),INACTIVE("탈퇴");
+    ACTIVE("ACTIVE"),INACTIVE("INACTIVE");
 
     private final String status;
 

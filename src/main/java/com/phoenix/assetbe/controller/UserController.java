@@ -5,12 +5,7 @@ import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.user.UserRequest;
 import com.phoenix.assetbe.dto.user.UserResponse;
-import com.phoenix.assetbe.dto.user.UserResponse.CodeCheckOutDTO;
-import com.phoenix.assetbe.dto.user.UserResponse.CodeOutDTO;
-import com.phoenix.assetbe.dto.user.UserResponse.EmailCheckOutDTO;
 import com.phoenix.assetbe.dto.user.UserResponse.LoginOutDTO;
-import com.phoenix.assetbe.dto.user.UserResponse.LoginWithJWTOutDTO;
-import com.phoenix.assetbe.dto.user.UserResponse.PasswordChangeOutDTO;
 import com.phoenix.assetbe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,9 +32,9 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginInDTO loginInDTO, Errors errors){
-        UserResponse.LoginWithJWTOutDTO loginWithJWTOutDTO = userService.loginService(loginInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(new LoginOutDTO(loginWithJWTOutDTO.getId()));
-        return ResponseEntity.ok().header(MyJwtProvider.HEADER, loginWithJWTOutDTO.getJwt()).body(responseDTO);
+        UserResponse.LoginOutDTOWithJWT loginOutDTOWithJWT = userService.loginService(loginInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(new LoginOutDTO(loginOutDTOWithJWT.getId()));
+        return ResponseEntity.ok().header(MyJwtProvider.HEADER, loginOutDTOWithJWT.getJwt()).body(responseDTO);
     }
 
     @PostMapping("/login/send")

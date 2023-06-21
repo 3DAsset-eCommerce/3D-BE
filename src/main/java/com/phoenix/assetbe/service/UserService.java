@@ -11,13 +11,8 @@ import com.phoenix.assetbe.dto.user.UserRequest.CodeCheckInDTO;
 import com.phoenix.assetbe.dto.user.UserRequest.EmailCheckInDTO;
 import com.phoenix.assetbe.dto.user.UserRequest.PasswordChangeInDTO;
 import com.phoenix.assetbe.dto.user.UserResponse;
-import com.phoenix.assetbe.dto.user.UserResponse.CodeCheckOutDTO;
-import com.phoenix.assetbe.dto.user.UserResponse.CodeOutDTO;
-import com.phoenix.assetbe.dto.user.UserResponse.EmailCheckOutDTO;
-import com.phoenix.assetbe.dto.user.UserResponse.LoginWithJWTOutDTO;
-import com.phoenix.assetbe.dto.user.UserResponse.PasswordChangeOutDTO;
-import com.phoenix.assetbe.dto.user.UserResponse.SignupOutDTO;
 import com.phoenix.assetbe.model.asset.MyAssetQueryRepository;
+import com.phoenix.assetbe.model.user.Status;
 import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,11 +49,8 @@ public class UserService {
     /**
      * 로그인
      */
-    public UserResponse.LoginWithJWTOutDTO loginService(UserRequest.LoginInDTO loginInDTO) {
+    public UserResponse.LoginOutDTOWithJWT loginService(UserRequest.LoginInDTO loginInDTO) {
         User userPS = findUserByEmail(loginInDTO.getEmail());
-        if (!userPS.isEmailVerified()) {
-            throw new Exception400("verified", "이메일 인증이 필요합니다. ");
-        }
 
         try {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
@@ -66,7 +58,7 @@ public class UserService {
             Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             MyUserDetails myUserDetails = (MyUserDetails) authentication.getPrincipal();
 
-            return new UserResponse.LoginWithJWTOutDTO(myUserDetails.getUser().getId(), MyJwtProvider.create(myUserDetails.getUser()));
+            return new UserResponse.LoginOutDTOWithJWT(myUserDetails.getUser().getId(), MyJwtProvider.create(myUserDetails.getUser()));
         }catch (Exception e){
             throw new Exception401("아이디 혹은 비밀번호를 확인해주세요. ");
         }
@@ -233,7 +225,7 @@ public class UserService {
 
     // 요청한 사용자가 email의 주인인지 확인하는 공통 메소드
     public User findUserByEmail(String email) {
-        User userPS = userRepository.findByEmail(email).orElseThrow(
+        User userPS = userRepository.findByUserWithEmailAndStatus(email, Status.ACTIVE).orElseThrow(
                 () -> new Exception400("email", "존재하지 않는 유저입니다. ")
         );
         return userPS;
@@ -253,7 +245,4 @@ public class UserService {
             throw new Exception403("권한이 없습니다. ");
         }
     }
-
-
-
 }
