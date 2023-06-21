@@ -86,18 +86,14 @@ public class ReviewService {
         List<ReviewResponse.ReviewListOutDTO.ReviewOutDTO> reviewOutDTOList =
                 reviewQueryRepository.findReviewListByAssetId(assetId);
 
-        if(!reviewOutDTOList.isEmpty()) {
-            if (myUserDetails != null) {
-                Long userId = myUserDetails.getUser().getId();
-                hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(assetId, userId);
-                hasWishlist = wishListQueryRepository.existsAssetIdAndUserId(assetId, userId);
-                Optional<ReviewResponse.ReviewListOutDTO.ReviewOutDTO> foundReview = reviewOutDTOList.stream()
-                        .filter(review -> review.getUserId().equals(userId))
-                        .findFirst();
-                hasReview = foundReview.isPresent();
-            }
-        }else{
-            throw new Exception404("리뷰가 존재하지 않습니다. ");
+        if (myUserDetails != null) {
+            Long userId = myUserDetails.getUser().getId();
+            hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(assetId, userId);
+            hasWishlist = wishListQueryRepository.existsAssetIdAndUserId(assetId, userId);
+            Optional<ReviewResponse.ReviewListOutDTO.ReviewOutDTO> foundReview = reviewOutDTOList.stream()
+                    .filter(review -> review.getUserId().equals(userId))
+                    .findFirst();
+            hasReview = foundReview.isPresent();
         }
 
         return new ReviewResponse.ReviewListOutDTO(hasAsset, hasReview, hasWishlist, reviewOutDTOList);
