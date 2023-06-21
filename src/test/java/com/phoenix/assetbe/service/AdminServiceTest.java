@@ -23,7 +23,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-@DisplayName("어드민 서비스 TEST")
+@DisplayName("관리자 서비스 TEST")
 public class AdminServiceTest extends DummyEntity {
 
     private AdminService adminService;

@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("어드민 컨트롤러 TEST")
+@DisplayName("관리자 컨트롤러 TEST")
 @ActiveProfiles("test")
 @Sql("classpath:db/teardown.sql")
 @ExtendWith(SpringExtension.class)
