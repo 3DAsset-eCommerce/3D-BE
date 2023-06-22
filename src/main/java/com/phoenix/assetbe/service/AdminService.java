@@ -8,7 +8,6 @@ import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.asset.AssetQueryRepository;
 import com.phoenix.assetbe.model.asset.Category;
 import com.phoenix.assetbe.model.asset.SubCategory;
-import com.phoenix.assetbe.model.asset.SubQueryCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -64,14 +63,13 @@ public class AdminService {
             asset.changeStatusToACTIVE();
     }
 
-    public AdminResponse.AssetListOutDTO getAssetListByAdminService(Long assetNumber, List<String> assetNameList, String category, String subCategory, Pageable pageable){
-
-        if(assetNameList != null) {
-            HashSet<String> keywordSet = new LinkedHashSet<>(assetNameList);
-            for (String assetName : assetNameList) {
-                keywordSet.addAll(Arrays.asList(assetName.split(" ")));
-            }
-            assetNameList.clear();
+    /**
+     * 에셋 조회
+     */
+    public AdminResponse.AssetListOutDTO getAssetListByAdminService(Long assetNumber, String assetName, String category, String subCategory, Pageable pageable){
+        List<String> assetNameList = null;
+        if(assetName != null) {
+            HashSet<String> keywordSet = new LinkedHashSet<>(Arrays.asList(assetName.split(" ")));
             assetNameList = new ArrayList<>(keywordSet);
         }
 

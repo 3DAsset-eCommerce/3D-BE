@@ -15,7 +15,6 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 import static com.phoenix.assetbe.model.asset.QAsset.asset;
-import static com.phoenix.assetbe.model.asset.QAssetCategory.assetCategory;
 import static com.phoenix.assetbe.model.asset.QAssetSubCategory.assetSubCategory;
 import static com.phoenix.assetbe.model.asset.QAssetTag.assetTag;
 import static com.phoenix.assetbe.model.asset.QCategory.category;
@@ -211,7 +210,7 @@ public class AssetQueryRepository {
      */
     public Page<AdminResponse.AssetListOutDTO.AssetOutDTO> findAssetListByAdmin(Long assetNumber, List<String> assetNameList, String categoryName, String subCategoryName, Pageable pageable){
         List<AdminResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
-                .selectDistinct(Projections.constructor(AdminResponse.AssetListOutDTO.AssetOutDTO.class,
+                .select(Projections.constructor(AdminResponse.AssetListOutDTO.AssetOutDTO.class,
                         asset.id,
                         asset.assetName,
                         asset.price,
@@ -225,18 +224,18 @@ public class AssetQueryRepository {
                 .innerJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
                 .innerJoin(category).on(category.id.eq(assetSubCategory.category.id))
                 .innerJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
-                .where(assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containKeyword(assetNameList))
+                .where(assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containAllKeyword(assetNameList))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(assetSortByIncludedKeywordCount(assetNameList).desc(), assetSort(pageable))
                 .fetch();
 
-        Long totalCount = queryFactory.select(asset.id.countDistinct())
+        Long totalCount = queryFactory.select(asset.id.count())
                 .from(asset)
                 .innerJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
                 .innerJoin(category).on(category.id.eq(assetSubCategory.category.id))
                 .innerJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
-                .where(assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containKeyword(assetNameList))
+                .where(assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containAllKeyword(assetNameList))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
@@ -303,6 +302,19 @@ public class AssetQueryRepository {
         return builder;
     }
 
+    private BooleanBuilder containAllKeyword(List<String> splitKeywordList){
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if(splitKeywordList == null || splitKeywordList.isEmpty()){
+            return null;
+        }
+
+        for(String keyword : splitKeywordList){
+            builder.and(assetNameLike(keyword));
+        }
+        return builder;
+    }
+
     /**
      * 정렬 기준
      */
@@ -312,19 +324,23 @@ public class AssetQueryRepository {
             for (Sort.Order order : pageable.getSort()) {
                 Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
                 switch (order.getProperty()){
-                    case "id":
+                    case "num":
                         return new OrderSpecifier<>(direction, asset.id);
-                    case "assetName":
+                    case "name":
                         return new OrderSpecifier<>(direction, asset.assetName);
                     case "price":
                         return new OrderSpecifier<>(direction, asset.price);
                     case "releaseDate":
+                        return new OrderSpecifier<>(direction, asset.releaseDate);
+                    case "createdAt":
                         return new OrderSpecifier<>(direction, asset.createdAt);
+                    case "updatedAt":
+                        return new OrderSpecifier<>(direction, asset.updatedAt);
                     case "rating":
                         return new OrderSpecifier<>(direction, asset.rating);
-                    case "reviewCount":
+                    case "review":
                         return new OrderSpecifier<>(direction, asset.reviewCount);
-                    case "wishCount":
+                    case "wish":
                         return new OrderSpecifier<>(direction, asset.wishCount);
                 }
             }

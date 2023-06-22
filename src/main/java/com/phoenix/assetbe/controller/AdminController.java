@@ -87,16 +87,14 @@ public class AdminController {
      */
     @GetMapping("/s/admin/assets")
     public ResponseEntity<?> getAssetListByAdmin(
-            @RequestParam(value = "assetNumber", required = false) Long assetNumber,
-            @RequestParam(value = "assetName", required = false) List<String> assetNameList,
+            @RequestParam(value = "num", required = false) Long assetNumber,
+            @RequestParam(value = "name", required = false) String assetName,
             @RequestParam(value = "category", required = false) String categoryName,
-            @RequestParam(value = "subCategory", required = false) String subCategoryName,
-            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @AuthenticationPrincipal MyUserDetails myUserDetails
-    ) {
-        AdminResponse.AssetListOutDTO assetListOutDTO = adminService.getAssetListByAdminService(
-                assetNumber, assetNameList, categoryName, subCategoryName, pageable
-        );
+            @RequestParam(value = "subcategory", required = false) String subCategoryName,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        AdminResponse.AssetListOutDTO assetListOutDTO =
+                adminService.getAssetListByAdminService(assetNumber, assetName, categoryName, subCategoryName, pageable);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
