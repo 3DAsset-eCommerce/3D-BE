@@ -98,4 +98,19 @@ public class AdminServiceTest extends DummyEntity {
         // then
         verify(assetQueryRepository, times(1)).getAssetListByAssetIdList(assetIdList);
     }
+
+    @Test
+    public void testActiveAssetService() throws Exception {
+        // given
+        List<Long> assetIdList = Arrays.asList(1L, 2L, 3L);
+
+        AdminRequest.ActiveAssetInDTO activeAssetInDTO = new AdminRequest.ActiveAssetInDTO();
+        activeAssetInDTO.setAssets(assetIdList);
+
+        // when
+        adminService.activeAssetService(activeAssetInDTO);
+
+        // then
+        verify(assetQueryRepository, times(1)).getAssetListByAssetIdList(assetIdList);
+    }
 }

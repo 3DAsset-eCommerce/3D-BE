@@ -162,7 +162,7 @@ public class AdminControllerTest extends MyRestDoc {
     @DisplayName("관리자 에셋 비활성화 실패 : 권한 체크 실패")
     @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    public void inactive_asset_fail1_test() throws Exception {
+    public void inactive_asset_fail_test() throws Exception {
         // given
         List<Long> assetIdList = new ArrayList<>();
         assetIdList.add(1L);
@@ -174,6 +174,58 @@ public class AdminControllerTest extends MyRestDoc {
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/admin/asset/inactive")
+                .content(objectMapper.writeValueAsString(inactiveAssetInDTO))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.msg").value("forbidden"))
+                .andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+//    @DisplayName("관리자 에셋 활성화 성공")
+//    @WithUserDetails(value = "kuanliza8@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+//    @Test
+//    public void active_asset_test() throws Exception {
+//        // given
+//
+//
+//        List<Long> assetIdList = new ArrayList<>();
+//        assetIdList.add(10L);
+//        assetIdList.add(11L);
+//        assetIdList.add(12L);
+//
+//        AdminRequest.ActiveAssetInDTO activeAssetInDTO = new AdminRequest.ActiveAssetInDTO();
+//        activeAssetInDTO.setAssets(assetIdList);
+//
+//        // when
+//        ResultActions resultActions = mockMvc.perform(post("/s/admin/asset/active")
+//                .content(objectMapper.writeValueAsString(activeAssetInDTO))
+//                .contentType(MediaType.APPLICATION_JSON));
+//
+//        // then
+//        resultActions.andExpect(status().isOk())
+//                .andExpect(jsonPath("$.status").value(200))
+//                .andExpect(jsonPath("$.msg").value("성공"));
+//        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+//    }
+
+    @DisplayName("관리자 에셋 활성화 실패 : 권한 체크 실패")
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void active_asset_fail_test() throws Exception {
+        // given
+        List<Long> assetIdList = new ArrayList<>();
+        assetIdList.add(1L);
+        assetIdList.add(2L);
+        assetIdList.add(4L);
+
+        AdminRequest.InactiveAssetInDTO inactiveAssetInDTO = new AdminRequest.InactiveAssetInDTO();
+        inactiveAssetInDTO.setAssets(assetIdList);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/admin/asset/active")
                 .content(objectMapper.writeValueAsString(inactiveAssetInDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 

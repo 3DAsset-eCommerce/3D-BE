@@ -51,4 +51,16 @@ public class AdminService {
             asset.changeStatusToINACTIVE();
         }
     }
+
+    @Transactional
+    public void activeAssetService(AdminRequest.ActiveAssetInDTO activeAssetInDTO) {
+        List<Asset> assetList = assetQueryRepository.getAssetListByAssetIdList(activeAssetInDTO.getAssets());
+
+        for (Asset asset: assetList) {
+            if (asset.isStatus()) {
+                throw new Exception400("status error", asset.getId() + "번 에셋은 이미 활성화되어 있습니다. ");
+            }
+            asset.changeStatusToACTIVE();
+        }
+    }
 }
