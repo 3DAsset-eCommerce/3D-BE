@@ -151,7 +151,7 @@ public class UserServiceTest extends DummyEntity {
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
 
         // when
-        UserResponse.GetMyInfoOutDTO getMyInfoOutDTO = userService.getMyInfoService(userId, myUserDetails);
+        UserResponse.GetMyInfoOutDTO getMyInfoOutDTO = userService.getMyInfoService(myUserDetails);
 
         // then
         verify(userRepository, times(1)).findById(userId);

@@ -75,7 +75,7 @@ public class MySecurityConfig {
         // 8. 인증 실패 처리
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
             log.warn("인증되지 않은 사용자가 자원에 접근하려 합니다 : "+authException.getMessage());
-            MyFilterResponseUtil.unAuthorized(response, new Exception401("인증되지 않았습니다"));
+            MyFilterResponseUtil.unAuthorized(response, new Exception401("인증되지 않았습니다. "));
         });
 
         // 10. 권한 실패 처리

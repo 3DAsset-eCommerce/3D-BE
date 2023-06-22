@@ -188,9 +188,8 @@ public class UserService {
         }
     }
 
-    public UserResponse.GetMyInfoOutDTO getMyInfoService(Long userId, MyUserDetails myUserDetails) {
-        authCheck(myUserDetails, userId);
-        User userPS = findUserById(userId);
+    public UserResponse.GetMyInfoOutDTO getMyInfoService(MyUserDetails myUserDetails) {
+        User userPS = findUserById(myUserDetails.getUser().getId());
         return new UserResponse.GetMyInfoOutDTO(userPS);
     }
 

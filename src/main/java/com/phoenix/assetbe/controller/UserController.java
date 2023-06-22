@@ -106,9 +106,9 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-    @GetMapping("/s/user/{id}")
-    public ResponseEntity<?> getMyInfo(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
-        UserResponse.GetMyInfoOutDTO getMyInfoOutDTO = userService.getMyInfoService(id, myUserDetails);
+    @GetMapping("/s/user")
+    public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal MyUserDetails myUserDetails) {
+        UserResponse.GetMyInfoOutDTO getMyInfoOutDTO = userService.getMyInfoService(myUserDetails);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(getMyInfoOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
