@@ -38,7 +38,7 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return user.isEmailVerified();
+        return true;
     }
 
     @Override

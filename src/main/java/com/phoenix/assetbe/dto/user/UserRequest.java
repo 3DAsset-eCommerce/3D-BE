@@ -30,7 +30,6 @@ public class UserRequest {
         @NotEmpty
         private String password;
 
-        @NotEmpty
         private Boolean keepLogin;
     }
 
@@ -54,6 +53,9 @@ public class UserRequest {
 
     @Getter @Setter
     public static class CodeCheckInDTO {
+
+        @NotNull
+        private Long userId;
 
         @NotEmpty
         @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",

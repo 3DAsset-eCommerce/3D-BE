@@ -35,6 +35,15 @@ public class UserResponse {
         }
     }
 
+    @Getter
+    @Setter
+    public static class CodeSendOutDTO {
+        private Long userId;
+        public CodeSendOutDTO(Long userId) {
+            this.userId = userId;
+        }
+    }
+
     /**
      * 마이페이지
      */

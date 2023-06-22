@@ -9,6 +9,7 @@ import com.phoenix.assetbe.dto.user.UserResponse.LoginOutDTO;
 import com.phoenix.assetbe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -38,15 +39,15 @@ public class UserController {
     }
 
     @PostMapping("/login/send")
-    public ResponseEntity<?> verifyingCodeSend(@RequestBody @Valid UserRequest.CodeSendInDTO codeSendInDTO, Errors errors){
-        userService.verifyingCodeSendService(codeSendInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>();
+    public ResponseEntity<?> passwordChangeCodeSend(@RequestBody @Valid UserRequest.CodeSendInDTO codeSendInDTO, Errors errors){
+        UserResponse.CodeSendOutDTO codeSendOutDTO = userService.passwordChangeCodeSendService(codeSendInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(codeSendOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/login/check")
-    public ResponseEntity<?> verifyingCodeCheck(@RequestBody @Valid UserRequest.CodeCheckInDTO codeCheckInDTO, Errors errors){
-        userService.verifyingCodeCheckService(codeCheckInDTO);
+    public ResponseEntity<?> passwordChangeCodeCheck(@RequestBody @Valid UserRequest.CodeCheckInDTO codeCheckInDTO, Errors errors){
+        userService.passwordChangeCodeCheckService(codeCheckInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -70,8 +71,8 @@ public class UserController {
 
     @PostMapping("/signup/send")
     public ResponseEntity<?> signupCodeSend(@RequestBody @Valid UserRequest.CodeSendInDTO codeSendInDTO, Errors errors){
-        userService.signupCodeSendService(codeSendInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>();
+        UserResponse.CodeSendOutDTO codeSendOutDTO = userService.signupCodeSendService(codeSendInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(codeSendOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 

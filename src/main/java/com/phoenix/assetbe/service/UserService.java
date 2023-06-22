@@ -6,20 +6,21 @@ import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception401;
 import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.core.exception.Exception500;
+import com.phoenix.assetbe.core.util.MailUtils;
 import com.phoenix.assetbe.dto.user.UserRequest;
 import com.phoenix.assetbe.dto.user.UserRequest.CodeCheckInDTO;
 import com.phoenix.assetbe.dto.user.UserRequest.EmailCheckInDTO;
 import com.phoenix.assetbe.dto.user.UserRequest.PasswordChangeInDTO;
 import com.phoenix.assetbe.dto.user.UserResponse;
+import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.asset.MyAssetQueryRepository;
 import com.phoenix.assetbe.model.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,8 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -38,7 +39,6 @@ import java.util.Optional;
 public class UserService {
 
     private final AuthenticationManager authenticationManager;
-    private final JavaMailSender javaMailSender;
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
@@ -64,20 +64,21 @@ public class UserService {
         }
     }
 
-    @Transactional
-    public void verifyingCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO){
+    public UserResponse.CodeSendOutDTO passwordChangeCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO){
         User userPS = findValidUserByEmail(codeSendInDTO.getEmail());
+        if(!userPS.getFirstName().equals(codeSendInDTO.getFirstName()) || !userPS.getLastName().equals(codeSendInDTO.getLastName())){
+            throw new Exception400("name", "잘못된 요청입니다. ");
+        }
         userPS.generateEmailCheckToken();
+        String html = createPasswordChangeHTML(userPS);
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(userPS.getEmail());
-        mailMessage.setSubject("3D 에셋 스토어, 비밀번호 재설정을 위한 이메일 인증");
-        mailMessage.setText(userPS.getEmailCheckToken());
-        javaMailSender.send(mailMessage);
+        MailUtils.send(userPS.getEmail(), "3D 에셋 스토어, 비밀번호 재설정을 위한 이메일 인증", html);
+
+        return new UserResponse.CodeSendOutDTO(userPS.getId());
     }
 
     @Transactional
-    public void verifyingCodeCheckService(CodeCheckInDTO codeCheckInDTO) {
+    public void passwordChangeCodeCheckService(UserRequest.CodeCheckInDTO codeCheckInDTO) {
         User userPS = findValidUserByEmail(codeCheckInDTO.getEmail());
 
         LocalDateTime emailTokenCreatedAt = userPS.getEmailCheckTokenCreatedAt();
@@ -120,7 +121,7 @@ public class UserService {
     }
 
     @Transactional
-    public void signupCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO) {
+    public UserResponse.CodeSendOutDTO signupCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO) {
         User user = User.builder()
                 .firstName(codeSendInDTO.getFirstName())
                 .lastName(codeSendInDTO.getLastName())
@@ -133,25 +134,24 @@ public class UserService {
         user.generateEmailCheckToken();
 
         try {
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(user.getEmail());
-            mailMessage.setSubject("3D 에셋 스토어, 회원가입을 위한 이메일 인증");
-            mailMessage.setText(user.getEmailCheckToken());
-            javaMailSender.send(mailMessage);
-        } catch (MailException e) {
-            throw new Exception500("이메일 전송 실패 : " + e.getMessage());
-        }
-
-        try {
             userRepository.save(user);
         } catch (Exception e) {
             throw new Exception500("회원가입 실패 : " + e.getMessage());
         }
+
+        String html = createSignupHTML(user);
+        try {
+            MailUtils.send(user.getEmail(), "3D 에셋 스토어, 회원가입을 위한 이메일 인증", html);
+        } catch (MailException e) {
+            throw new Exception500("이메일 전송 실패 : " + e.getMessage());
+        }
+
+        return new UserResponse.CodeSendOutDTO(user.getId());
     }
 
     @Transactional
     public void signupCodeCheckService(CodeCheckInDTO codeCheckInDTO) {
-        User userPS = findValidUserByEmail(codeCheckInDTO.getEmail());
+        User userPS = findUserById(codeCheckInDTO.getUserId());
 
         LocalDateTime emailTokenCreatedAt = userPS.getEmailCheckTokenCreatedAt();
         LocalDateTime currentTime = LocalDateTime.now();
@@ -171,8 +171,11 @@ public class UserService {
     @Transactional
     public void signupService(UserRequest.SignupInDTO signupInDTO) {
         User userPS = findValidUserByEmail(signupInDTO.getEmail());
+        if(!userPS.getFirstName().equals(signupInDTO.getFirstName()) || !userPS.getLastName().equals(signupInDTO.getLastName())){
+            throw new Exception400("name", "잘못된 요청입니다. ");
+        }
 
-        userPS.changePassword(userPS.getPassword());
+        userPS.changePassword(passwordEncoder.encode(signupInDTO.getPassword()));
     }
 
     /**
@@ -279,5 +282,98 @@ public class UserService {
         if (!myUserDetails.getUser().getId().equals(userId)) {
             throw new Exception403("권한이 없습니다. ");
         }
+    }
+
+    // 비밀번호 재설정 메일 본문 생성 메서드
+    private String createSignupHTML(User user){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 mm월 dd일 HH시 mm분 ss초");
+        LocalDateTime expiredTime = user.getEmailCheckTokenCreatedAt().plusMinutes(10);
+        String expiredTimeStr = expiredTime.format(formatter);
+
+        return "<body>\n" +
+                "    <table\n" +
+                "      style=\"\n" +
+                "        background-color: #ffffff;\n" +
+                "        width: 630px;\n" +
+                "        height: 572px;\n" +
+                "        padding: 5%;\n" +
+                "      \"\n" +
+                "    >\n" +
+                "      <tr>\n" +
+                "        <td style=\"text-align: center;\">\n" +
+                "          <img src='cid:logo' style='width: 225px; height: 54px;' />"+
+                "          <hr\n" +
+                "            style=\"\n" +
+                "              width: 100%;\n" +
+                "              height: 1px;\n" +
+                "              background-color: #9fadbc;\n" +
+                "              margin: 32px 0 32px 0;\n" +
+                "            \"\n" +
+                "          />\n" +
+                "          <div style=\"height: 358px; width: 566px;\">\n" +
+                "            <h1>Neuroid Asset 회원 가입 인증</h1>\n" +
+                "            <p>Neuroid Asset Store에 가입하신 걸 환영합니다!</p>\n" +
+                "            <p>\n" +
+                "              아래 인증 코드를 입력하면 Neuroid Asset의 서비스를 이용하실 수\n" +
+                "              있습니다.\n" +
+                "            </p>\n" +
+                "            <h2>인증 코드: [" + user.getEmailCheckToken()+ "]</h2>\n" +
+                "            <strong\n" +
+                "              >인증 코드는 대소문자를 구분합니다. 정확히 입력해 주세요.</strong\n" +
+                "            >\n" +
+                "            <p>\n" +
+                "              인증메일의 유효기간 내에 인증이 완료되지 않으면 가입이 취소됩니다.\n" +
+                "            </p>\n" +
+                "          </div>\n" +
+                "        </td>\n" +
+                "      </tr>\n" +
+                "    </table>\n" +
+                "  </body>";
+    }
+
+    // 회원가입 메일 본문 생성 메서드
+    private String createPasswordChangeHTML(User user){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 mm월 dd일 HH시 mm분 ss초");
+        LocalDateTime expiredTime = user.getEmailCheckTokenCreatedAt().plusMinutes(10);
+        String expiredTimeStr = expiredTime.format(formatter);
+
+        return "<body>\n" +
+                "    <table\n" +
+                "      style=\"\n" +
+                "        background-color: #ffffff;\n" +
+                "        width: 630px;\n" +
+                "        height: 572px;\n" +
+                "        padding: 5%;\n" +
+                "      \"\n" +
+                "    >\n" +
+                "      <tr>\n" +
+                "        <td style=\"text-align: center;\">\n" +
+                "          <img src='cid:logo' style='width: 225px; height: 54px;' />"+
+                "          <hr\n" +
+                "            style=\"\n" +
+                "              width: 100%;\n" +
+                "              height: 1px;\n" +
+                "              background-color: #9fadbc;\n" +
+                "              margin: 32px 0 32px 0;\n" +
+                "            \"\n" +
+                "          />\n" +
+                "          <div style=\"height: 358px; width: 566px;\">\n" +
+                "            <h1>Neuroid Asset 비밀번호 재설정 인증</h1>\n" +
+                "            <p>안녕하세요. Neuroid Asset Store입니다!</p>\n" +
+                "            <p>\n" +
+                "              아래 인증 코드를 입력하면 비밀번호 재설정을 하실 수 있습니다.\n" +
+                "            </p>\n" +
+                "            <h2>인증 코드: [" + user.getEmailCheckToken()+ "]</h2>\n" +
+                "            <strong\n" +
+                "              >인증 코드는 대소문자를 구분합니다. 정확히 입력해 주세요.</strong\n" +
+                "            >\n" +
+                "            <p>\n" +
+                "              인증메일의 유효기간 내에 인증이 완료되지 않으면 인증이 취소됩니다.\n" +
+                "            </p>\n" +
+                "          </div>\n" +
+                "        </td>\n" +
+                "      </tr>\n" +
+                "    </table>\n" +
+                "  </body>";
     }
 }

@@ -28,7 +28,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath emailCheckToken = createString("emailCheckToken");
 
-    public final BooleanPath emailVerified = createBoolean("emailVerified");
+    public final DateTimePath<java.time.LocalDateTime> emailCheckTokenCreatedAt = createDateTime("emailCheckTokenCreatedAt", java.time.LocalDateTime.class);
 
     public final StringPath firstName = createString("firstName");
 
@@ -45,8 +45,6 @@ public class QUser extends EntityPathBase<User> {
     public final StringPath role = createString("role");
 
     public final EnumPath<Status> status = createEnum("status", Status.class);
-
-    public final DateTimePath<java.time.LocalDateTime> tokenCreatedAt = createDateTime("tokenCreatedAt", java.time.LocalDateTime.class);
 
     public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
 

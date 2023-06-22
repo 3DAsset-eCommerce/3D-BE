@@ -2,10 +2,10 @@ package com.phoenix.assetbe.model.user;
 
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
 import lombok.*;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -57,20 +57,28 @@ public class User extends MyTimeBaseUtil {
      * 메소드
      */
     public void generateEmailCheckToken() {
-        this.emailCheckToken= UUID.randomUUID().toString();
-        this.emailCheckTokenCreatedAt=LocalDateTime.now();
+        String characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(6);
+
+        for (int i = 0; i < 6; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            char randomChar = characters.charAt(randomIndex);
+            sb.append(randomChar);
+        }
+        this.emailCheckToken = sb.toString();
+        this.emailCheckTokenCreatedAt = LocalDateTime.now();
     }
-    public void setEmailCheckToken(String s) {this.emailCheckToken=s;}
-    public void changeWithdrawalMassage(String message) {this.reason = message;}
-    public void changePassword(String password) {this.password = password;}
+    public void changeWithdrawalMassage(String message) {
+        this.reason = message;
+    }
+    public void changePassword(String password) {
+        this.password = password;
+    }
     public void changeStatusToINACTIVE() {
         this.status = Status.INACTIVE;
     }
-
     public void changeStatusToACTIVE() {
         this.status = Status.ACTIVE;
-    }
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

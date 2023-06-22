@@ -22,7 +22,6 @@ public class DummyEntity {
                 .provider(SocialType.COMMON)
                 .role(Role.USER.getRole())
                 .status(Status.ACTIVE)
-                .emailVerified(true)
                 .emailCheckToken(null)
                 .build();
     }
@@ -38,7 +37,6 @@ public class DummyEntity {
                 .email(firstName + lastName +"@nate.com")
                 .role(Role.USER.getRole())
                 .status(Status.ACTIVE)
-                .emailVerified(true)
                 .emailCheckToken(null)
                 .build();
     }
@@ -53,7 +51,6 @@ public class DummyEntity {
                 .provider(SocialType.COMMON)
                 .role(Role.ADMIN.getRole())
                 .status(Status.ACTIVE)
-                .emailVerified(true)
                 .emailCheckToken(null)
                 .build();
     }
