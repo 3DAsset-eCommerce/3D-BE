@@ -78,4 +78,25 @@ public class DummyEntity {
                 .thumbnailUrl(assetName + ".thumbnailUrl")
                 .build();
     }
+
+    public Asset newInactiveAsset(String assetName, Double price, Double size, LocalDate date, Double rating) {
+        return Asset.builder()
+                .assetName(assetName)
+                .price(price)
+                .description("assetName은 price원입니다. ")
+                .discount(0)
+                .size(size)
+                .extension(".FBX")
+                .releaseDate(date)
+                .creator("NationA")
+                .rating(rating)
+                .wishCount(1111L)
+                .visitCount(2222L)
+                .reviewCount(0L)
+                .status(false)
+                .updatedAt(LocalDateTime.now())
+                .fileUrl(assetName + ".fileUrl")
+                .thumbnailUrl(assetName + ".thumbnailUrl")
+                .build();
+    }
 }

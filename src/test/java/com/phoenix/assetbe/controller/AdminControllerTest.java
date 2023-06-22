@@ -6,6 +6,7 @@ import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.admin.AdminRequest;
 import com.phoenix.assetbe.model.asset.Asset;
+import com.phoenix.assetbe.model.asset.AssetRepository;
 import com.phoenix.assetbe.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,6 +50,8 @@ public class AdminControllerTest extends MyRestDoc {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private AssetRepository assetRepository;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -184,32 +187,33 @@ public class AdminControllerTest extends MyRestDoc {
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
-//    @DisplayName("관리자 에셋 활성화 성공")
-//    @WithUserDetails(value = "kuanliza8@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
-//    @Test
-//    public void active_asset_test() throws Exception {
-//        // given
-//
-//
-//        List<Long> assetIdList = new ArrayList<>();
-//        assetIdList.add(10L);
-//        assetIdList.add(11L);
-//        assetIdList.add(12L);
-//
-//        AdminRequest.ActiveAssetInDTO activeAssetInDTO = new AdminRequest.ActiveAssetInDTO();
-//        activeAssetInDTO.setAssets(assetIdList);
-//
-//        // when
-//        ResultActions resultActions = mockMvc.perform(post("/s/admin/asset/active")
-//                .content(objectMapper.writeValueAsString(activeAssetInDTO))
-//                .contentType(MediaType.APPLICATION_JSON));
-//
-//        // then
-//        resultActions.andExpect(status().isOk())
-//                .andExpect(jsonPath("$.status").value(200))
-//                .andExpect(jsonPath("$.msg").value("성공"));
-//        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
-//    }
+    @DisplayName("관리자 에셋 활성화 성공")
+    @WithUserDetails(value = "kuanliza8@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void active_asset_test() throws Exception {
+        // given
+        List<Asset> assetList = new ArrayList<Asset>();
+        Asset inactiveAsset1 = dummy.newInactiveAsset("inactiveAsset1", 10000.0, 10.0, null, 2.5); // 31
+        assetList.add(inactiveAsset1);
+        assetRepository.saveAll(assetList);
+
+        List<Long> assetIdList = new ArrayList<>();
+        assetIdList.add(31L);
+
+        AdminRequest.ActiveAssetInDTO activeAssetInDTO = new AdminRequest.ActiveAssetInDTO();
+        activeAssetInDTO.setAssets(assetIdList);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/admin/asset/active")
+                .content(objectMapper.writeValueAsString(activeAssetInDTO))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.msg").value("성공"));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
 
     @DisplayName("관리자 에셋 활성화 실패 : 권한 체크 실패")
     @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
