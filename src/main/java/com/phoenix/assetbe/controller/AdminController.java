@@ -45,4 +45,11 @@ public class AdminController {
         ResponseDTO<?> responseDTO = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @PostMapping("/s/admin/asset/active")
+    public ResponseEntity<?> activeAsset(@RequestBody AdminRequest.ActiveAssetInDTO activeAssetInDTO) {
+        adminService.activeAssetService(activeAssetInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

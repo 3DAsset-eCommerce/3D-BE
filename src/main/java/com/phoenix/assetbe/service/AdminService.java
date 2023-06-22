@@ -46,7 +46,7 @@ public class AdminService {
 
         for (Asset asset: assetList) {
             if (!asset.isStatus()) {
-                throw new Exception400("status error", "asset " + asset.getId() + "번은 이미 삭제되어 있습니다. ");
+                throw new Exception400("status error", asset.getId() + "번 에셋은 이미 비활성화되어 있습니다. ");
             }
             asset.changeStatusToINACTIVE();
         }
