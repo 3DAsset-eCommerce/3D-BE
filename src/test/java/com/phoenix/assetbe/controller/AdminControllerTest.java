@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -236,5 +234,29 @@ public class AdminControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.msg").value("forbidden"))
                 .andExpect(jsonPath("$.data").value("권한이 없습니다. "));
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("관리자 에셋 조회: 카테고리 - 성공")
+    @WithUserDetails(value = "kuanliza8@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void get_asset_list_by_admin_test() throws Exception {
+        // Given
+
+
+        // When
+        ResultActions resultActions = mockMvc.perform(
+                get("/s/admin/assets")
+                        .param("category", "luxury")
+                        .param("subCategory","man"));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.assetList[0].assetId").value(1L));
+
     }
 }

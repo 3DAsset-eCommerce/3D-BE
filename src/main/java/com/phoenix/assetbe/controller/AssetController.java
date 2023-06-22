@@ -30,7 +30,7 @@ public class AssetController {
      */
     @GetMapping("/assets")
     public ResponseEntity<?> getAssetList(
-            @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 28, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         AssetResponse.AssetListOutDTO assetListOutDTO = assetService.getAssetListService(pageable, myUserDetails);
@@ -59,7 +59,7 @@ public class AssetController {
             @PathVariable String categoryName,
             @RequestParam(value = "tag", required = false) List<String> tagList,
             @RequestParam(value = "keyword", required = false) List<String> keywordList,
-            @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 28, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         AssetResponse.AssetListOutDTO assetListOutDTO =
@@ -78,7 +78,7 @@ public class AssetController {
             @PathVariable String subCategoryName,
             @RequestParam(value = "tag", required = false) List<String> tagList,
             @RequestParam(value = "keyword", required = false) List<String> keywordList,
-            @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 28, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         AssetResponse.AssetListOutDTO assetListOutDTO =
@@ -93,7 +93,7 @@ public class AssetController {
     @GetMapping("/assets/search")
     public ResponseEntity<?> getAssetListBySearch(
             @RequestParam(value = "keyword", required = false) List<String> keywordList,
-            @PageableDefault(size = 28, sort = "releaseDate", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(size = 28, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
         AssetResponse.AssetListOutDTO assetsOutDTO =

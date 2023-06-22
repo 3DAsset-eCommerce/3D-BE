@@ -5,6 +5,10 @@ import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.admin.AdminRequest;
 import com.phoenix.assetbe.dto.admin.AdminResponse;
 import com.phoenix.assetbe.model.asset.*;
+import com.phoenix.assetbe.model.asset.AssetQueryRepository;
+import com.phoenix.assetbe.model.asset.Category;
+import com.phoenix.assetbe.model.asset.SubCategory;
+import com.phoenix.assetbe.model.asset.SubQueryCategory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +34,9 @@ public class AdminServiceTest extends DummyEntity {
     private SubCategoryQueryRepository subCategoryQueryRepository;
     @Mock
     private AssetQueryRepository assetQueryRepository;
+    @Mock
+    private AssetQueryRepository assetQueryRepository;
+
     @Spy
     private ObjectMapper objectMapper;
 

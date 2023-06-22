@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.admin.AdminRequest;
 import com.phoenix.assetbe.dto.admin.AdminResponse;
@@ -8,12 +9,15 @@ import com.phoenix.assetbe.service.AdminService;
 import com.phoenix.assetbe.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -76,5 +80,24 @@ public class AdminController {
     public ResponseEntity<?> deleteFile(@PathVariable("removeFile") String removeFile) {
         s3Service.removeFile(removeFile);
         return ResponseEntity.ok().body(null);
+    }
+
+    /**
+     * 관리자 에셋 조회
+     */
+    @GetMapping("/s/admin/assets")
+    public ResponseEntity<?> getAssetListByAdmin(
+            @RequestParam(value = "assetNumber", required = false) Long assetNumber,
+            @RequestParam(value = "assetName", required = false) List<String> assetNameList,
+            @RequestParam(value = "category", required = false) String categoryName,
+            @RequestParam(value = "subCategory", required = false) String subCategoryName,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal MyUserDetails myUserDetails
+    ) {
+        AdminResponse.AssetListOutDTO assetListOutDTO = adminService.getAssetListByAdminService(
+                assetNumber, assetNameList, categoryName, subCategoryName, pageable
+        );
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
     }
 }

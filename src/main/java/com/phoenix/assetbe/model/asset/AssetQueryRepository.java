@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.model.asset;
 
 import com.phoenix.assetbe.core.exception.Exception400;
+import com.phoenix.assetbe.dto.admin.AdminResponse;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.*;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import static com.phoenix.assetbe.model.asset.QAsset.asset;
 import static com.phoenix.assetbe.model.asset.QAssetCategory.assetCategory;
+import static com.phoenix.assetbe.model.asset.QAssetSubCategory.assetSubCategory;
 import static com.phoenix.assetbe.model.asset.QAssetTag.assetTag;
 import static com.phoenix.assetbe.model.asset.QCategory.category;
 import static com.phoenix.assetbe.model.asset.QSubCategory.subCategory;
@@ -202,6 +204,43 @@ public class AssetQueryRepository {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
+    /**
+     * 관리자
+     * 에셋 조회
+     * 조건: 상품번호, 상품명, 대분류, 중분류, 소분류
+     */
+    public Page<AdminResponse.AssetListOutDTO.AssetOutDTO> findAssetListByAdmin(Long assetNumber, List<String> assetNameList, String categoryName, String subCategoryName, Pageable pageable){
+        List<AdminResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
+                .selectDistinct(Projections.constructor(AdminResponse.AssetListOutDTO.AssetOutDTO.class,
+                        asset.id,
+                        asset.assetName,
+                        asset.price,
+                        category.categoryName,
+                        subCategory.subCategoryName,
+                        asset.releaseDate,
+                        asset.updatedAt
+                        )
+                )
+                .from(asset)
+                .innerJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
+                .innerJoin(category).on(category.id.eq(assetSubCategory.category.id))
+                .innerJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
+                .where(assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containKeyword(assetNameList))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(assetSortByIncludedKeywordCount(assetNameList).desc(), assetSort(pageable))
+                .fetch();
+
+        Long totalCount = queryFactory.select(asset.id.countDistinct())
+                .from(asset)
+                .innerJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
+                .innerJoin(category).on(category.id.eq(assetSubCategory.category.id))
+                .innerJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
+                .where(assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containKeyword(assetNameList))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, totalCount);
+    }
     public boolean existsAssetByAssetId(Long assetId) {
         Integer fetchOne = queryFactory
                 .selectOne()
@@ -209,6 +248,17 @@ public class AssetQueryRepository {
                 .where(asset.status.eq(true).and(asset.id.eq(assetId)))
                 .fetchFirst(); // limit 1
         return fetchOne != null; // 1개가 있는지 없는지 판단 (없으면 null 이므로 null 체크)
+    }
+
+    private BooleanExpression assetNumberEq(Long assetNumber) {
+        if (assetNumber == null){
+            return null;
+        }
+        return asset.id.eq(assetNumber);
+    }
+
+    private BooleanExpression assetNameEq(String assetName) {
+        return StringUtils.hasText(assetName) ? asset.assetName.eq(assetName) : null;
     }
 
     private BooleanExpression categoryNameEq(String categoryName) {
@@ -269,7 +319,7 @@ public class AssetQueryRepository {
                     case "price":
                         return new OrderSpecifier<>(direction, asset.price);
                     case "releaseDate":
-                        return new OrderSpecifier<>(direction, asset.releaseDate);
+                        return new OrderSpecifier<>(direction, asset.createdAt);
                     case "rating":
                         return new OrderSpecifier<>(direction, asset.rating);
                     case "reviewCount":
@@ -370,21 +420,5 @@ public class AssetQueryRepository {
             throw new Exception400("assetId", "assetId가 존재하지 않습니다. ");
         }
         return assets;
-    }
-
-    /**
-     * 정렬
-     */
-    public static class OrderByNull extends OrderSpecifier {
-
-        private static final OrderByNull DEFAULT = new OrderByNull();
-
-        private OrderByNull() {
-            super(Order.ASC, NullExpression.DEFAULT, NullHandling.Default);
-        }
-
-        public static OrderByNull getDefault() {
-            return OrderByNull.DEFAULT;
-        }
     }
 }
