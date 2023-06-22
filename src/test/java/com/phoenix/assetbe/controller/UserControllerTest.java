@@ -232,7 +232,7 @@ public class UserControllerTest extends MyRestDoc {
         //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
-    @DisplayName("내 회원정보 조회 실패 : 권한 체크 실패")
+    @DisplayName("내 회원정보 조회 실패 : 인증 실패")
     @Test
     public void get_my_info_fail_test() throws Exception {
         // given
