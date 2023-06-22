@@ -61,8 +61,8 @@ public class AdminControllerTest extends MyRestDoc {
         myTestSetUp.saveUserScenario(userList, assetList);
         myTestSetUp.saveCategoryAndSubCategoryAndTag(assetList);
 
-        Asset inactiveAsset1 = dummy.newInactiveAsset("inactiveAsset1", 10000.0, 10.0, null, 2.5); // 31
-        assetRepository.save(inactiveAsset1);
+        Asset asset1 = Asset.builder().assetName("asset1").status(false).build(); // 31
+        assetRepository.save(asset1);
     }
 
     /**
