@@ -236,7 +236,6 @@ public class UserControllerTest extends MyRestDoc {
     @Test
     public void get_my_info_fail_test() throws Exception {
         // given
-        Long id = 3L;
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/s/user"));
