@@ -60,6 +60,9 @@ public class AdminControllerTest extends MyRestDoc {
 
         myTestSetUp.saveUserScenario(userList, assetList);
         myTestSetUp.saveCategoryAndSubCategoryAndTag(assetList);
+
+        Asset inactiveAsset1 = dummy.newInactiveAsset("inactiveAsset1", 10000.0, 10.0, null, 2.5); // 31
+        assetRepository.save(inactiveAsset1);
     }
 
     /**
@@ -192,11 +195,6 @@ public class AdminControllerTest extends MyRestDoc {
     @Test
     public void active_asset_test() throws Exception {
         // given
-        List<Asset> assetList = new ArrayList<Asset>();
-        Asset inactiveAsset1 = dummy.newInactiveAsset("inactiveAsset1", 10000.0, 10.0, null, 2.5); // 31
-        assetList.add(inactiveAsset1);
-        assetRepository.saveAll(assetList);
-
         List<Long> assetIdList = new ArrayList<>();
         assetIdList.add(31L);
 
