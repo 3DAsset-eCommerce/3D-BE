@@ -32,4 +32,8 @@ public class AdminResponse {
             this.subCategoryList = subCategoryList;
         }
     }
+
+    /**
+     * 에셋
+     */
 }

@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.controller;
 
 import com.phoenix.assetbe.dto.ResponseDTO;
+import com.phoenix.assetbe.dto.admin.AdminRequest;
 import com.phoenix.assetbe.dto.admin.AdminResponse;
 import com.phoenix.assetbe.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,16 @@ public class AdminController {
     public ResponseEntity<?> getSubCategoryList(@PathVariable String categoryName) {
         AdminResponse.GetSubCategoryListOutDTO getSubCategoryListOutDTO = adminService.getSubCategoryListService(categoryName);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(getSubCategoryListOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    /**
+     * 에셋
+     */
+    @PostMapping("/s/admin/asset/inactive")
+    public ResponseEntity<?> inactiveAsset(@RequestBody AdminRequest.InactiveAssetInDTO inactiveAssetInDTO) {
+        adminService.inactiveAssetService(inactiveAssetInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(null);
         return ResponseEntity.ok().body(responseDTO);
     }
 }

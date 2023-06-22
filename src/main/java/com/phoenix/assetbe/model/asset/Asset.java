@@ -1,7 +1,6 @@
 package com.phoenix.assetbe.model.asset;
 
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
-import com.phoenix.assetbe.dto.asset.ReviewRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -78,6 +77,9 @@ public class Asset extends MyTimeBaseUtil {
         }
     }
 
+    /**
+     * 메소드
+     */
     public void increaseVisitCount(){
         this.visitCount++;
     }
@@ -99,5 +101,13 @@ public class Asset extends MyTimeBaseUtil {
     public void calculateRatingOnDeleteReview(Asset asset){
         this.rating = 0D;
         this.reviewCount = asset.getReviewCount() - 1;
+    }
+
+    public void changeStatusToINACTIVE() {
+        this.status = false;
+    }
+
+    public void changeStatusToACTIVE() {
+        this.status = true;
     }
 }

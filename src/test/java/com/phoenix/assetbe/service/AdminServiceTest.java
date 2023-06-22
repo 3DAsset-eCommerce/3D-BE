@@ -2,20 +2,19 @@ package com.phoenix.assetbe.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
+import com.phoenix.assetbe.dto.admin.AdminRequest;
 import com.phoenix.assetbe.dto.admin.AdminResponse;
-import com.phoenix.assetbe.model.asset.Category;
-import com.phoenix.assetbe.model.asset.SubCategory;
-import com.phoenix.assetbe.model.asset.SubQueryCategory;
+import com.phoenix.assetbe.model.asset.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -28,16 +27,21 @@ public class AdminServiceTest extends DummyEntity {
     @Mock
     private CategoryService categoryService;
     @Mock
-    private SubQueryCategory subQueryCategory;
+    private SubCategoryQueryRepository subCategoryQueryRepository;
+    @Mock
+    private AssetQueryRepository assetQueryRepository;
     @Spy
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        adminService = new AdminService(categoryService, subQueryCategory);
+        adminService = new AdminService(categoryService, subCategoryQueryRepository, assetQueryRepository);
     }
-    
+
+    /**
+     * 카테고리
+     */
     @Test
     public void testGetCategoryListService() throws Exception {
         // given
@@ -53,6 +57,9 @@ public class AdminServiceTest extends DummyEntity {
         verify(categoryService, times(1)).getCategoryList();
     }
 
+    /**
+     * 서브 카테고리
+     */
     @Test
     public void testGetSubCategoryListService() throws Exception {
         // given
@@ -63,7 +70,7 @@ public class AdminServiceTest extends DummyEntity {
         subCategoryList.add(new SubCategory(2L, "man"));
 
         // stub 1
-        when(subQueryCategory.getSubCategoryByCategoryName(any())).thenReturn(subCategoryList);
+        when(subCategoryQueryRepository.getSubCategoryByCategoryName(any())).thenReturn(subCategoryList);
 
         // when
         AdminResponse.GetSubCategoryListOutDTO result = adminService.getSubCategoryListService(categoryName);
@@ -71,6 +78,24 @@ public class AdminServiceTest extends DummyEntity {
         // then
         Assertions.assertNotNull(result);
         Assertions.assertEquals(subCategoryList, result.getSubCategoryList());
-        verify(subQueryCategory, times(1)).getSubCategoryByCategoryName(categoryName);
+        verify(subCategoryQueryRepository, times(1)).getSubCategoryByCategoryName(categoryName);
+    }
+
+    /**
+     * 에셋
+     */
+    @Test
+    public void testInactiveAssetService() throws Exception {
+        // given
+        List<Long> assetIdList = Arrays.asList(1L, 2L, 3L);
+
+        AdminRequest.InactiveAssetInDTO inactiveAssetInDTO = new AdminRequest.InactiveAssetInDTO();
+        inactiveAssetInDTO.setAssets(assetIdList);
+
+        // when
+        adminService.inactiveAssetService(inactiveAssetInDTO);
+
+        // then
+        verify(assetQueryRepository, times(1)).getAssetListByAssetIdList(assetIdList);
     }
 }

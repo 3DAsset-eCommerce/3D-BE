@@ -1,7 +1,5 @@
 package com.phoenix.assetbe.model.asset;
 
-import com.phoenix.assetbe.dto.admin.AdminResponse;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,7 +12,7 @@ import static com.phoenix.assetbe.model.asset.QSubCategory.subCategory;
 
 @RequiredArgsConstructor
 @Repository
-public class SubQueryCategory {
+public class SubCategoryQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 

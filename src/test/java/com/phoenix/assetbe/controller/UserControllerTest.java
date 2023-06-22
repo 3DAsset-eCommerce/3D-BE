@@ -51,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 public class UserControllerTest extends MyRestDoc {
+
     @Autowired
     private MyTestSetUp myTestSetUp;
     @Autowired

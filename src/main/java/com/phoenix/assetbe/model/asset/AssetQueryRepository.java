@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.model.asset;
 
+import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.*;
@@ -357,6 +358,23 @@ public class AssetQueryRepository {
         return expression;
     }
 
+    /**
+     * 관리자 에셋
+     */
+    public List<Asset> getAssetListByAssetIdList(List<Long> assetIdList) {
+        List<Asset> assets = queryFactory.selectFrom(asset)
+                .where(asset.id.in(assetIdList))
+                .fetch();
+
+        if (assets.size() != assetIdList.size()) {
+            throw new Exception400("assetId", "assetId가 존재하지 않습니다. ");
+        }
+        return assets;
+    }
+
+    /**
+     * 정렬
+     */
     public static class OrderByNull extends OrderSpecifier {
 
         private static final OrderByNull DEFAULT = new OrderByNull();

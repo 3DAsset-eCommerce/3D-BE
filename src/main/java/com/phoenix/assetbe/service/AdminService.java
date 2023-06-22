@@ -1,9 +1,9 @@
 package com.phoenix.assetbe.service;
 
+import com.phoenix.assetbe.core.exception.Exception400;
+import com.phoenix.assetbe.dto.admin.AdminRequest;
 import com.phoenix.assetbe.dto.admin.AdminResponse;
-import com.phoenix.assetbe.model.asset.Category;
-import com.phoenix.assetbe.model.asset.SubCategory;
-import com.phoenix.assetbe.model.asset.SubQueryCategory;
+import com.phoenix.assetbe.model.asset.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,8 @@ import java.util.List;
 public class AdminService {
 
     private final CategoryService categoryService;
-    private final SubQueryCategory subQueryCategory;
+    private final SubCategoryQueryRepository subCategoryQueryRepository;
+    private final AssetQueryRepository assetQueryRepository;
 
     /**
      * 카테고리
@@ -32,7 +33,22 @@ public class AdminService {
      * 서브 카테고리
      */
     public AdminResponse.GetSubCategoryListOutDTO getSubCategoryListService(String categoryName) {
-        List<SubCategory> subCategoryList = subQueryCategory.getSubCategoryByCategoryName(categoryName);
+        List<SubCategory> subCategoryList = subCategoryQueryRepository.getSubCategoryByCategoryName(categoryName);
         return new AdminResponse.GetSubCategoryListOutDTO(subCategoryList);
+    }
+
+    /**
+     * 에셋
+     */
+    @Transactional
+    public void inactiveAssetService(AdminRequest.InactiveAssetInDTO inactiveAssetInDTO) {
+        List<Asset> assetList = assetQueryRepository.getAssetListByAssetIdList(inactiveAssetInDTO.getAssets());
+
+        for (Asset asset: assetList) {
+            if (!asset.isStatus()) {
+                throw new Exception400("status error", "asset " + asset.getId() + "번은 이미 삭제되어 있습니다. ");
+            }
+            asset.changeStatusToINACTIVE();
+        }
     }
 }
