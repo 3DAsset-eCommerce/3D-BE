@@ -160,7 +160,7 @@ public class AdminControllerTest extends MyRestDoc {
     }
 
     @DisplayName("관리자 에셋 비활성화 실패 : 권한 체크 실패")
-    @WithUserDetails(value = "kuanliza8@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void inactive_asset_fail1_test() throws Exception {
         // given
