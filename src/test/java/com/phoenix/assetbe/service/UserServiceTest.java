@@ -3,6 +3,10 @@ package com.phoenix.assetbe.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
+import com.phoenix.assetbe.core.exception.Exception400;
+import com.phoenix.assetbe.core.exception.Exception401;
+import com.phoenix.assetbe.core.exception.Exception403;
+import com.phoenix.assetbe.core.util.MailUtils;
 import com.phoenix.assetbe.dto.user.UserRequest;
 import com.phoenix.assetbe.dto.user.UserResponse;
 import com.phoenix.assetbe.model.asset.Asset;
@@ -20,11 +24,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,11 +41,13 @@ import org.mockito.Mock;
 import javax.mail.AuthenticationFailedException;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
 
 @DisplayName("유저 서비스 TEST")
 public class UserServiceTest extends DummyEntity {
 
+    @InjectMocks
     private UserService userService;
     @Mock
     private UserRepository userRepository;
@@ -51,7 +60,7 @@ public class UserServiceTest extends DummyEntity {
     @Mock
     private AuthenticationManager authenticationManager;
     @Mock
-    private JavaMailSender javaMailSender;
+    private MailUtils mailUtils;
     @Mock
     private AssetService assetService;
     @Spy
@@ -60,7 +69,305 @@ public class UserServiceTest extends DummyEntity {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserService(authenticationManager, javaMailSender, bCryptPasswordEncoder, userRepository, myAssetQueryRepository, assetService);
+        userService = new UserService(authenticationManager, bCryptPasswordEncoder, userRepository, myAssetQueryRepository, assetService);
+    }
+    /**
+     * 로그인
+     * passwordChangeService
+     */
+
+    @Test
+    public void testLoginService() throws Exception {
+        // given
+        Long userId = 1L;
+        String email = "yuhyunju@nate.com";
+        UserRequest.LoginInDTO loginInDTO = new UserRequest.LoginInDTO();
+        loginInDTO.setEmail(email);
+        loginInDTO.setPassword("qwe123!@#");
+        loginInDTO.setKeepLogin(true);
+
+        String requestBody = objectMapper.writeValueAsString(loginInDTO);
+        System.out.println("request 테스트: " + requestBody);
+
+        User 유현주 = newMockUser(1L, "유", "현주");
+        MyUserDetails myUserDetails = new MyUserDetails(유현주);
+        Authentication authentication = mock(Authentication.class);
+
+        when(userRepository.findByUserWithEmailAndStatus(email, Status.ACTIVE)).thenReturn(Optional.ofNullable(유현주));
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(myUserDetails);
+
+        // when
+        userService.loginService(loginInDTO);
+
+        // then
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(authentication).getPrincipal();
+        verify(userRepository, times(1)).findByUserWithEmailAndStatus(anyString(), any());
+        verify(authenticationManager, times(1)).authenticate(any());
+    }
+
+    @Test
+    public void testLoginService_WithInvalidCredentials_ShouldThrowException401() throws Exception {
+        // given
+        Long userId = 1L;
+        String email = "yuhyunju@nate.com";
+        UserRequest.LoginInDTO loginInDTO = new UserRequest.LoginInDTO();
+        loginInDTO.setEmail(email);
+        loginInDTO.setPassword("qwe123!@#");
+        loginInDTO.setKeepLogin(true);
+        User 유현주 = newMockUser(1L, "유", "현주");
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
+                = new UsernamePasswordAuthenticationToken(loginInDTO.getEmail(), loginInDTO.getPassword());
+
+        //when
+        when(userRepository.findByUserWithEmailAndStatus(email, Status.ACTIVE)).thenReturn(Optional.ofNullable(유현주));
+        when(authenticationManager.authenticate(usernamePasswordAuthenticationToken))
+                .thenThrow(new AuthenticationException("Authentication failed.") {});
+        assertThrows( Exception401.class, () -> userService.loginService(loginInDTO));
+
+        // then
+        verify(userRepository).findByUserWithEmailAndStatus(email, Status.ACTIVE);
+        verify(authenticationManager, times(1)).authenticate(any());
+    }
+
+    @Test
+    public void testSendPasswordChangeCodeService() {
+        // given
+        Long userId = 1L;
+        String email = "yuhyunju@nate.com";
+
+        User 유현주 = newMockUser(1L, "hyunju", "yu");
+        유현주.generateEmailCheckToken();
+
+        UserRequest.CheckCodeInDTO CheckCodeInDTO = new UserRequest.CheckCodeInDTO();
+        CheckCodeInDTO.setUserId(userId);
+        CheckCodeInDTO.setEmail(email);
+        CheckCodeInDTO.setCode(유현주.getEmailCheckToken());
+
+        when(userRepository.findByUserWithEmailAndStatus(email, Status.ACTIVE)).thenReturn(Optional.ofNullable(유현주));
+
+        // when,
+        userService.checkPasswordChangeCodeService(CheckCodeInDTO);
+
+        // then
+        verify(userRepository, times(1)).findByUserWithEmailAndStatus(anyString(), any());
+
+    }
+
+    @Test
+    public void testCheckPasswordChangeCodeService_WithInvalidCode_ShouldThrowException400() {
+        // given
+        Long userId = 1L;
+        String email = "yuhyunju@nate.com";
+
+        User 유현주 = newMockUser(1L, "hyunju", "yu");
+        유현주.generateEmailCheckToken();
+
+        UserRequest.CheckCodeInDTO CheckCodeInDTO = new UserRequest.CheckCodeInDTO();
+        CheckCodeInDTO.setUserId(userId);
+        CheckCodeInDTO.setEmail(email);
+        CheckCodeInDTO.setCode("1234");
+
+        when(userRepository.findByUserWithEmailAndStatus(email, Status.ACTIVE)).thenReturn(Optional.ofNullable(유현주));
+
+        // when,
+        Exception400 exception = assertThrows(Exception400.class, () -> userService.checkPasswordChangeCodeService(CheckCodeInDTO));
+
+        // then
+        assertEquals("잘못된 인증코드 입니다. ", exception.getMessage());
+        verify(userRepository, times(1)).findByUserWithEmailAndStatus(anyString(), any());
+
+    }
+
+    @Test
+    public void testChangePasswordService() {
+        // given
+        String email = "yuhyunju@nate.com";
+        String newPassword = "newpassword";
+
+        User 유현주 = newMockUser(1L, "hyunju", "yu");
+        유현주.generateEmailCheckToken();
+
+        UserRequest.ChangePasswordInDTO ChangePasswordInDTO = new UserRequest.ChangePasswordInDTO();
+        ChangePasswordInDTO.setEmail(email);
+        ChangePasswordInDTO.setCode(유현주.getEmailCheckToken());
+        ChangePasswordInDTO.setPassword(newPassword);
+
+        when(userRepository.findByUserWithEmailAndStatus(email, Status.ACTIVE)).thenReturn(Optional.of(유현주));
+
+        // when
+        userService.changePasswordService(ChangePasswordInDTO);
+
+        // then
+        verify(userRepository, times(1)).findByUserWithEmailAndStatus(anyString(), any());
+    }
+
+    @Test
+    public void testChangePasswordService_WithInvalidCode_ShouldThrowException400() {
+        // given
+        String email = "yuhyunju@nate.com";
+        String newPassword = "newpassword";
+
+        User 유현주 = newMockUser(1L, "hyunju", "yu");
+        유현주.generateEmailCheckToken();
+
+        UserRequest.ChangePasswordInDTO ChangePasswordInDTO = new UserRequest.ChangePasswordInDTO();
+        ChangePasswordInDTO.setEmail(email);
+        ChangePasswordInDTO.setCode("1234");
+        ChangePasswordInDTO.setPassword(newPassword);
+        when(userRepository.findByUserWithEmailAndStatus(email, Status.ACTIVE)).thenReturn(Optional.of(유현주));
+
+        // when
+        Exception400 exception = assertThrows(Exception400.class, () -> userService.changePasswordService(ChangePasswordInDTO));
+
+        // then
+        assertEquals("code", exception.getKey());
+        assertEquals("잘못된 인증코드 입니다. ", exception.getMessage());
+        verify(userRepository, times(1)).findByUserWithEmailAndStatus(anyString(), any());
+    }
+    /**
+     *
+     *
+     *
+     * signupService
+     */
+
+    @Test
+    void testCheckEmailDuplicateService() {
+        // given
+        String notExistingEmail = "notExisting_email@example.com";
+        UserRequest.CheckEmailInDTO CheckEmailInDTO = new UserRequest.CheckEmailInDTO();
+        CheckEmailInDTO.setEmail(notExistingEmail);
+
+        when(userRepository.existsByEmailAndStatus(notExistingEmail, Status.ACTIVE)).thenReturn(false);
+
+        // when,
+        userService.checkEmailDuplicateService(CheckEmailInDTO);
+
+        // then
+        verify(userRepository).existsByEmailAndStatus(anyString(), any());
+        verify(userRepository, times(1)).existsByEmailAndStatus(anyString(), any());
+    }
+
+    @Test
+    void testCheckEmailDuplicateService_WithExistingEmail_ShouldThrowException400() {
+        // given
+        String existingEmail = "existing_email@example.com";
+        UserRequest.CheckEmailInDTO CheckEmailInDTO = new UserRequest.CheckEmailInDTO();
+        CheckEmailInDTO.setEmail(existingEmail);
+
+        when(userRepository.existsByEmailAndStatus(existingEmail, Status.ACTIVE)).thenReturn(true);
+
+        // when, then
+        Exception400 exception = assertThrows(Exception400.class, () -> userService.checkEmailDuplicateService(CheckEmailInDTO));
+        assertEquals("email", exception.getKey());
+        assertEquals("이미 존재하는 이메일입니다. ", exception.getMessage());
+        verify(userRepository).existsByEmailAndStatus(anyString(), any());
+        verify(userRepository, times(1)).existsByEmailAndStatus(anyString(), any());
+    }
+
+    @Test
+    void testCheckSignupCodeService() {
+        // given
+        Long userId = 1L;
+        String email = "yuhyunju@nate.com";
+
+        User 유현주 = User.builder().email(email).id(userId).status(Status.INACTIVE).build();
+        유현주.generateEmailCheckToken();
+
+        UserRequest.CheckCodeInDTO CheckCodeInDTO = new UserRequest.CheckCodeInDTO();
+        CheckCodeInDTO.setUserId(userId);
+        CheckCodeInDTO.setEmail(email);
+        CheckCodeInDTO.setCode(유현주.getEmailCheckToken());
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(유현주));
+
+        // when
+        userService.checkSignupCodeService(CheckCodeInDTO);
+
+        // then
+        assertEquals(Status.ACTIVE, 유현주.getStatus());
+        verify(userRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void testCheckSignupCodeService_WithInvalidCode_ShouldThrowException400() {
+        // given
+        Long userId = 1L;
+        String email = "yuhyunju@nate.com";
+
+        User 유현주 = User.builder().email(email).id(userId).status(Status.INACTIVE).build();
+        유현주.generateEmailCheckToken();
+
+        UserRequest.CheckCodeInDTO CheckCodeInDTO = new UserRequest.CheckCodeInDTO();
+        CheckCodeInDTO.setUserId(userId);
+        CheckCodeInDTO.setEmail(email);
+        CheckCodeInDTO.setCode("invalid");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(유현주));
+
+        // when
+        Exception400 exception = assertThrows(Exception400.class, () -> userService.checkSignupCodeService(CheckCodeInDTO));
+
+        // then
+        assertEquals("code", exception.getKey());
+        assertEquals("잘못된 인증코드 입니다. ", exception.getMessage());
+        assertEquals(Status.INACTIVE, 유현주.getStatus()); // 상태가 INACTIVE 상태로 유지되었는지 확인
+        verify(userRepository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void testSignupService_WithValidRequest_ShouldChangePassword() {
+        // given
+        String email = "yuhyunju@nate.com";
+        String firstName = "hyunju";
+        String lastName = "yu";
+        String changePassword = "testpassword1!";
+        User 유현주 = User.builder().firstName(firstName).lastName(lastName).email(email).id(1L).status(Status.ACTIVE).build();
+
+        UserRequest.SignupInDTO signupInDTO = new UserRequest.SignupInDTO();
+        signupInDTO.setEmail(email);
+        signupInDTO.setFirstName(firstName);
+        signupInDTO.setLastName(lastName);
+        signupInDTO.setPassword(changePassword);
+
+        when(userRepository.findByUserWithEmailAndStatus(email,Status.ACTIVE)).thenReturn(Optional.ofNullable(유현주));
+
+        // when
+        userService.signupService(signupInDTO);
+
+        // then
+        verify(userRepository, times(1)).findByUserWithEmailAndStatus(anyString(), any());
+        assertTrue(bCryptPasswordEncoder.matches(changePassword, 유현주.getPassword()));
+    }
+
+    @Test
+    void testSignupService_WithInvalidName_ShouldThrowException400() {
+        // given
+        String email = "yuhyunju@nate.com";
+        String firstName = "hyunju";
+        String lastName = "yu";
+        String changePassword = "testpassword1!";
+        User 유현주 = User.builder().firstName(firstName).lastName(lastName).email(email).id(1L).status(Status.ACTIVE).build();
+
+        UserRequest.SignupInDTO signupInDTO = new UserRequest.SignupInDTO();
+        signupInDTO.setEmail(email);
+        signupInDTO.setFirstName(firstName);
+        signupInDTO.setLastName("Smith");
+        signupInDTO.setPassword(changePassword);
+
+        when(userRepository.findByUserWithEmailAndStatus(email,Status.ACTIVE)).thenReturn(Optional.ofNullable(유현주));
+
+        // when
+        Exception400 exception = assertThrows(Exception400.class, () -> userService.signupService(signupInDTO));
+
+        // then
+        verify(userRepository, times(1)).findByUserWithEmailAndStatus(anyString(), any());
+        assertEquals("name", exception.getKey());
+        assertEquals("잘못된 요청입니다. ", exception.getMessage());
+        assertNotEquals(bCryptPasswordEncoder.encode(changePassword), 유현주.getPassword());
     }
 
     /**

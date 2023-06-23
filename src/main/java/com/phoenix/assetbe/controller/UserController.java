@@ -62,21 +62,21 @@ public class UserController {
      * 회원가입
      */
     @PostMapping("/signup/duplicate")
-    public ResponseEntity<?> emailDuplicateCheck(@RequestBody @Valid UserRequest.CheckEmailInDTO checkEmailInDTO, Errors errors){
+    public ResponseEntity<?> checkEmailDuplicate(@RequestBody @Valid UserRequest.CheckEmailInDTO checkEmailInDTO, Errors errors){
         userService.checkEmailDuplicateService(checkEmailInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/signup/send")
-    public ResponseEntity<?> signupCodeSend(@RequestBody @Valid UserRequest.SendCodeInDTO sendCodeInDTO, Errors errors){
+    public ResponseEntity<?> sendSignupCode(@RequestBody @Valid UserRequest.SendCodeInDTO sendCodeInDTO, Errors errors){
         UserResponse.SendCodeOutDTO sendCodeOutDTO = userService.sendSignupCodeService(sendCodeInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(sendCodeOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/signup/check")
-    public ResponseEntity<?> signupCodeCheck(@RequestBody @Valid UserRequest.CheckCodeInDTO CheckCodeInDTO, Errors errors){
+    public ResponseEntity<?> checkSignupCode(@RequestBody @Valid UserRequest.CheckCodeInDTO CheckCodeInDTO, Errors errors){
         userService.checkSignupCodeService(CheckCodeInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
