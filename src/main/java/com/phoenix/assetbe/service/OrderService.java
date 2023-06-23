@@ -34,7 +34,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse.OrderAssetsOutDTO orderAssetsService(OrderRequest.OrderAssetsInDTO orderAssetsInDTO, MyUserDetails myUserDetails) {
-        User user = userService.findUserByEmail(orderAssetsInDTO.getEmail());
+        User user = userService.findValidUserByEmail(orderAssetsInDTO.getEmail());
 
         Payment payment = Payment.builder()
                 .totalPrice(orderAssetsInDTO.getTotalPrice())

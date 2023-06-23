@@ -68,7 +68,7 @@ public class OrderServiceTest extends DummyEntity {
                 = new OrderRequest.OrderAssetsInDTO(orderAssetList, "유현주@nate.com", "현주", "유", "010-1234-1234", 2000D, "카드");
 
         // when
-        when(userService.findUserByEmail("유현주@nate.com")).thenReturn(user);
+        when(userService.findValidUserByEmail("유현주@nate.com")).thenReturn(user);
 
         Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D);
         Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D);
@@ -77,7 +77,7 @@ public class OrderServiceTest extends DummyEntity {
         orderService.orderAssetsService(orderAssetsInDTO, myUserDetails);
 
         // then
-        verify(userService, times(1)).findUserByEmail(anyString());
+        verify(userService, times(1)).findValidUserByEmail(anyString());
         verify(assetService, times(1)).findAllAssetById(anyList());
         verify(paymentRepository, times(1)).save(any());
         verify(orderRepository, times(1)).save(any());
@@ -97,7 +97,7 @@ public class OrderServiceTest extends DummyEntity {
                 = new OrderRequest.OrderAssetsInDTO(orderAssetList, "유현주@nate.com", "현주", "유", "010-1234-1234", 10000D, "카드");
 
         // when
-        when(userService.findUserByEmail("유현주@nate.com")).thenReturn(user);
+        when(userService.findValidUserByEmail("유현주@nate.com")).thenReturn(user);
 
         Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D);
         Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D);
@@ -106,7 +106,7 @@ public class OrderServiceTest extends DummyEntity {
         assertThrows(Exception400.class, () -> orderService.orderAssetsService(orderAssetsInDTO, myUserDetails));
 
         // then
-        verify(userService, times(1)).findUserByEmail(anyString());
+        verify(userService, times(1)).findValidUserByEmail(anyString());
         verify(assetService, times(1)).findAllAssetById(anyList());
         verify(paymentRepository, never()).save(any());
         verify(orderRepository, never()).save(any());
