@@ -39,7 +39,8 @@ public class DataInit extends DummyEntity{
                            OrderRepository orderRepository,
                            OrderProductRepository orderProductRepository,
                            PaymentRepository paymentRepository,
-                           MyAssetRepository myAssetRepository){
+                           MyAssetRepository myAssetRepository,
+                           ReviewRepository reviewRepository){
         return args -> {
 
             // User  1L  yu  hyunju1   yuhyunju1@nate.com  qwe123!@#
@@ -179,7 +180,7 @@ public class DataInit extends DummyEntity{
             previewRepository.saveAll(previewList);
 
             /**
-             * 1L 사용자 -> 1L~8L 구매, 5L~12L 장바구니, 10L~18L 위시
+             * 1L 사용자 -> 1L~8L 구매, 5L~12L 장바구니, 10L~18L 위시, 1L~8L 리뷰 작성
              * 2L 사용자 -> 5L~12L 장바구니, 10L~18L 위시
              * 3L 사용자 -> 1L~8L 구매, 5L~12L 장바구니
              * 4L 사용자 -> 1L~8L 구매, 10L~18L 위시
@@ -244,6 +245,20 @@ public class DataInit extends DummyEntity{
             }
             orderProductRepository.saveAll(orderProductList);
             myAssetRepository.saveAll(myAssetList);
+
+            String content = "최고다 최고 ~~~~~~~~~~~~~~~~~~~~~~";
+            List<Review> reviewList = new ArrayList<>();
+            for(int i = 0; i < 8; i++){
+                int rating = (i % 5) + 1;
+                Review review = Review.builder()
+                        .user(userList.get(0))
+                        .asset(assetList.get(i))
+                        .content(content)
+                        .rating(Double.valueOf(rating)).build();
+                reviewList.add(review);
+            }
+            reviewRepository.saveAll(reviewList);
+
         };
     }
 }
