@@ -20,16 +20,16 @@ public class MyMailConfig {
         javaMailSender.setHost(mailProperties.getHost());
         javaMailSender.setUsername(mailProperties.getUsername());
         javaMailSender.setPassword(mailProperties.getPassword());
-        javaMailSender.setPort(mailProperties.getPort()); // 포트 번호를 465로 설정
+        javaMailSender.setPort(mailProperties.getPort());
 
         Properties javaMailProperties = new Properties();
 
         javaMailProperties.put("mail.smtp.auth", true);
-        javaMailProperties.put("mail.smtp.starttls.enable", false); // STARTTLS 비활성화
-        javaMailProperties.put("mail.smtp.ssl.enable", true); // SSL 활성화
+        javaMailProperties.put("mail.smtp.starttls.enable", true);
+        javaMailProperties.put("mail.smtp.ssl.enable", false); 
         javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         javaMailProperties.put("mail.smtp.socketFactory.fallback", false);
-        javaMailProperties.put("mail.smtp.socketFactory.port", mailProperties.getPort()); // 포트 번호를 465로 설정
+        javaMailProperties.put("mail.smtp.socketFactory.port", mailProperties.getPort());
 
         javaMailSender.setJavaMailProperties(javaMailProperties);
         javaMailSender.setDefaultEncoding("UTF-8");
