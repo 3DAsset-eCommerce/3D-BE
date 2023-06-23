@@ -70,6 +70,8 @@ jobs:
             RDS_USERNAME: ${{ secrets.DB_USERNAME }}
             RDS_PASSWORD: ${{ secrets.DB_PASSWORD }}
             SSL_PASSWORD: ${{ secrets.SSL_PASSWORD }}
+            MAIL_FROM_ADDRESS: ${{ secrets.MAIL_FROM_ADDRESS }}
+            MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
       - name: Install Docker and Docker Compose
         run: |
           #!/bin/bash
