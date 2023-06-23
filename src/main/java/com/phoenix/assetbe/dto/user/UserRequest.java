@@ -34,7 +34,7 @@ public class UserRequest {
     }
 
     @Getter @Setter
-    public static class CodeSendInDTO {
+    public static class SendCodeInDTO {
 
         @Pattern(regexp = "^[A-Za-z가-힣]{2,20}$", message = "영문/한글 2~20자 이내로 이름을 작성해주세요. ")
         @NotEmpty
@@ -52,7 +52,7 @@ public class UserRequest {
     }
 
     @Getter @Setter
-    public static class CodeCheckInDTO {
+    public static class CheckCodeInDTO {
 
         @NotNull
         private Long userId;
@@ -68,7 +68,7 @@ public class UserRequest {
 
     @Getter @Setter
     @NoArgsConstructor
-    public static class PasswordChangeInDTO {
+    public static class ChangePasswordInDTO {
 
         @NotEmpty
         @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
@@ -89,7 +89,7 @@ public class UserRequest {
      */
     @Getter @Setter
     @NoArgsConstructor
-    public static class EmailCheckInDTO {
+    public static class CheckEmailInDTO {
 
         @NotEmpty
         @Pattern(regexp = "^(?=.{1,50}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",

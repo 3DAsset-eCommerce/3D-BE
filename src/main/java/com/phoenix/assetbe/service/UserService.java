@@ -8,16 +8,11 @@ import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.core.util.MailUtils;
 import com.phoenix.assetbe.dto.user.UserRequest;
-import com.phoenix.assetbe.dto.user.UserRequest.CodeCheckInDTO;
-import com.phoenix.assetbe.dto.user.UserRequest.EmailCheckInDTO;
-import com.phoenix.assetbe.dto.user.UserRequest.PasswordChangeInDTO;
 import com.phoenix.assetbe.dto.user.UserResponse;
-import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.asset.MyAssetQueryRepository;
 import com.phoenix.assetbe.model.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailException;
@@ -40,7 +35,6 @@ public class UserService {
 
     private final AuthenticationManager authenticationManager;
     private final BCryptPasswordEncoder passwordEncoder;
-
     private final UserRepository userRepository;
     private final MyAssetQueryRepository myAssetQueryRepository;
 
@@ -64,29 +58,33 @@ public class UserService {
         }
     }
 
-    public UserResponse.CodeSendOutDTO passwordChangeCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO){
-        User userPS = findValidUserByEmail(codeSendInDTO.getEmail());
-        if(!userPS.getFirstName().equals(codeSendInDTO.getFirstName()) || !userPS.getLastName().equals(codeSendInDTO.getLastName())){
+    public UserResponse.SendCodeOutDTO sendPasswordChangeCodeService(UserRequest.SendCodeInDTO sendCodeInDTO){
+        User userPS = findValidUserByEmail(sendCodeInDTO.getEmail());
+        if(!userPS.getFirstName().equals(sendCodeInDTO.getFirstName()) || !userPS.getLastName().equals(sendCodeInDTO.getLastName())){
             throw new Exception400("name", "잘못된 요청입니다. ");
         }
         userPS.generateEmailCheckToken();
         String html = createPasswordChangeHTML(userPS);
 
-        MailUtils.send(userPS.getEmail(), "3D 에셋 스토어, 비밀번호 재설정을 위한 이메일 인증", html);
+        try {
+            MailUtils.send(userPS.getEmail(), "3D 에셋 스토어, 비밀번호 재설정을 위한 이메일 인증", html);
+        } catch (MailException e) {
+            throw new Exception500("이메일 전송 실패 : " + e.getMessage());
+        }
 
-        return new UserResponse.CodeSendOutDTO(userPS.getId());
+        return new UserResponse.SendCodeOutDTO(userPS.getId());
     }
 
     @Transactional
-    public void passwordChangeCodeCheckService(UserRequest.CodeCheckInDTO codeCheckInDTO) {
-        User userPS = findValidUserByEmail(codeCheckInDTO.getEmail());
+    public void checkPasswordChangeCodeService(UserRequest.CheckCodeInDTO checkCodeInDTO) {
+        User userPS = findValidUserByEmail(checkCodeInDTO.getEmail());
 
         LocalDateTime emailTokenCreatedAt = userPS.getEmailCheckTokenCreatedAt();
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime tenMinutesLater = emailTokenCreatedAt.plusMinutes(10);
 
         if(currentTime.isBefore(tenMinutesLater)) {
-            if (!userPS.getEmailCheckToken().equals(codeCheckInDTO.getCode())){
+            if (!userPS.getEmailCheckToken().equals(checkCodeInDTO.getCode())){
                 throw new Exception400("code", "잘못된 인증코드 입니다. ");
             }
         }else{
@@ -95,15 +93,15 @@ public class UserService {
     }
 
     @Transactional
-    public void passwordChangeService(PasswordChangeInDTO passwordChangeInDTO) {
-        User userPS = findValidUserByEmail(passwordChangeInDTO.getEmail());
+    public void changePasswordService(UserRequest.ChangePasswordInDTO changePasswordInDTO) {
+        User userPS = findValidUserByEmail(changePasswordInDTO.getEmail());
 
-        if (passwordChangeInDTO.getCode() == null) {
+        if (changePasswordInDTO.getCode() == null) {
             throw new Exception400("code", "인증코드를 입력해주세요. ");
         }
 
-        if (userPS.getEmailCheckToken().equals(passwordChangeInDTO.getCode())) {
-            userPS.changePassword(passwordEncoder.encode(passwordChangeInDTO.getPassword()));
+        if (userPS.getEmailCheckToken().equals(changePasswordInDTO.getCode())) {
+            userPS.changePassword(passwordEncoder.encode(changePasswordInDTO.getPassword()));
 
         }else{
             throw new Exception400("code", "잘못된 인증코드 입니다. ");
@@ -113,19 +111,19 @@ public class UserService {
     /**
      * 회원가입
      */
-    public void emailDuplicateCheckService(EmailCheckInDTO emailCheckInDTO) {
-        boolean emailExist = existsUserByEmail(emailCheckInDTO.getEmail());
+    public void checkEmailDuplicateService(UserRequest.CheckEmailInDTO checkEmailInDTO) {
+        boolean emailExist = existsUserByEmail(checkEmailInDTO.getEmail());
         if (emailExist){
             throw new Exception400("email", "이미 존재하는 이메일입니다. ");
         }
     }
 
     @Transactional
-    public UserResponse.CodeSendOutDTO signupCodeSendService(UserRequest.CodeSendInDTO codeSendInDTO) {
+    public UserResponse.SendCodeOutDTO sendSignupCodeService(UserRequest.SendCodeInDTO sendCodeInDTO) {
         User user = User.builder()
-                .firstName(codeSendInDTO.getFirstName())
-                .lastName(codeSendInDTO.getLastName())
-                .email(codeSendInDTO.getEmail())
+                .firstName(sendCodeInDTO.getFirstName())
+                .lastName(sendCodeInDTO.getLastName())
+                .email(sendCodeInDTO.getEmail())
                 .role(Role.USER.getRole())
                 .provider(SocialType.COMMON)
                 .status(Status.INACTIVE)
@@ -146,19 +144,19 @@ public class UserService {
             throw new Exception500("이메일 전송 실패 : " + e.getMessage());
         }
 
-        return new UserResponse.CodeSendOutDTO(user.getId());
+        return new UserResponse.SendCodeOutDTO(user.getId());
     }
 
     @Transactional
-    public void signupCodeCheckService(CodeCheckInDTO codeCheckInDTO) {
-        User userPS = findUserById(codeCheckInDTO.getUserId());
+    public void checkSignupCodeService(UserRequest.CheckCodeInDTO checkCodeInDTO) {
+        User userPS = findUserById(checkCodeInDTO.getUserId());
 
         LocalDateTime emailTokenCreatedAt = userPS.getEmailCheckTokenCreatedAt();
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime tenMinutesLater = emailTokenCreatedAt.plusMinutes(10);
 
         if(currentTime.isBefore(tenMinutesLater)) {
-            if (!userPS.getEmailCheckToken().equals(codeCheckInDTO.getCode())){
+            if (!userPS.getEmailCheckToken().equals(checkCodeInDTO.getCode())){
                 throw new Exception400("code", "잘못된 인증코드 입니다. ");
             }else{
                 userPS.changeStatusToACTIVE();
@@ -259,7 +257,6 @@ public class UserService {
         User userPS = userRepository.findById(userId).orElseThrow(
                 () -> new Exception400("id", "존재하지 않는 유저입니다. ")
         );
-        System.out.println("출력됨: " + userPS.getEmail());
         return userPS;
     }
 
@@ -272,7 +269,7 @@ public class UserService {
     }
 
     // 요청한 사용자 email이 존재하는지 확인하는 공통 메소드
-    public boolean existsUserByEmail(String email) {
+    private boolean existsUserByEmail(String email) {
         boolean emailExist = userRepository.existsByEmailAndStatus(email, Status.ACTIVE);
         return emailExist;
     }

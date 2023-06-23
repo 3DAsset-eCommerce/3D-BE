@@ -37,9 +37,9 @@ public class UserResponse {
 
     @Getter
     @Setter
-    public static class CodeSendOutDTO {
+    public static class SendCodeOutDTO {
         private Long userId;
-        public CodeSendOutDTO(Long userId) {
+        public SendCodeOutDTO(Long userId) {
             this.userId = userId;
         }
     }

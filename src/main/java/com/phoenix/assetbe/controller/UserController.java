@@ -9,7 +9,6 @@ import com.phoenix.assetbe.dto.user.UserResponse.LoginOutDTO;
 import com.phoenix.assetbe.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -39,22 +38,22 @@ public class UserController {
     }
 
     @PostMapping("/login/send")
-    public ResponseEntity<?> passwordChangeCodeSend(@RequestBody @Valid UserRequest.CodeSendInDTO codeSendInDTO, Errors errors){
-        UserResponse.CodeSendOutDTO codeSendOutDTO = userService.passwordChangeCodeSendService(codeSendInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(codeSendOutDTO);
+    public ResponseEntity<?> sendPasswordChangeCode(@RequestBody @Valid UserRequest.SendCodeInDTO sendCodeInDTO, Errors errors){
+        UserResponse.SendCodeOutDTO sendCodeOutDTO = userService.sendPasswordChangeCodeService(sendCodeInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(sendCodeOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/login/check")
-    public ResponseEntity<?> passwordChangeCodeCheck(@RequestBody @Valid UserRequest.CodeCheckInDTO codeCheckInDTO, Errors errors){
-        userService.passwordChangeCodeCheckService(codeCheckInDTO);
+    public ResponseEntity<?> checkPasswordChangeCode(@RequestBody @Valid UserRequest.CheckCodeInDTO CheckCodeInDTO, Errors errors){
+        userService.checkPasswordChangeCodeService(CheckCodeInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/login/change")
-    public ResponseEntity<?> passwordChange(@RequestBody @Valid UserRequest.PasswordChangeInDTO passwordChangeInDTO, Errors errors){
-        userService.passwordChangeService(passwordChangeInDTO);
+    public ResponseEntity<?> changePassword(@RequestBody @Valid UserRequest.ChangePasswordInDTO changePasswordInDTO, Errors errors){
+        userService.changePasswordService(changePasswordInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -63,22 +62,22 @@ public class UserController {
      * 회원가입
      */
     @PostMapping("/signup/duplicate")
-    public ResponseEntity<?> emailDuplicateCheck(@RequestBody @Valid UserRequest.EmailCheckInDTO emailCheckInDTO, Errors errors){
-        userService.emailDuplicateCheckService(emailCheckInDTO);
+    public ResponseEntity<?> emailDuplicateCheck(@RequestBody @Valid UserRequest.CheckEmailInDTO checkEmailInDTO, Errors errors){
+        userService.checkEmailDuplicateService(checkEmailInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/signup/send")
-    public ResponseEntity<?> signupCodeSend(@RequestBody @Valid UserRequest.CodeSendInDTO codeSendInDTO, Errors errors){
-        UserResponse.CodeSendOutDTO codeSendOutDTO = userService.signupCodeSendService(codeSendInDTO);
-        ResponseDTO<?> responseDTO = new ResponseDTO<>(codeSendOutDTO);
+    public ResponseEntity<?> signupCodeSend(@RequestBody @Valid UserRequest.SendCodeInDTO sendCodeInDTO, Errors errors){
+        UserResponse.SendCodeOutDTO sendCodeOutDTO = userService.sendSignupCodeService(sendCodeInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(sendCodeOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
 
     @PostMapping("/signup/check")
-    public ResponseEntity<?> signupCodeCheck(@RequestBody @Valid UserRequest.CodeCheckInDTO codeCheckInDTO, Errors errors){
-        userService.signupCodeCheckService(codeCheckInDTO);
+    public ResponseEntity<?> signupCodeCheck(@RequestBody @Valid UserRequest.CheckCodeInDTO CheckCodeInDTO, Errors errors){
+        userService.checkSignupCodeService(CheckCodeInDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>();
         return ResponseEntity.ok().body(responseDTO);
     }
