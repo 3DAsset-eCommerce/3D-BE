@@ -43,24 +43,14 @@ public class AdminService {
     @Transactional
     public void inactiveAssetService(AdminRequest.InactiveAssetInDTO inactiveAssetInDTO) {
         List<Asset> assetList = assetQueryRepository.getAssetListByAssetIdList(inactiveAssetInDTO.getAssets());
-
-        for (Asset asset: assetList) {
-            if (!asset.isStatus()) {
-                throw new Exception400("status error", asset.getId() + "번 에셋은 이미 비활성화되어 있습니다. ");
-            }
+        for (Asset asset: assetList)
             asset.changeStatusToINACTIVE();
-        }
     }
 
     @Transactional
     public void activeAssetService(AdminRequest.ActiveAssetInDTO activeAssetInDTO) {
         List<Asset> assetList = assetQueryRepository.getAssetListByAssetIdList(activeAssetInDTO.getAssets());
-
-        for (Asset asset: assetList) {
-            if (asset.isStatus()) {
-                throw new Exception400("status error", asset.getId() + "번 에셋은 이미 활성화되어 있습니다. ");
-            }
+        for (Asset asset: assetList)
             asset.changeStatusToACTIVE();
-        }
     }
 }
