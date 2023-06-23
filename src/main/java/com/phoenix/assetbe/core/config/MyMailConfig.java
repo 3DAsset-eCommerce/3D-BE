@@ -1,6 +1,5 @@
 package com.phoenix.assetbe.core.config;
 
-import com.phoenix.assetbe.controller.MailProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,26 +12,26 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class MyMailConfig {
 
-    Properties pt = new Properties();
-
     private final MailProperties mailProperties;
 
     @Bean
-    public JavaMailSender javaMailService() {
+    public JavaMailSender javaMailService() throws Exception {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-        javaMailSender.setHost(this.mailProperties.getHost());
-        javaMailSender.setUsername(this.mailProperties.getUsername());
-        javaMailSender.setPassword(this.mailProperties.getPassword());
-        javaMailSender.setPort(this.mailProperties.getPort());
+        javaMailSender.setHost(mailProperties.getHost());
+        javaMailSender.setUsername(mailProperties.getUsername());
+        javaMailSender.setPassword(mailProperties.getPassword());
+        javaMailSender.setPort(mailProperties.getPort());
 
-        pt.put("mail.smtp.socketFactory.port", this.mailProperties.getPort());
-        pt.put("mail.smtp.auth", true);
-        pt.put("mail.smtp.starttls.enable", true);
-        pt.put("mail.smtp.starttls.required", true);
-        pt.put("mail.smtp.socketFactory.fallback", false);
-        pt.put("mail.smtp.socketFactory.class", this.mailProperties.getSocketFactoryClass());
+        Properties javaMailProperties = new Properties();
 
-        javaMailSender.setJavaMailProperties(pt);
+        javaMailProperties.put("mail.smtp.auth", true);
+        javaMailProperties.put("mail.smtp.starttls.enable", false); // STARTTLS 비활성화
+        javaMailProperties.put("mail.smtp.ssl.enable", true); // SSL 활성화
+        javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        javaMailProperties.put("mail.smtp.socketFactory.fallback", false);
+        javaMailProperties.put("mail.smtp.socketFactory.port", mailProperties.getPort());
+
+        javaMailSender.setJavaMailProperties(javaMailProperties);
         javaMailSender.setDefaultEncoding("UTF-8");
 
         return javaMailSender;

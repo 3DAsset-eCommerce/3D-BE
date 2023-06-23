@@ -1,9 +1,8 @@
 package com.phoenix.assetbe.core.util;
 
-import com.phoenix.assetbe.controller.MailProperties;
+import com.phoenix.assetbe.core.config.MailProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.mail.internet.MimeMessage;
-import java.io.File;
 
 @Component
 public class MailUtils {

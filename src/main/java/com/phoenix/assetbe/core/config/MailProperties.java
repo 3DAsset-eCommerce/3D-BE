@@ -1,4 +1,4 @@
-package com.phoenix.assetbe.controller;
+package com.phoenix.assetbe.core.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

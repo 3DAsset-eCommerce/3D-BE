@@ -55,6 +55,7 @@ dependencies {
 
     //메일 전송을 위한 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     //JUnit 5 사용에 의존성 추가
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
