@@ -89,12 +89,13 @@ public class AdminController {
     public ResponseEntity<?> getAssetListByAdmin(
             @RequestParam(value = "num", required = false) Long assetNumber,
             @RequestParam(value = "name", required = false) String assetName,
+            @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "category", required = false) String categoryName,
             @RequestParam(value = "subcategory", required = false) String subCategoryName,
             @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         AdminResponse.AssetListOutDTO assetListOutDTO =
-                adminService.getAssetListByAdminService(assetNumber, assetName, categoryName, subCategoryName, pageable);
+                adminService.getAssetListByAdminService(assetNumber, assetName, status, categoryName, subCategoryName, pageable);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }

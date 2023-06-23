@@ -66,15 +66,17 @@ public class AdminResponse {
         public static class AssetOutDTO {
             private Long assetNumber;
             private String assetName;
+            private String status;
             private Double price;
             private String categoryName;
             private String subCategoryName;
             private LocalDate releaseDate;
             private LocalDate updatedAt;
 
-            public AssetOutDTO(Long assetId, String assetName, Double price, String categoryName, String subCategoryName, LocalDate releaseDate, LocalDateTime updatedAt) {
+            public AssetOutDTO(Long assetId, String assetName, boolean status, Double price, String categoryName, String subCategoryName, LocalDate releaseDate, LocalDateTime updatedAt) {
                 this.assetNumber = Long.valueOf(releaseDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")) + String.format("%06d", assetId));
                 this.assetName = assetName;
+                this.status = status ? "active" : "inactive";
                 this.price = price;
                 this.categoryName = categoryName;
                 this.subCategoryName = subCategoryName;

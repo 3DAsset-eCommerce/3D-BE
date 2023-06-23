@@ -8,7 +8,6 @@ import com.phoenix.assetbe.model.asset.*;
 import com.phoenix.assetbe.model.asset.AssetQueryRepository;
 import com.phoenix.assetbe.model.asset.Category;
 import com.phoenix.assetbe.model.asset.SubCategory;
-import com.phoenix.assetbe.model.asset.SubQueryCategory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,8 +31,6 @@ public class AdminServiceTest extends DummyEntity {
     private CategoryService categoryService;
     @Mock
     private SubCategoryQueryRepository subCategoryQueryRepository;
-    @Mock
-    private AssetQueryRepository assetQueryRepository;
     @Mock
     private AssetQueryRepository assetQueryRepository;
 

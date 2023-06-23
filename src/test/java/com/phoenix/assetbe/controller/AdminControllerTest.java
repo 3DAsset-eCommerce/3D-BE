@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -286,7 +288,7 @@ public class AdminControllerTest extends MyRestDoc {
     @DisplayName("관리자 에셋 조회: 상품명 - 성공")
     @WithUserDetails(value = "kuanliza8@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
-    public void get_asset_list_by_admin_with_category_and_sub_category_and_asset_name_test() throws Exception {
+    public void get_asset_list_by_admin_with_asset_name_test() throws Exception {
         // Given
         String page = "0";
         String size = "4";
@@ -304,5 +306,28 @@ public class AdminControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data.assetList.size()").value(1L));
+    }
+
+    @DisplayName("관리자 에셋 조회: status=false - 성공")
+    @WithUserDetails(value = "kuanliza8@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void get_asset_list_by_admin_with_status_test() throws Exception {
+        // Given
+        String page = "0";
+        String size = "4";
+
+        // When
+        ResultActions resultActions = mockMvc.perform(
+                get("/s/admin/assets")
+                        .param("status", "false"));
+
+        // Then
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 response : " + responseBody);
+
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.assetList.size()").value(0L));
     }
 }

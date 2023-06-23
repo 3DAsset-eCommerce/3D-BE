@@ -27,8 +27,6 @@ public class AdminService {
     private final SubCategoryQueryRepository subCategoryQueryRepository;
     private final AssetQueryRepository assetQueryRepository;
 
-    private final AssetQueryRepository assetQueryRepository;
-
     /**
      * 카테고리
      */
@@ -66,14 +64,14 @@ public class AdminService {
     /**
      * 에셋 조회
      */
-    public AdminResponse.AssetListOutDTO getAssetListByAdminService(Long assetNumber, String assetName, String category, String subCategory, Pageable pageable){
+    public AdminResponse.AssetListOutDTO getAssetListByAdminService(Long assetNumber, String assetName, String status, String category, String subCategory, Pageable pageable){
         List<String> assetNameList = null;
         if(assetName != null) {
             HashSet<String> keywordSet = new LinkedHashSet<>(Arrays.asList(assetName.split(" ")));
             assetNameList = new ArrayList<>(keywordSet);
         }
 
-        Page<AdminResponse.AssetListOutDTO.AssetOutDTO> assetList = assetQueryRepository.findAssetListByAdmin(assetNumber, assetNameList, category, subCategory, pageable);
+        Page<AdminResponse.AssetListOutDTO.AssetOutDTO> assetList = assetQueryRepository.findAssetListByAdmin(assetNumber, assetNameList, status, category, subCategory, pageable);
         return new AdminResponse.AssetListOutDTO(assetList);
     }
 }

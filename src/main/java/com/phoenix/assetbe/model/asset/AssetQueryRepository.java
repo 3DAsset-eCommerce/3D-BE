@@ -208,11 +208,12 @@ public class AssetQueryRepository {
      * 에셋 조회
      * 조건: 상품번호, 상품명, 대분류, 중분류, 소분류
      */
-    public Page<AdminResponse.AssetListOutDTO.AssetOutDTO> findAssetListByAdmin(Long assetNumber, List<String> assetNameList, String categoryName, String subCategoryName, Pageable pageable){
+    public Page<AdminResponse.AssetListOutDTO.AssetOutDTO> findAssetListByAdmin(Long assetNumber, List<String> assetNameList, String status, String categoryName, String subCategoryName, Pageable pageable){
         List<AdminResponse.AssetListOutDTO.AssetOutDTO> result = queryFactory
                 .select(Projections.constructor(AdminResponse.AssetListOutDTO.AssetOutDTO.class,
                         asset.id,
                         asset.assetName,
+                        asset.status,
                         asset.price,
                         category.categoryName,
                         subCategory.subCategoryName,
@@ -224,7 +225,7 @@ public class AssetQueryRepository {
                 .innerJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
                 .innerJoin(category).on(category.id.eq(assetSubCategory.category.id))
                 .innerJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
-                .where(assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containAllKeyword(assetNameList))
+                .where(statusEq(status), assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containAllKeyword(assetNameList))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(assetSortByIncludedKeywordCount(assetNameList).desc(), assetSort(pageable))
@@ -235,7 +236,7 @@ public class AssetQueryRepository {
                 .innerJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
                 .innerJoin(category).on(category.id.eq(assetSubCategory.category.id))
                 .innerJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
-                .where(assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containAllKeyword(assetNameList))
+                .where(statusEq(status), assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containAllKeyword(assetNameList))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
@@ -270,6 +271,19 @@ public class AssetQueryRepository {
 
     private BooleanExpression tagNameEq(String tagName){
         return StringUtils.hasText(tagName) ? tag.tagName.eq(tagName) : null;
+    }
+
+    private BooleanExpression statusEq(String status){
+        if(status == null) {
+            return null;
+        }
+        if(status.equals("true")){
+            return asset.status.eq(true);
+        }
+        if(status.equals("false")) {
+            return asset.status.eq(false);
+        }
+        return null;
     }
 
     private BooleanExpression assetNameLike(String keyword){
