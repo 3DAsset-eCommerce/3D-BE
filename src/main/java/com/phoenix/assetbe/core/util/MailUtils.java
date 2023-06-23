@@ -1,7 +1,9 @@
 package com.phoenix.assetbe.core.util;
 
 import com.phoenix.assetbe.core.config.MailProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,6 +14,8 @@ import org.springframework.util.StringUtils;
 import javax.mail.internet.MimeMessage;
 
 @Component
+@Profile("dev")
+@RequiredArgsConstructor
 public class MailUtils {
     private static MailProperties mailProperties;
 
