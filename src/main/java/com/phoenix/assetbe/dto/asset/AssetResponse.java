@@ -19,8 +19,10 @@ public class AssetResponse {
         private Long assetId;
         private String assetName;
         private Double price;
+        private String description;
         private Integer discount;
         private Double discountPrice;
+        private String extension;
         private Double fileSize;
         private String fileUrl;
         private String creator;
@@ -36,8 +38,10 @@ public class AssetResponse {
             this.assetId = asset.getId();
             this.assetName = asset.getAssetName();
             this.price = asset.getPrice();
+            this.description = asset.getDescription();
             this.discount = asset.getDiscount();
             this.discountPrice = asset.getDiscountPrice();
+            this.extension = asset.getExtension();
             this.fileSize = asset.getSize();
             this.fileUrl = asset.getFileUrl();
             this.creator = asset.getCreator();

@@ -71,7 +71,7 @@ public class AssetQueryRepository {
     }
 
     /**
-     * 로그인 유저
+     * 비로그인 유저
      * 개별 에셋
      * 에셋 검색
      * 페이지네이션
@@ -357,7 +357,7 @@ public class AssetQueryRepository {
 
         if(keywordList == null || keywordList.isEmpty()){
             expression = new CaseBuilder()
-                    .when(asset.assetName.isNotNull()).then(1)
+                    .when(asset.assetName.isNotNull()).then(0)
                     .otherwise(0);
         } else if (keywordList.size() == 1) {
             expression = new CaseBuilder()

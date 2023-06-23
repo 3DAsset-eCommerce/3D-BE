@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.phoenix.assetbe.model.asset.QAsset.asset;
 import static com.phoenix.assetbe.model.asset.QAssetTag.assetTag;
 import static com.phoenix.assetbe.model.asset.QCategory.category;
 import static com.phoenix.assetbe.model.asset.QSubCategory.subCategory;
@@ -35,6 +36,8 @@ public class AssetTagQueryRepository {
                         assetTag.asset.id.countDistinct()))
                 .from(assetTag)
                 .leftJoin(category).on(category.id.eq(assetTag.category.id))
+                .leftJoin(asset).on(asset.id.eq(assetTag.asset.id))
+                .where(asset.status.eq(true))
                 .groupBy(category.categoryName)
                 .fetch();
     }
@@ -48,6 +51,8 @@ public class AssetTagQueryRepository {
                 .from(assetTag)
                 .leftJoin(category).on(category.id.eq(assetTag.category.id))
                 .leftJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
+                .leftJoin(asset).on(asset.id.eq(assetTag.asset.id))
+                .where(asset.status.eq(true))
                 .groupBy(category.categoryName, subCategory.subCategoryName)
                 .fetch();
     }
@@ -63,6 +68,8 @@ public class AssetTagQueryRepository {
                 .leftJoin(category).on(category.id.eq(assetTag.category.id))
                 .leftJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
                 .leftJoin(tag).on(tag.id.eq(assetTag.tag.id))
+                .leftJoin(asset).on(asset.id.eq(assetTag.asset.id))
+                .where(asset.status.eq(true))
                 .groupBy(category.categoryName, subCategory.subCategoryName, tag.tagName)
                 .fetch();
     }
