@@ -9,6 +9,6 @@ application:
     username: ${MAIL_FROM_ADDRESS}
     password: ${MAIL_PASSWORD}
     port: 465
-    socketFactory-class: javax.net.ssl.SSLSocketFactory
+    socketFactoryClass: javax.net.ssl.SSLSocketFactory
     supplier: gmail.com
-    from-mail: ${MAIL_FROM_ADDRESS}
+    fromMail: ${MAIL_FROM_ADDRESS}

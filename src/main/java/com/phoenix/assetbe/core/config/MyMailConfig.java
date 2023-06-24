@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
+import javax.net.ssl.SSLSocketFactory;
 import java.util.Properties;
 
 @Configuration
@@ -27,7 +28,8 @@ public class MyMailConfig {
         javaMailProperties.put("mail.smtp.auth", true);
         javaMailProperties.put("mail.smtp.host", "smtp.gmail.com");
         javaMailProperties.put("mail.smtp.ssl.enable", true);
-        javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        javaMailProperties.put("mail.smtp.ssl.socketFactory", SSLSocketFactory.getDefault());
+
         javaMailProperties.put("mail.smtp.socketFactory.fallback", false);
         javaMailProperties.put("mail.smtp.socketFactory.port", mailProperties.getPort());
         javaMailProperties.put("mail.smtp.port", mailProperties.getPort());
