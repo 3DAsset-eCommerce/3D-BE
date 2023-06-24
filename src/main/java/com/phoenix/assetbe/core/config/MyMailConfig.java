@@ -26,7 +26,10 @@ public class MyMailConfig {
 
         javaMailProperties.put("mail.smtp.auth", true);
         javaMailProperties.put("mail.smtp.host", "smtp.gmail.com");
-        javaMailProperties.put("mail.smtp.starttls.enable", true);
+        javaMailProperties.put("mail.smtp.ssl.enable", true);
+        javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        javaMailProperties.put("mail.smtp.socketFactory.fallback", false);
+        javaMailProperties.put("mail.smtp.socketFactory.port", mailProperties.getPort());
         javaMailProperties.put("mail.smtp.port", mailProperties.getPort());
 
         javaMailSender.setJavaMailProperties(javaMailProperties);
