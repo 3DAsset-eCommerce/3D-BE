@@ -8,7 +8,7 @@ application:
     host: smtp.gmail.com
     username: ${MAIL_FROM_ADDRESS}
     password: ${MAIL_PASSWORD}
-    port: 465
+    port: 587
     socketFactory-class: javax.net.ssl.SSLSocketFactory
     supplier: gmail.com
     from-mail: ${MAIL_FROM_ADDRESS}
