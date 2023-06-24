@@ -36,43 +36,60 @@ public class S3Service {
     private String bucket;
 
     // 업로드
-    public UserResponse.uploadOutDTO upload(MultipartFile multipartFile, String dirName)  {
-        File uploadFile = convert(multipartFile)
-                .orElseThrow(() -> new IllegalArgumentException("Multipart to File 전환 실패"));
-        String uploadedUrl = upload(uploadFile, dirName);
-        return new UserResponse.uploadOutDTO(uploadedUrl);
+    public UserResponse.uploadOutDTO upload(MultipartFile multipartFile, String dirName) {
+        try {
+            File uploadFile = convert(multipartFile)
+                    .orElseThrow(() -> new IllegalArgumentException("Multipart to File 전환 실패"));
+            String uploadedUrl = upload(uploadFile, dirName);
+            return new UserResponse.uploadOutDTO(uploadedUrl);
+        } catch (Exception e) {
+            throw new Exception500("파일 업로드 실패 : " + e.getMessage());
+        }
     }
 
     private String upload(File uploadFile, String dirName) {
-        String uniqueFileName = generateUniqueFileName(uploadFile.getName()); // 고유한 파일명 생성
-        String fileName = dirName + "/" + uniqueFileName; // 디렉토리명과 결합하여 전체 파일 경로 생성
-        String uploadImageUrl = putS3(uploadFile, fileName);
+        try {
+            String uniqueFileName = generateUniqueFileName(uploadFile.getName()); // 고유한 파일명 생성
+            String fileName = dirName + "/" + uniqueFileName; // 디렉토리명과 결합하여 전체 파일 경로 생성
+            String uploadImageUrl = putS3(uploadFile, fileName);
 
-        removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
+            removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
 
-        return uploadImageUrl;      // 업로드된 파일의 S3 URL 주소 반환
+            return uploadImageUrl;      // 업로드된 파일의 S3 URL 주소 반환
+        } catch (Exception e) {
+            throw new Exception500("파일 업로드 실패 : " + e.getMessage());
+        }
     }
 
+
     private String putS3(File uploadFile, String fileName) {
-        amazonS3Client.putObject(
-                new PutObjectRequest(bucket, fileName, uploadFile)
-                        .withCannedAcl(CannedAccessControlList.PublicRead)	// PublicRead 권한으로 업로드 됨
-        );
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        try {
+            amazonS3Client.putObject(
+                    new PutObjectRequest(bucket, fileName, uploadFile)
+                            .withCannedAcl(CannedAccessControlList.PublicRead)    // PublicRead 권한으로 업로드 됨
+            );
+            return amazonS3Client.getUrl(bucket, fileName).toString();
+        } catch (Exception e) {
+            throw new Exception500("S3 업로드 실패 : " + e.getMessage());
+        }
     }
 
     private void removeNewFile(File targetFile) {
-        if(targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
-        }else {
-            log.info("파일이 삭제되지 못했습니다.");
+        try {
+            if (targetFile.delete()) {
+                log.info("파일이 삭제되었습니다.");
+            } else {
+                log.info("파일이 삭제되지 못했습니다.");
+            }
+        } catch (Exception e) {
+            throw new Exception500("파일 삭제 실패: " + e.getMessage());
         }
     }
 
     private Optional<File> convert(MultipartFile file) {
-            File convertFile = new File(file.getOriginalFilename());
         try {
-            if(convertFile.createNewFile()) {
+            File convertFile = new File(file.getOriginalFilename());
+            if (convertFile.createNewFile()) {
                 try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                     fos.write(file.getBytes());
                 }
@@ -80,14 +97,18 @@ public class S3Service {
             }
             return Optional.empty();
         } catch (Exception e) {
-            throw new Exception500("파일 업로드 실패 : "+e.getMessage());
+            throw new Exception500("파일 업로드 실패: " + e.getMessage());
         }
     }
 
     // 삭제
     public void removeFile(String removeFile) {
-        String fileName = getFileNameFromUrl(removeFile);
-        deleteS3File(fileName);
+        try {
+            String fileName = getFileNameFromUrl(removeFile);
+            deleteS3File(fileName);
+        } catch (Exception e) {
+            throw new Exception500("파일 삭제 실패: " + e.getMessage());
+        }
     }
 
     private void deleteS3File(String fileName) {
@@ -95,19 +116,27 @@ public class S3Service {
             amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
             log.info("S3 파일이 삭제되었습니다. 파일명: " + fileName);
         } catch (Exception e) {
-            throw new Exception500("파일 삭제 실패 : "+e.getMessage());
+            throw new Exception500("파일 삭제 실패: " + e.getMessage());
         }
     }
 
     private String getFileNameFromUrl(String fileUrl) {
-        String decodedUrl = URLDecoder.decode(fileUrl, StandardCharsets.UTF_8);
-        String[] urlParts = decodedUrl.split("/");
-        return urlParts[urlParts.length - 1];
+        try {
+            String decodedUrl = URLDecoder.decode(fileUrl, StandardCharsets.UTF_8);
+            String[] urlParts = decodedUrl.split("/");
+            return urlParts[urlParts.length - 1];
+        } catch (Exception e) {
+            throw new Exception500("URL 디코딩 실패: " + e.getMessage());
+        }
     }
 
     private String generateUniqueFileName(String originalFileName) {
-        String fileExtension = FilenameUtils.getExtension(originalFileName); // 파일 확장자 추출
-        String uniqueFileName = UUID.randomUUID().toString() + "." + fileExtension; // UUID와 확장자를 조합하여 고유한 파일명 생성
-        return uniqueFileName;
+        try {
+            String fileExtension = FilenameUtils.getExtension(originalFileName); // 파일 확장자 추출
+            String uniqueFileName = UUID.randomUUID().toString() + "." + fileExtension; // UUID와 확장자를 조합하여 고유한 파일명 생성
+            return uniqueFileName;
+        } catch (Exception e) {
+            throw new Exception500("고유 파일명 생성 실패: " + e.getMessage());
+        }
     }
 }
