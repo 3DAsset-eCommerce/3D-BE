@@ -1,7 +1,7 @@
 package com.phoenix.assetbe.dto.user;
 
-import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
@@ -16,32 +16,24 @@ public class UserResponse {
      */
     @Getter
     @Setter
+    @AllArgsConstructor
     public static class LoginOutDTOWithJWT {
         private Long id;
         private String jwt;
-
-        public LoginOutDTOWithJWT(Long id, String jwt) {
-            this.id = id;
-            this.jwt = jwt;
-        }
     }
 
     @Getter
     @Setter
+    @AllArgsConstructor
     public static class LoginOutDTO {
         private Long userId;
-        public LoginOutDTO(Long userId) {
-            this.userId = userId;
-        }
     }
 
     @Getter
     @Setter
+    @AllArgsConstructor
     public static class SendCodeOutDTO {
         private Long userId;
-        public SendCodeOutDTO(Long userId) {
-            this.userId = userId;
-        }
     }
 
     /**
@@ -92,18 +84,12 @@ public class UserResponse {
 
         @Getter
         @Setter
+        @AllArgsConstructor
         public static class GetMyAssetOutDTO {
             private Long assetId;
             private String assetName;
             private String fileUrl;
             private String thumbnailUrl;
-
-            public GetMyAssetOutDTO(Long assetId, String assetName, String fileUrl, String thumbnailUrl) {
-                this.assetId = assetId;
-                this.assetName = assetName;
-                this.fileUrl = fileUrl;
-                this.thumbnailUrl = thumbnailUrl;
-            }
         }
     }
 
@@ -118,14 +104,16 @@ public class UserResponse {
 
         @Getter
         @Setter
+        @AllArgsConstructor
         public static class MyAssetFileUrlOutDTO {
             private Long assetId;
             private String fileUrl;
-
-            public MyAssetFileUrlOutDTO(Long assetId, String fileUrl) {
-                this.assetId = assetId;
-                this.fileUrl = fileUrl;
-            }
         }
+    }
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class uploadOutDTO {
+        String uploadedUrl;
     }
 }

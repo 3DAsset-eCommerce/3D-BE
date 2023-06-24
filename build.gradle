@@ -61,6 +61,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+
+    // S3 업로드를 위한 의존성 추가
+    implementation 'software.amazon.awssdk:s3:2.17.79'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'commons-io:commons-io:2.11.0'
+
 }
 
 // Querydsl 추가, 자동 생성된 Q클래스 gradle clean으로 제거
