@@ -67,24 +67,14 @@ public class AdminController {
 
     @PostMapping("/s/admin/file/{type}")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("type") String type) {
-        try {
-            UserResponse.uploadOutDTO uploadOutDTO = s3Service.upload(file, type);
-            ResponseDTO<?> responseDTO = new ResponseDTO<>(uploadOutDTO);
-            return ResponseEntity.ok(responseDTO);
-        } catch (IOException e) {
-            // 파일 업로드 실패 처리
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패");
-        }
+        UserResponse.uploadOutDTO uploadOutDTO = s3Service.upload(file, type);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(uploadOutDTO);
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PostMapping("/s/admin/delete/{removeFile}")
     public ResponseEntity<?> deleteFile(@PathVariable("removeFile") String removeFile) {
-        try {
-            s3Service.removeFile(removeFile);
-            return ResponseEntity.ok().body(null);
-        } catch (Exception e) {
-            log.error("Failed to delete file. File URL: {}. Error message: {}", removeFile, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete file");
-        }
+        s3Service.removeFile(removeFile);
+        return ResponseEntity.ok().body(null);
     }
 }

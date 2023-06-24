@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.phoenix.assetbe.core.exception.Exception500;
 import com.phoenix.assetbe.dto.user.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +36,9 @@ public class S3Service {
     private String bucket;
 
     // 업로드
-    public UserResponse.uploadOutDTO upload(MultipartFile multipartFile, String dirName) throws IOException {
+    public UserResponse.uploadOutDTO upload(MultipartFile multipartFile, String dirName)  {
         File uploadFile = convert(multipartFile)
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
+                .orElseThrow(() -> new IllegalArgumentException("Multipart to File 전환 실패"));
         String uploadedUrl = upload(uploadFile, dirName);
         return new UserResponse.uploadOutDTO(uploadedUrl);
     }
@@ -68,15 +69,19 @@ public class S3Service {
         }
     }
 
-    private Optional<File> convert(MultipartFile file) throws  IOException {
-        File convertFile = new File(file.getOriginalFilename());
-        if(convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
+    private Optional<File> convert(MultipartFile file) {
+            File convertFile = new File(file.getOriginalFilename());
+        try {
+            if(convertFile.createNewFile()) {
+                try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+                    fos.write(file.getBytes());
+                }
+                return Optional.of(convertFile);
             }
-            return Optional.of(convertFile);
+            return Optional.empty();
+        } catch (Exception e) {
+            throw new Exception500("파일 업로드 실패 : "+e.getMessage());
         }
-        return Optional.empty();
     }
 
     // 삭제
@@ -88,10 +93,9 @@ public class S3Service {
     private void deleteS3File(String fileName) {
         try {
             amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
-            log.info("S3 파일이 삭제되었습니다. 파일명: {}", fileName);
-        } catch (AmazonServiceException e) {
-            log.error("S3 파일 삭제 실패. 파일명: {}. 오류 메시지: {}", fileName, e.getMessage());
-            // 파일 삭제 실패 처리 로직 추가
+            log.info("S3 파일이 삭제되었습니다. 파일명: " + fileName);
+        } catch (Exception e) {
+            throw new Exception500("파일 삭제 실패 : "+e.getMessage());
         }
     }
 
