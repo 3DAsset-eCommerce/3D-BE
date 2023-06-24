@@ -1,6 +1,8 @@
 package com.phoenix.assetbe.core.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,26 +15,31 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class MyMailConfig {
 
-    private final MailProperties mailProperties;
+    @Value("${MAIL_FROM_ADDRESS}")
+    private String username;
+
+    @Value("${MAIL_PASSWORD}")
+    private String password;
 
     @Bean
     public JavaMailSender javaMailService() throws Exception {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-        javaMailSender.setHost(mailProperties.getHost());
-        javaMailSender.setUsername(mailProperties.getUsername());
-        javaMailSender.setPassword(mailProperties.getPassword());
-        javaMailSender.setPort(mailProperties.getPort());
+        javaMailSender.setHost("smtp.gmail.com");
+        javaMailSender.setUsername(username);
+        javaMailSender.setPassword(password);
+        javaMailSender.setPort(465);
 
         Properties javaMailProperties = new Properties();
 
         javaMailProperties.put("mail.smtp.auth", true);
         javaMailProperties.put("mail.smtp.host", "smtp.gmail.com");
+        javaMailProperties.put("mail.smtp.starttls.enable", true);
         javaMailProperties.put("mail.smtp.ssl.enable", true);
         javaMailProperties.put("mail.smtp.ssl.socketFactory", SSLSocketFactory.getDefault());
 
         javaMailProperties.put("mail.smtp.socketFactory.fallback", false);
-        javaMailProperties.put("mail.smtp.socketFactory.port", mailProperties.getPort());
-        javaMailProperties.put("mail.smtp.port", mailProperties.getPort());
+        javaMailProperties.put("mail.smtp.socketFactory.port", 465);
+        javaMailProperties.put("mail.smtp.port", 465);
 
         javaMailSender.setJavaMailProperties(javaMailProperties);
         javaMailSender.setDefaultEncoding("UTF-8");

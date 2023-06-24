@@ -61,19 +61,19 @@ jobs:
               "password": ${{ secrets.DOCKER_PASSWORD }}
             }
           build-args: |
-            AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-            AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-            AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-            AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-            AWS_S3_BUCKET_URL: ${{ secrets.AWS_S3_BUCKET_URL }}
-            RDS_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
-            RDS_PORT: ${{ secrets.DB_PORT }}
-            RDS_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
-            RDS_USERNAME: ${{ secrets.DB_USERNAME }}
-            RDS_PASSWORD: ${{ secrets.DB_PASSWORD }}
-            SSL_PASSWORD: ${{ secrets.SSL_PASSWORD }}
-            MAIL_FROM_ADDRESS: ${{ secrets.MAIL_FROM_ADDRESS }}
-            MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+            AWS_ACCESS_KEY= ${{ secrets.AWS_ACCESS_KEY }}
+            AWS_SECRET_KEY= ${{ secrets.AWS_SECRET_KEY }}
+            AWS_DEFAULT_REGION= ${{ secrets.AWS_DEFAULT_REGION }}
+            AWS_S3_BUCKET= ${{ secrets.AWS_S3_BUCKET }}
+            AWS_S3_BUCKET_URL= ${{ secrets.AWS_S3_BUCKET_URL }}
+            RDS_ENDPOINT= ${{ secrets.DB_ENDPOINT }}
+            RDS_PORT= ${{ secrets.DB_PORT }}
+            RDS_DATABASE_NAME= ${{ secrets.DB_DATABASE_NAME }}
+            RDS_USERNAME= ${{ secrets.DB_USERNAME }}
+            RDS_PASSWORD= ${{ secrets.DB_PASSWORD }}
+            SSL_PASSWORD= ${{ secrets.SSL_PASSWORD }}
+            MAIL_FROM_ADDRESS= ${{ secrets.MAIL_FROM_ADDRESS }}
+            MAIL_PASSWORD= ${{ secrets.MAIL_PASSWORD }}
       - name: Install Docker and Docker Compose
         run: |
           #!/bin/bash

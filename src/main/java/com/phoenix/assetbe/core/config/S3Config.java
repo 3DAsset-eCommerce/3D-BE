@@ -1,48 +1,33 @@
 package com.phoenix.assetbe.core.config;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
-import com.amazonaws.services.s3.transfer.TransferManagerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+
 
 @Configuration
 public class S3Config {
     @Value("${AWS_ACCESS_KEY}")
     private String accessKey;
-
     @Value("${AWS_SECRET_KEY}")
     private String secretKey;
-
     @Value("${AWS_DEFAULT_REGION}")
     private String region;
 
     @Bean
-    public AmazonS3ClientBuilder amazonS3ClientBuilder() {
-        AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
+    public S3Client s3Client() {
+        AwsCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
 
-        return AmazonS3ClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                .withRegion(region);
-    }
+        S3ClientBuilder builder = S3Client.builder()
+                .region(Region.of(region))
+                .credentialsProvider(StaticCredentialsProvider.create(credentials));
 
-    @Bean
-    public AmazonS3 amazonS3Client() {
-        return amazonS3ClientBuilder().build();
-    }
-
-    @Bean
-    public TransferManager transferManager() {
-        return TransferManagerBuilder.standard()
-                .withS3Client(amazonS3Client())
-                .withMultipartUploadThreshold((long) (10 * 1024 * 1024)) // 10MB로 파일 최소 업로드 파트 크기 설정
-                .build();
+        return builder.build();
     }
 }
