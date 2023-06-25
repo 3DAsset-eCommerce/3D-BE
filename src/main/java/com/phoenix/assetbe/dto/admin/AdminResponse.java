@@ -55,7 +55,7 @@ public class AdminResponse {
         public AssetListOutDTO(Page<?> assetList) {
             this.assetList = assetList.getContent();
             this.size = assetList.getSize();
-            this.currentPage = assetList.getPageable().getPageNumber();
+            this.currentPage = assetList.getNumber();
             this.totalPage = assetList.getTotalPages();
             this.totalElement = assetList.getTotalElements();
         }
@@ -64,7 +64,7 @@ public class AdminResponse {
         @AllArgsConstructor
         @Getter @Setter
         public static class AssetOutDTO {
-            private Long assetNumber;
+            private String assetNumber;
             private String assetName;
             private String status;
             private Double price;
@@ -74,7 +74,7 @@ public class AdminResponse {
             private LocalDate updatedAt;
 
             public AssetOutDTO(Long assetId, String assetName, boolean status, Double price, String categoryName, String subCategoryName, LocalDate releaseDate, LocalDateTime updatedAt) {
-                this.assetNumber = Long.valueOf(releaseDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")) + String.format("%06d", assetId));
+                this.assetNumber = releaseDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "-" + String.format("%06d", assetId);
                 this.assetName = assetName;
                 this.status = status ? "active" : "inactive";
                 this.price = price;
@@ -82,6 +82,53 @@ public class AdminResponse {
                 this.subCategoryName = subCategoryName;
                 this.releaseDate = releaseDate;
                 this.updatedAt = LocalDate.from(updatedAt);
+            }
+        }
+    }
+
+    /**
+     * 주문
+     */
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter @Setter
+    public static class OrderListOutDTO {
+        private List<?> orderList;
+        private int size;
+        private int currentPage;
+        private int totalPage;
+        private long totalElement;
+
+        public OrderListOutDTO(Page<?> orderList) {
+            this.orderList = orderList.getContent();
+            this.size = orderList.getSize();
+            this.currentPage = orderList.getNumber();
+            this.totalPage = orderList.getTotalPages();
+            this.totalElement = orderList.getTotalElements();
+        }
+
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Getter @Setter
+        public static class OrderOutDTO {
+            private String orderNumber;
+            private LocalDate orderDate;
+            private String assetName;
+            private Long assetCount;
+            private String email;
+            private Double price;
+            private String paymentTool;
+            private boolean status;
+
+            public OrderOutDTO (Long orderId, LocalDateTime orderDate, String assetName, Long assetCount, String email, Double price, String paymentTool, Long paymentId) {
+                this.orderNumber = orderDate.toLocalDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "-" + String.format("%06d", orderId);
+                this.orderDate = orderDate.toLocalDate();
+                this.assetName = assetName + " 외 " + (assetCount-1) + "건";
+                this.assetCount = assetCount;
+                this.email = email;
+                this.price = price;
+                this.paymentTool = paymentTool;
+                this.status = paymentId != null;
             }
         }
     }

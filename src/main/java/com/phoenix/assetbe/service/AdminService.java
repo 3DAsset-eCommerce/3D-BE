@@ -1,6 +1,5 @@
 package com.phoenix.assetbe.service;
 
-import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.dto.admin.AdminRequest;
 import com.phoenix.assetbe.dto.admin.AdminResponse;
 import com.phoenix.assetbe.model.asset.*;
@@ -8,6 +7,7 @@ import com.phoenix.assetbe.model.asset.Asset;
 import com.phoenix.assetbe.model.asset.AssetQueryRepository;
 import com.phoenix.assetbe.model.asset.Category;
 import com.phoenix.assetbe.model.asset.SubCategory;
+import com.phoenix.assetbe.model.order.OrderQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,6 +26,7 @@ public class AdminService {
     private final CategoryService categoryService;
     private final SubCategoryQueryRepository subCategoryQueryRepository;
     private final AssetQueryRepository assetQueryRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     /**
      * 카테고리
@@ -73,5 +74,15 @@ public class AdminService {
 
         Page<AdminResponse.AssetListOutDTO.AssetOutDTO> assetList = assetQueryRepository.findAssetListByAdmin(assetNumber, assetNameList, status, category, subCategory, pageable);
         return new AdminResponse.AssetListOutDTO(assetList);
+    }
+
+    /**
+     * 주문내열조회
+     */
+    public AdminResponse.OrderListOutDTO getOrderListByAdminService(String orderPeriod, String startDate, String endDate, String orderNumber, String assetNumber, String assetName, String email, Pageable pageable){
+
+
+        Page<AdminResponse.OrderListOutDTO.OrderOutDTO> orderList = orderQueryRepository.findOrderListByAdmin(orderPeriod, startDate, endDate, orderNumber, assetNumber, assetName, email, pageable);
+        return new AdminResponse.OrderListOutDTO(orderList);
     }
 }

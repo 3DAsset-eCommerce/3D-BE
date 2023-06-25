@@ -8,6 +8,7 @@ import com.phoenix.assetbe.model.asset.*;
 import com.phoenix.assetbe.model.asset.AssetQueryRepository;
 import com.phoenix.assetbe.model.asset.Category;
 import com.phoenix.assetbe.model.asset.SubCategory;
+import com.phoenix.assetbe.model.order.OrderQueryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,8 @@ public class AdminServiceTest extends DummyEntity {
     private SubCategoryQueryRepository subCategoryQueryRepository;
     @Mock
     private AssetQueryRepository assetQueryRepository;
+    @Mock
+    private OrderQueryRepository orderQueryRepository;
 
     @Spy
     private ObjectMapper objectMapper;
@@ -40,7 +43,8 @@ public class AdminServiceTest extends DummyEntity {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        adminService = new AdminService(categoryService, subCategoryQueryRepository, assetQueryRepository);
+
+        adminService = new AdminService(categoryService, subCategoryQueryRepository, assetQueryRepository, orderQueryRepository);
     }
 
     /**

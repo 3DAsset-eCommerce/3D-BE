@@ -12,11 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -99,4 +101,22 @@ public class AdminController {
         ResponseDTO<?> responseDTO = new ResponseDTO<>(assetListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    @GetMapping("/s/admin/orders")
+    public ResponseEntity<?> getOrderListByAdmin(
+            @RequestParam(value = "period", required = false) String orderPeriod,
+            @RequestParam(value = "start", required = false) String startDate,
+            @RequestParam(value = "end", required = false) String endDate,
+            @RequestParam(value = "onum", required = false) String orderNumber,
+            @RequestParam(value = "anum", required = false) String assetNumber,
+            @RequestParam(value = "name", required = false) String assetName,
+            @RequestParam(value = "email", required = false) String email,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        AdminResponse.OrderListOutDTO orderListOutDTO =
+                adminService.getOrderListByAdminService(orderPeriod, startDate, endDate, orderNumber, assetNumber, assetName, email, pageable);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(orderListOutDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 }
