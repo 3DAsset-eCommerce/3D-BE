@@ -87,16 +87,15 @@ public class DataInit extends DummyEntity{
                 dates.add(LocalDate.parse(dateStr + String.valueOf(i)));
             }
 
-            List<Double> ratingList = Arrays.asList(5D, 4D, 3D, 2D, 1D);
-            List<Double> ratings = Stream.generate(() -> ratingList)
-                    .limit(30)
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
-
             //Asset
             List<Asset> assetList = new ArrayList<Asset>();
-            for(int i = 0; i < 30; i++){
-                Asset asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), ratings.get(i));
+            for(int i = 0; i < 8; i++){
+                int rating = (i % 5) + 1;
+                Asset asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), Double.valueOf(rating), 1L);
+                assetList.add(asset);
+            }
+            for(int i = 8; i < 30; i++){
+                Asset asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), 0D, 0L);
                 assetList.add(asset);
             }
             assetRepository.saveAll(assetList);

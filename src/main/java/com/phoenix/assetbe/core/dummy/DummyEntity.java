@@ -55,7 +55,7 @@ public class DummyEntity {
                 .build();
     }
 
-    public Asset newAsset(String assetName, Double price, Double size, LocalDate date, Double rating) {
+    public Asset newAsset(String assetName, Double price, Double size, LocalDate date, Double rating, Long reviewCount) {
         return Asset.builder()
                 .assetName(assetName)
                 .price(price)
@@ -68,7 +68,7 @@ public class DummyEntity {
                 .rating(rating)
                 .wishCount(1111L)
                 .visitCount(2222L)
-                .reviewCount(0L)
+                .reviewCount(reviewCount)
                 .status(true)
                 .updatedAt(LocalDateTime.now())
                 .fileUrl(assetName + ".fileUrl")

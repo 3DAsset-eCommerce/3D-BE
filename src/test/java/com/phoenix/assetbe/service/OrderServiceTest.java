@@ -70,8 +70,8 @@ public class OrderServiceTest extends DummyEntity {
         // when
         when(userService.findValidUserByEmail("유현주@nate.com")).thenReturn(user);
 
-        Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D);
-        Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D);
+        Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D, 1L);
+        Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D, 1L);
         when(assetService.findAllAssetById(orderAssetList)).thenReturn(Arrays.asList(asset1, asset2));
 
         orderService.orderAssetsService(orderAssetsInDTO, myUserDetails);
@@ -99,8 +99,8 @@ public class OrderServiceTest extends DummyEntity {
         // when
         when(userService.findValidUserByEmail("유현주@nate.com")).thenReturn(user);
 
-        Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D);
-        Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D);
+        Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D, 1L);
+        Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D, 1L);
         when(assetService.findAllAssetById(orderAssetList)).thenReturn(Arrays.asList(asset1, asset2));
 
         assertThrows(Exception400.class, () -> orderService.orderAssetsService(orderAssetsInDTO, myUserDetails));

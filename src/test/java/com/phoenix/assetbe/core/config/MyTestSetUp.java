@@ -131,7 +131,7 @@ public class MyTestSetUp extends DummyEntity{
         //Asset
         List<Asset> assetList = new ArrayList<Asset>();
         for(int i = 0; i < 30; i++){
-            Asset asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), ratings.get(i));
+            Asset asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), ratings.get(i), 1L);
             assetList.add(asset);
         }
         assetRepository.saveAll(assetList);
