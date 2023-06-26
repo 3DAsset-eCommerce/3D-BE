@@ -24,4 +24,8 @@ public class AssetCategory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    public void changeCategory(Category category) {
+        this.category = category;
+    }
 }

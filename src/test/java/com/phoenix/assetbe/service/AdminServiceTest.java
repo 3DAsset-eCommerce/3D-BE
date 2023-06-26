@@ -36,15 +36,32 @@ public class AdminServiceTest extends DummyEntity {
     private AssetQueryRepository assetQueryRepository;
     @Mock
     private OrderQueryRepository orderQueryRepository;
-
+    @Mock
+    private AssetRepository assetRepository;
+    @Mock
+    private PreviewRepository previewRepository;
+    @Mock
+    private CategoryRepository categoryRepository;
+    @Mock
+    private SubCategoryRepository subCategoryRepository;
+    @Mock
+    private AssetTagRepository assetTagRepository;
+    @Mock
+    private TagRepository tagRepository;
+    @Mock
+    private AssetCategoryRepository assetCategoryRepository;
+    @Mock
+    private AssetSubCategoryRepository assetSubCategoryRepository;
     @Spy
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        adminService = new AdminService(categoryService, subCategoryQueryRepository, assetQueryRepository, orderQueryRepository, assetRepository
+        , previewRepository, categoryRepository, subCategoryRepository, assetTagRepository
+        , tagRepository, assetCategoryRepository, assetSubCategoryRepository);
 
-        adminService = new AdminService(categoryService, subCategoryQueryRepository, assetQueryRepository, orderQueryRepository);
     }
 
     /**

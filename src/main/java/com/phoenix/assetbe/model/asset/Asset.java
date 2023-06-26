@@ -80,34 +80,35 @@ public class Asset extends MyTimeBaseUtil {
     /**
      * 메소드
      */
-    public void increaseVisitCount(){
-        this.visitCount++;
-    }
-
+    public void increaseVisitCount(){this.visitCount++;}
     public void calculateRatingAndIncreaseReviewCount(Asset asset, Double reviewRatingSum){
         this.rating = (double) Math.round(reviewRatingSum * 10 / (asset.getReviewCount() + 1)) / 10;
         this.reviewCount = asset.getReviewCount() + 1;
     }
-
-    public void calculateRatingOnUpdateReview(Asset asset, Double reviewRatingSum){
-        this.rating = (double) Math.round(reviewRatingSum * 10 / asset.getReviewCount()) / 10;
-    }
-
+    public void calculateRatingOnUpdateReview(Asset asset, Double reviewRatingSum){this.rating = (double) Math.round(reviewRatingSum * 10 / asset.getReviewCount()) / 10;}
     public void calculateRatingOnDeleteReview(Asset asset, Double reviewRatingSum){
         this.rating = (double) Math.round(reviewRatingSum * 10 / (asset.getReviewCount() - 1)) / 10;
         this.reviewCount = asset.getReviewCount() - 1;
     }
-
     public void calculateRatingOnDeleteReview(Asset asset){
         this.rating = 0D;
         this.reviewCount = asset.getReviewCount() - 1;
     }
 
-    public void changeStatusToINACTIVE() {
-        this.status = false;
-    }
+    // Asset status 변경 메소드
+    public void changeStatusToINACTIVE() {this.status = false;}
+    public void changeStatusToACTIVE() {this.status = true;}
 
-    public void changeStatusToACTIVE() {
-        this.status = true;
+    // Asset Url 묶음 변경 메소드
+    public void changeFileUrl(String fileUrl) {this.fileUrl = fileUrl;}
+    public void changeThumbnailUrl(String thumbnailUrl) {this.thumbnailUrl = thumbnailUrl;}
+
+    // Asset Name, description, price, discount 변경 메소드
+    public void changeAssetName(String assetName) {this.assetName = assetName;}
+    public void changeAssetDescription(String assetDescription) {this.description = assetDescription;}
+    public void changePrice(Double price) {this.price = price;}
+    public void changeDiscountAndDiscountPrice(Integer discount) {
+        this.discount = discount;
+        this.discountPrice = this.price * ((100 - discount) / 100); // 할인 후 가격 저장
     }
 }

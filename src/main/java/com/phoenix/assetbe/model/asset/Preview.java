@@ -1,12 +1,10 @@
 package com.phoenix.assetbe.model.asset;
 
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
-import com.phoenix.assetbe.dto.asset.ReviewRequest;
-import com.phoenix.assetbe.model.user.User;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -26,4 +24,12 @@ public class Preview extends MyTimeBaseUtil {
     private Asset asset;
 
     private String previewUrl;
+
+    /**
+     * 메소드
+     */
+    public void changePreviewUrl(String previewUrl) { // 1, 3, 4
+        this.previewUrl = previewUrl;
+    }
+
 }

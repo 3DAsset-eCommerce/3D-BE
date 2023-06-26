@@ -19,4 +19,10 @@ public class SubCategory {
 
     private String subCategoryName;
 
+    /**
+     * 메소드
+     */
+    public void changeSubCategory(String subcategoryName) {
+        this.subCategoryName = subcategoryName;
+    }
 }

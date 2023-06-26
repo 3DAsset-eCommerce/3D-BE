@@ -28,4 +28,8 @@ public class AssetSubCategory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
+
+    public void changeSubCategory(SubCategory subCategory) {
+        this.subCategory = subCategory;
+    }
 }

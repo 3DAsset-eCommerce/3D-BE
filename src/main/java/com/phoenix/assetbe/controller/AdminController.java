@@ -67,10 +67,10 @@ public class AdminController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+
     /**
      * S3 관련
      */
-
     @PostMapping("/s/admin/file/{type}")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("type") String type) {
         UserResponse.uploadOutDTO uploadOutDTO = s3Service.upload(file, type);
@@ -118,5 +118,16 @@ public class AdminController {
         ResponseDTO<?> responseDTO = new ResponseDTO<>(orderListOutDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
+
+    /**
+     * 관리자 에셋 수정
+     */
+    @PostMapping("/s/admin/asset/update")
+    public ResponseEntity<?> updateAsset(@RequestBody AdminRequest.UpdateAssetInDTO updateAssetInDTO) {
+        adminService.updateAssetService(updateAssetInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 
 }

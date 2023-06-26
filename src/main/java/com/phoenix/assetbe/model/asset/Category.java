@@ -19,4 +19,11 @@ public class Category {
 
     private String categoryName;
 
+
+    /**
+     * 메소드
+     */
+    public void changeCategory(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }

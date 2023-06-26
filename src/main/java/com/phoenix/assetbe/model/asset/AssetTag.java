@@ -32,4 +32,11 @@ public class AssetTag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
+    /**
+     * 메소드
+     */
+    public void changeTag(Tag tag) {
+        this.tag = tag;
+    }
 }
