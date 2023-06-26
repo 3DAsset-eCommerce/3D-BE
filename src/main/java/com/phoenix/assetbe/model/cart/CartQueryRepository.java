@@ -35,7 +35,7 @@ public class CartQueryRepository {
                 .fetchOne();
     }
 
-    public List<CartResponse.GetCartWithOrderOutDTO> getCartWithOrderByUserId(Long userId) {
+    public List<CartResponse.GetCartWithOrderOutDTO> getCartWithOrderAndWishByUserId(Long userId) {
 
         return queryFactory
                 .select(Projections.constructor(CartResponse.GetCartWithOrderOutDTO.class, cart.id, cart.asset, orderProduct.id, wishList.id))
