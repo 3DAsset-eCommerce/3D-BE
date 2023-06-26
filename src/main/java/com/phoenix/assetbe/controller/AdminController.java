@@ -66,15 +66,15 @@ public class AdminController {
      * S3 관련
      */
     @PostMapping("/s/admin/file/{type}")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable("type") String type) {
+    public ResponseEntity<?> uploadFile(@RequestPart("file") MultipartFile file, @PathVariable("type") String type) {
         UserResponse.uploadOutDTO uploadOutDTO = s3Service.upload(file, type);
         ResponseDTO<?> responseDTO = new ResponseDTO<>(uploadOutDTO);
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping("/s/admin/delete/{removeFile}")
-    public ResponseEntity<?> deleteFile(@PathVariable("removeFile") String removeFile) {
-        s3Service.removeFile(removeFile);
+    @PostMapping("/s/admin/delete/{keyName}")
+    public ResponseEntity<?> deleteFile(@PathVariable("keyName") String keyName) {
+        s3Service.deleteFile(keyName);
         return ResponseEntity.ok().body(null);
     }
 
