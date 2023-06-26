@@ -2,7 +2,6 @@ package com.phoenix.assetbe.core.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -27,7 +26,7 @@ public class MyMailConfig {
         javaMailSender.setHost("smtp.gmail.com");
         javaMailSender.setUsername(username);
         javaMailSender.setPassword(password);
-        javaMailSender.setPort(465);
+        javaMailSender.setPort(587);
 
         Properties javaMailProperties = new Properties();
 
@@ -38,8 +37,8 @@ public class MyMailConfig {
         javaMailProperties.put("mail.smtp.ssl.socketFactory", SSLSocketFactory.getDefault());
 
         javaMailProperties.put("mail.smtp.socketFactory.fallback", false);
-        javaMailProperties.put("mail.smtp.socketFactory.port", 465);
-        javaMailProperties.put("mail.smtp.port", 465);
+        javaMailProperties.put("mail.smtp.socketFactory.port", 587);
+        javaMailProperties.put("mail.smtp.port", 587);
 
         javaMailSender.setJavaMailProperties(javaMailProperties);
         javaMailSender.setDefaultEncoding("UTF-8");
