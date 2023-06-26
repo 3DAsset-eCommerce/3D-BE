@@ -37,7 +37,7 @@ public class CartService {
         List<Long> assets = addCartInDTO.getAssets();
 
         userService.authCheck(myUserDetails, userId);
-        User userPS = userService.findUserById(userId);
+        User userPS = userService.findValidUserById(userId);
 
         List<Asset> assetList = assetService.findAllAssetById(assets);
         List<Cart> cartList = new ArrayList<>();
@@ -80,7 +80,7 @@ public class CartService {
 
     public List<CartResponse.GetCartWithOrderOutDTO> getCartListService(Long userId, MyUserDetails myUserDetails) {
         userService.authCheck(myUserDetails, userId);
-        List<CartResponse.GetCartWithOrderOutDTO> cartList = cartQueryRepository.getCartWithOrderByUserId(userId);
+        List<CartResponse.GetCartWithOrderOutDTO> cartList = cartQueryRepository.getCartWithOrderAndWishByUserId(userId);
         return cartList;
     }
 

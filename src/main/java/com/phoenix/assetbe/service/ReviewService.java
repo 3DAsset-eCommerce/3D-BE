@@ -41,7 +41,7 @@ public class ReviewService {
         Long userId = addReviewInDTO.getUserId();
         userService.authCheck(myUserDetails, userId);
 
-        User userPS = userService.findUserById(userId);
+        User userPS = userService.findValidUserById(userId);
         Asset assetPS = assetService.findAssetById(assetId);
         boolean hasReview = reviewQueryRepository.existsReviewByAssetIdAndUserId(assetId, userId);
         boolean hasAsset = myAssetQueryRepository.existsAssetIdAndUserId(assetId, userId);

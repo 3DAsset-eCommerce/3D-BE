@@ -14,6 +14,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmailAndStatus(String email, Status status);
 
+    boolean existsByIdAndStatus(Long id, Status status);
+
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.status = :status")
     Optional<User> findByUserWithEmailAndStatus(@Param("email") String email, @Param("status") Status status);
+
+    @Query("SELECT u FROM User u WHERE u.id = :id AND u.status = :status")
+    Optional<User> findByUserWithIdAndStatus(@Param("id") Long id, @Param("status") Status status);
 }

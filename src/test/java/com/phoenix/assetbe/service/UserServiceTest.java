@@ -385,7 +385,7 @@ public class UserServiceTest extends DummyEntity {
         System.out.println("request 테스트: " + requestBody);
 
         User 송재근 = newMockUser(1L, "송", "재근");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(송재근));
+        when(userRepository.findByUserWithIdAndStatus(any(), any(Status.class))).thenReturn(Optional.ofNullable(송재근));
 
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
 
@@ -394,7 +394,7 @@ public class UserServiceTest extends DummyEntity {
 
         // then
         assertTrue(bCryptPasswordEncoder.matches(checkPasswordInDTO.getPassword(), 송재근.getPassword()));
-        verify(userRepository, times(1)).findById(anyLong());
+        verify(userRepository, times(1)).findByUserWithIdAndStatus(anyLong(), any());
     }
 
     @Test
@@ -408,7 +408,7 @@ public class UserServiceTest extends DummyEntity {
         System.out.println("request 테스트: " + requestBody);
 
         User 송재근 = newMockUser(1L, "송", "재근");
-        when(userRepository.findById(userId)).thenReturn(Optional.of(송재근));
+        when(userRepository.findByUserWithIdAndStatus(any(), any(Status.class))).thenReturn(Optional.ofNullable(송재근));
 
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
 
@@ -437,7 +437,7 @@ public class UserServiceTest extends DummyEntity {
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
 
         // stub 1
-        when(userRepository.findById(userId)).thenReturn(Optional.of(송재근));
+        when(userRepository.findByUserWithIdAndStatus(any(), any(Status.class))).thenReturn(Optional.ofNullable(송재근));
 
         // when
         userService.updateService(userId, updateInDTO, myUserDetails);
@@ -453,7 +453,7 @@ public class UserServiceTest extends DummyEntity {
 
         User 송재근 = newMockUser(1L, "송", "재근");
 
-        when(userRepository.findById(any())).thenReturn(Optional.of(송재근));
+        when(userRepository.findByUserWithIdAndStatus(any(), any(Status.class))).thenReturn(Optional.ofNullable(송재근));
 
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
 
@@ -461,7 +461,7 @@ public class UserServiceTest extends DummyEntity {
         UserResponse.GetMyInfoOutDTO getMyInfoOutDTO = userService.getMyInfoService(myUserDetails);
 
         // then
-        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, times(1)).findByUserWithIdAndStatus(anyLong(), any());
     }
 
     /**
@@ -474,7 +474,7 @@ public class UserServiceTest extends DummyEntity {
 
         User 송재근 = newMockUser(1L, "송", "재근");
 
-        when(userRepository.findById(any())).thenReturn(Optional.of(송재근));
+        when(userRepository.existsByIdAndStatus(any(), any(Status.class))).thenReturn(true);
 
         MyUserDetails myUserDetails = new MyUserDetails(송재근);
 
@@ -506,7 +506,7 @@ public class UserServiceTest extends DummyEntity {
 
         User 송재근 = newMockUser(2L, "송", "재근");
 
-        when(userRepository.findById(any())).thenReturn(Optional.of(송재근));
+        when(userRepository.existsByIdAndStatus(any(), any(Status.class))).thenReturn(true);
 
         List<String> keywordList = new ArrayList<>();
         UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO asset1 = new UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO(1L, "Asset 1", "fileUrl1", "thumbnailUrl1");
@@ -546,7 +546,7 @@ public class UserServiceTest extends DummyEntity {
         MyUserDetails myUserDetails = new MyUserDetails(유현주);
 
         // stub 1
-        when(userRepository.findById(any())).thenReturn(Optional.ofNullable(유현주));
+        when(userRepository.existsByIdAndStatus(any(), any(Status.class))).thenReturn(true);
 
         // stub 2
         when(myAssetQueryRepository.downloadMyAssetByAssetId(any())).thenReturn(myAssetFileUrlOutDTO);

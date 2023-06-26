@@ -149,7 +149,9 @@ public class UserService {
 
     @Transactional
     public void checkSignupCodeService(UserRequest.CheckCodeInDTO checkCodeInDTO) {
-        User userPS = findUserById(checkCodeInDTO.getUserId());
+        User userPS = userRepository.findById(checkCodeInDTO.getUserId()).orElseThrow(
+                () -> new Exception400("id", "존재하지 않는 유저입니다. ")
+        );
 
         LocalDateTime emailTokenCreatedAt = userPS.getEmailCheckTokenCreatedAt();
         LocalDateTime currentTime = LocalDateTime.now();
@@ -182,7 +184,7 @@ public class UserService {
     public void checkPasswordService(UserRequest.CheckPasswordInDTO checkPasswordInDTO, MyUserDetails myUserDetails) {
         Long userId = checkPasswordInDTO.getUserId();
         authCheck(myUserDetails, checkPasswordInDTO.getUserId());
-        User userPS = findUserById(userId);
+        User userPS = findValidUserById(userId);
         if (!passwordEncoder.matches(checkPasswordInDTO.getPassword(), userPS.getPassword())) {
             throw new Exception400("password", "비밀번호가 일치하지 않습니다. ");
         }
@@ -191,7 +193,7 @@ public class UserService {
     @Transactional
     public void withdrawService(Long userId, UserRequest.WithdrawInDTO withdrawInDTO, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
-        User userPS = findUserById(userId);
+        User userPS = findValidUserById(userId);
         if (withdrawInDTO.isDeleteConfirm()) { // true 상태
             throw new Exception400("deleteConfirm", "이미 탈퇴되어 있습니다. ");
         }
@@ -208,7 +210,7 @@ public class UserService {
     @Transactional
     public void updateService(Long userId, UserRequest.UpdateInDTO updateInDTO, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
-        User userPS = findUserById(userId);
+        User userPS = findValidUserById(userId);
 
         userPS.changePassword(passwordEncoder.encode(updateInDTO.getNewPassword()));
         try {
@@ -219,7 +221,7 @@ public class UserService {
     }
 
     public UserResponse.GetMyInfoOutDTO getMyInfoService(MyUserDetails myUserDetails) {
-        User userPS = findUserById(myUserDetails.getUser().getId());
+        User userPS = findValidUserById(myUserDetails.getUser().getId());
         return new UserResponse.GetMyInfoOutDTO(userPS);
     }
 
@@ -228,14 +230,14 @@ public class UserService {
      */
     public UserResponse.MyAssetListOutDTO getMyAssetListService(Long userId, Pageable pageable, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
-        findUserById(userId);
+        existsUserById(userId);
         Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetOutDTO = myAssetQueryRepository.getMyAssetListWithUserIdAndPaging(userId, pageable);
         return new UserResponse.MyAssetListOutDTO(getMyAssetOutDTO);
     }
 
     public UserResponse.MyAssetListOutDTO searchMyAssetService(Long userId, List<String> keywordList, Pageable pageable, MyUserDetails myUserDetails) {
         authCheck(myUserDetails, userId);
-        findUserById(userId);
+        existsUserById(userId);
         Page<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> getMyAssetOutDTO = myAssetQueryRepository.searchMyAssetListWithUserIdAndPagingAndKeyword(userId, keywordList, pageable);
         return new UserResponse.MyAssetListOutDTO(getMyAssetOutDTO);
     }
@@ -243,7 +245,7 @@ public class UserService {
     public UserResponse.DownloadMyAssetListOutDTO downloadMyAssetService(UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO, MyUserDetails myUserDetails) {
         Long userId = downloadMyAssetInDTO.getUserId();
         authCheck(myUserDetails, userId);
-        findUserById(userId);
+        existsUserById(userId);
         myAssetQueryRepository.validateMyAssets(userId, downloadMyAssetInDTO.getAssets());
         List<UserResponse.DownloadMyAssetListOutDTO.MyAssetFileUrlOutDTO> myAssetFileUrlOutDTO = myAssetQueryRepository.downloadMyAssetByAssetId(downloadMyAssetInDTO.getAssets());
         return new UserResponse.DownloadMyAssetListOutDTO(myAssetFileUrlOutDTO);
@@ -252,15 +254,22 @@ public class UserService {
     /**
      * 공통 메소드
      */
-    // 요청한 사용자가 id의 주인인지 확인하는 공통 메소드
-    public User findUserById(Long userId) {
-        User userPS = userRepository.findById(userId).orElseThrow(
+    // 요청한 사용자가 존재하는지, Active 상태인지 확인하는 공통 메소드
+    public User findValidUserById(Long userId) {
+        User userPS = userRepository.findByUserWithIdAndStatus(userId, Status.ACTIVE).orElseThrow(
                 () -> new Exception400("id", "존재하지 않는 유저입니다. ")
         );
         return userPS;
     }
 
-    // 요청한 사용자가 email의 주인인지 확인하는 공통 메소드
+    public void existsUserById(Long userId) {
+        boolean idExist = userRepository.existsByIdAndStatus(userId, Status.ACTIVE);
+        if (!idExist) {
+            throw new Exception400("id", "존재하지 않는 유저입니다. ");
+        }
+    }
+
+    // 요청한 사용자가 존재하는지 , Active 상태인지 확인하는 공통 메소드
     public User findValidUserByEmail(String email) {
         User userPS = userRepository.findByUserWithEmailAndStatus(email, Status.ACTIVE).orElseThrow(
                 () -> new Exception400("email", "존재하지 않는 유저입니다. ")

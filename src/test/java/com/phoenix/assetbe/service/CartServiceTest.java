@@ -63,7 +63,7 @@ public class CartServiceTest extends DummyEntity {
         MyUserDetails myUserDetails = new MyUserDetails(user);
 
         // when
-        when(userService.findUserById(1L)).thenReturn(user);
+        when(userService.findValidUserById(1L)).thenReturn(user);
 
         Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D, 1L);
         Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D, 1L);
@@ -73,7 +73,7 @@ public class CartServiceTest extends DummyEntity {
         cartService.addCartService(addCartInDTO, myUserDetails);
 
         // then
-        verify(userService, times(1)).findUserById(anyLong());
+        verify(userService, times(1)).findValidUserById(anyLong());
         verify(assetService, times(1)).findAllAssetById(anyList());
         verify(cartRepository, times(1)).saveAll(anyList());
     }
@@ -93,12 +93,12 @@ public class CartServiceTest extends DummyEntity {
         MyUserDetails myUserDetails = new MyUserDetails(user);
 
         // when
-        when(userService.findUserById(userId)).thenThrow(new Exception400("id", "존재하지 않는 사용자입니다."));
+        when(userService.findValidUserById(userId)).thenThrow(new Exception400("id", "존재하지 않는 사용자입니다."));
 
         assertThrows(Exception400.class, () -> cartService.addCartService(addCartInDTO, myUserDetails));
 
         // then
-        verify(userService, times(1)).findUserById(anyLong());
+        verify(userService, times(1)).findValidUserById(anyLong());
         verify(assetService, never()).findAllAssetById(anyList());
         verify(cartRepository, never()).saveAll(anyList());
     }
@@ -237,7 +237,7 @@ public class CartServiceTest extends DummyEntity {
 
         // then
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
-        verify(cartQueryRepository, times(1)).getCartWithOrderByUserId(anyLong());
+        verify(cartQueryRepository, times(1)).getCartWithOrderAndWishByUserId(anyLong());
     }
 
     @Test
@@ -257,6 +257,6 @@ public class CartServiceTest extends DummyEntity {
 
         // then
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
-        verify(cartQueryRepository, never()).getCartWithOrderByUserId(anyLong());
+        verify(cartQueryRepository, never()).getCartWithOrderAndWishByUserId(anyLong());
     }
 }
