@@ -2,20 +2,22 @@ package com.phoenix.assetbe.service;
 
 import com.phoenix.assetbe.core.auth.jwt.MyJwtProvider;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
+import com.phoenix.assetbe.core.config.MailHandler;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception401;
 import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.core.exception.Exception500;
-import com.phoenix.assetbe.core.util.MailUtils;
 import com.phoenix.assetbe.dto.user.UserRequest;
 import com.phoenix.assetbe.dto.user.UserResponse;
 import com.phoenix.assetbe.model.asset.MyAssetQueryRepository;
 import com.phoenix.assetbe.model.user.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,6 +41,8 @@ public class UserService {
     private final MyAssetQueryRepository myAssetQueryRepository;
 
     private final AssetService assetService;
+
+    private final JavaMailSender javaMailSender;
 
     /**
      * 로그인
@@ -65,13 +69,17 @@ public class UserService {
         }
         userPS.generateEmailCheckToken();
         String html = createPasswordChangeHTML(userPS);
-
+        ClassPathResource imageResource = new ClassPathResource("static/logo.jpg");
         try {
-            MailUtils.send(userPS.getEmail(), "3D 에셋 스토어, 비밀번호 재설정을 위한 이메일 인증", html);
-        } catch (MailException e) {
+            MailHandler mailHandler = new MailHandler(javaMailSender);
+            mailHandler.setTo(sendCodeInDTO.getEmail());
+            mailHandler.setSubject("3D 에셋 스토어, 비밀번호 재설정을 위한 이메일 인증");
+            mailHandler.setText(html, true);
+            mailHandler.setInline("logo", imageResource);
+            mailHandler.send();
+        } catch (Exception e) {
             throw new Exception500("이메일 전송 실패 : " + e.getMessage());
         }
-
         return new UserResponse.SendCodeOutDTO(userPS.getId());
     }
 
@@ -138,12 +146,17 @@ public class UserService {
         }
 
         String html = createSignupHTML(user);
+        ClassPathResource imageResource = new ClassPathResource("static/logo.jpg");
         try {
-            MailUtils.send(user.getEmail(), "3D 에셋 스토어, 회원가입을 위한 이메일 인증", html);
-        } catch (MailException e) {
+            MailHandler mailHandler = new MailHandler(javaMailSender);
+            mailHandler.setTo(sendCodeInDTO.getEmail());
+            mailHandler.setSubject("3D 에셋 스토어, 회원가입을 위한 이메일 인증");
+            mailHandler.setText(html, true);
+            mailHandler.setInline("logo", imageResource);
+            mailHandler.send();
+        } catch (Exception e) {
             throw new Exception500("이메일 전송 실패 : " + e.getMessage());
         }
-
         return new UserResponse.SendCodeOutDTO(user.getId());
     }
 

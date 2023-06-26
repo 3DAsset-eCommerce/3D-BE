@@ -6,7 +6,6 @@ import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.core.exception.Exception401;
 import com.phoenix.assetbe.core.exception.Exception403;
-import com.phoenix.assetbe.core.util.MailUtils;
 import com.phoenix.assetbe.dto.user.UserRequest;
 import com.phoenix.assetbe.dto.user.UserResponse;
 import com.phoenix.assetbe.model.asset.Asset;
@@ -24,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -60,16 +60,16 @@ public class UserServiceTest extends DummyEntity {
     @Mock
     private AuthenticationManager authenticationManager;
     @Mock
-    private MailUtils mailUtils;
-    @Mock
     private AssetService assetService;
     @Spy
     private ObjectMapper objectMapper;
+    @Mock
+    private JavaMailSender javaMailSender;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserService(authenticationManager, bCryptPasswordEncoder, userRepository, myAssetQueryRepository, assetService);
+        userService = new UserService(authenticationManager, bCryptPasswordEncoder, userRepository, myAssetQueryRepository, assetService, javaMailSender);
     }
     /**
      * 로그인

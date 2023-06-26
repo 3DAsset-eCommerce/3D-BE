@@ -114,6 +114,8 @@ public class UserResponse {
     @Setter
     @AllArgsConstructor
     public static class uploadOutDTO {
-        String uploadedUrl;
+        private String keyName;
+        private Long size;
+        private String extension;
     }
 }
