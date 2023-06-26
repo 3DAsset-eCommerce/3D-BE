@@ -123,5 +123,13 @@ public class AdminController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-
+    /**
+     * 관리자 에셋 등록
+     */
+    @PostMapping("/s/admin/asset")
+    public ResponseEntity<?> addAsset(@RequestBody AdminRequest.AddAssetInDTO addAssetInDTO) {
+        adminService.addAssetService(addAssetInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

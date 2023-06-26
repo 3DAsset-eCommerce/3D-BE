@@ -1,6 +1,7 @@
 package com.phoenix.assetbe.model.asset;
 
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
+import com.phoenix.assetbe.dto.admin.AdminRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -110,5 +111,23 @@ public class Asset extends MyTimeBaseUtil {
     public void changeDiscountAndDiscountPrice(Integer discount) {
         this.discount = discount;
         this.discountPrice = this.price * ((100 - discount) / 100); // 할인 후 가격 저장
+    }
+
+    public void addAssetDetails(AdminRequest.AddAssetInDTO addAssetInDTO){
+        this.assetName = addAssetInDTO.getAssetName();
+        this.price = addAssetInDTO.getPrice();
+        this.description = addAssetInDTO.getAssetDescription();
+        this.discount = addAssetInDTO.getDiscount();
+        this.size = addAssetInDTO.getFileSize();
+        this.releaseDate = LocalDate.now();
+        this.extension = addAssetInDTO.getExtension();
+        this.creator = "NationA";
+        this.status = true;
+        this.fileUrl = addAssetInDTO.getFileUrl();
+        this.thumbnailUrl = addAssetInDTO.getThumbnailUrl();
+
+        if(price != null && discount != null){
+            this.discountPrice = price - (price * (discount / 100.0));
+        }
     }
 }

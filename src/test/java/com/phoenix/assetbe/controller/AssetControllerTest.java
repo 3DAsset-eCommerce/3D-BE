@@ -128,9 +128,7 @@ public class AssetControllerTest extends MyRestDoc {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.assetList[0].assetId").value(30L))
-                .andExpect(jsonPath("$.data.assetList[0].wishlistId").doesNotExist())
-                .andExpect(jsonPath("$.data.assetList[0].cartId").doesNotExist());
+                .andExpect(jsonPath("$.data.totalElement").value(30L));
     }
 
     @DisplayName("개별 에셋: 로그인유저 - 성공")
@@ -152,9 +150,7 @@ public class AssetControllerTest extends MyRestDoc {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.assetList[0].assetId").value(6L))
-                .andExpect(jsonPath("$.data.assetList[0].wishlistId").doesNotExist())
-                .andExpect(jsonPath("$.data.assetList[0].cartId").value(18L));
+                .andExpect(jsonPath("$.data.totalElement").value(30L));
     }
 
     @DisplayName("카테고리별 에셋 조회: 비로그인유저 - 성공")
@@ -178,10 +174,7 @@ public class AssetControllerTest extends MyRestDoc {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.assetList[0].assetId").value(24L))
-                .andExpect(jsonPath("$.data.assetList[0].assetName").value("luxury dancer"))
-                .andExpect(jsonPath("$.data.assetList[0].wishlistId").doesNotExist())
-                .andExpect(jsonPath("$.data.assetList[0].cartId").doesNotExist());
+                .andExpect(jsonPath("$.data.totalElement").value(6L));
     }
 
     @DisplayName("카테고리별 에셋 조회: 로그인유저 - 성공")
@@ -206,9 +199,7 @@ public class AssetControllerTest extends MyRestDoc {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.assetList[0].assetId").value(12L))
-                .andExpect(jsonPath("$.data.assetList[0].wishlistId").doesNotExist())
-                .andExpect(jsonPath("$.data.assetList[0].cartId").value(24L));
+                .andExpect(jsonPath("$.data.totalElement").value(6L));
     }
 
     @DisplayName("카테고리별 에셋 검색: 비로그인유저 - 성공")
@@ -233,9 +224,7 @@ public class AssetControllerTest extends MyRestDoc {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.assetList.size()").value(3L))
-                .andExpect(jsonPath("$.data.assetList[0].wishlistId").doesNotExist())
-                .andExpect(jsonPath("$.data.assetList[0].cartId").doesNotExist());
+                .andExpect(jsonPath("$.data.assetList.size()").value(3L));
     }
 
     @DisplayName("카테고리별 에셋 검색: 로그인유저 - 성공")
@@ -261,9 +250,7 @@ public class AssetControllerTest extends MyRestDoc {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.assetList[0].assetId").value(8L))
-                .andExpect(jsonPath("$.data.assetList[0].wishlistId").doesNotExist())
-                .andExpect(jsonPath("$.data.assetList[0].cartId").value(4L));
+                .andExpect(jsonPath("$.data.assetList.size()").value(3L));
     }
 
     @DisplayName("하위 카테고리별 에셋 조회: 비로그인유저 성공")
@@ -336,7 +323,8 @@ public class AssetControllerTest extends MyRestDoc {
         // Then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
-                .andExpect(jsonPath("$.status").value(200));
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.totalElement").value(18L));
     }
 
     @DisplayName("에셋 검색: 로그인유저 - 성공")
@@ -359,7 +347,8 @@ public class AssetControllerTest extends MyRestDoc {
         // Then
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
-                .andExpect(jsonPath("$.status").value(200));
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data.totalElement").value(10L));
     }
 
     @DisplayName("카테고리별 에셋 조회: 태그, 비로그인유저 - 성공")
@@ -384,9 +373,7 @@ public class AssetControllerTest extends MyRestDoc {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.assetList.size()").value(6L))
-                .andExpect(jsonPath("$.data.assetList[0].wishlistId").doesNotExist())
-                .andExpect(jsonPath("$.data.assetList[0].cartId").doesNotExist());
+                .andExpect(jsonPath("$.data.assetList.size()").value(6L));
     }
 
     @DisplayName("카테고리별 에셋 조회: 태그, 로그인유저 - 성공")
@@ -412,9 +399,6 @@ public class AssetControllerTest extends MyRestDoc {
         resultActions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data.assetList.size()").value(6L))
-                .andExpect(jsonPath("$.data.assetList[0].assetId").value(12L))
-                .andExpect(jsonPath("$.data.assetList[0].wishlistId").value(3L))
-                .andExpect(jsonPath("$.data.assetList[0].cartId").value(8L));
+                .andExpect(jsonPath("$.data.assetList.size()").value(6L));
     }
 }

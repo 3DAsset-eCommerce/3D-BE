@@ -5,8 +5,7 @@ import com.phoenix.assetbe.core.MyRestDoc;
 import com.phoenix.assetbe.core.config.MyTestSetUp;
 import com.phoenix.assetbe.core.dummy.DummyEntity;
 import com.phoenix.assetbe.dto.admin.AdminRequest;
-import com.phoenix.assetbe.model.asset.Asset;
-import com.phoenix.assetbe.model.asset.AssetRepository;
+import com.phoenix.assetbe.model.asset.*;
 import com.phoenix.assetbe.model.order.Order;
 import com.phoenix.assetbe.model.order.OrderProduct;
 import com.phoenix.assetbe.model.order.OrderProductRepository;
@@ -33,7 +32,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -62,6 +63,14 @@ public class AdminControllerTest extends MyRestDoc {
     private OrderRepository orderRepository;
     @Autowired
     private OrderProductRepository orderProductRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private SubCategoryRepository subCategoryRepository;
+    @Autowired
+    private TagRepository tagRepository;
+    @Autowired
+    private PreviewRepository previewRepository;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -732,6 +741,115 @@ public class AdminControllerTest extends MyRestDoc {
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/s/admin/asset/update")
+                .content(objectMapper.writeValueAsString(updateAssetInDTO))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.msg").value("forbidden"))
+                .andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("관리자 에셋 등록 성공")
+    @WithUserDetails(value = "kuanliza8@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void add_asset_test() throws Exception {
+        // given
+        List<String> previewUrlList = new ArrayList<>();
+        previewUrlList.add("1 previewUrl");
+        previewUrlList.add("2 previewUrl");
+        previewUrlList.add("3 previewUrl");
+        previewUrlList.add("4 previewUrl");
+
+        List<String> addTags = new ArrayList<>();
+        addTags.add("한글");
+        addTags.add("영어");
+        addTags.add("중국어");
+        addTags.add("일어");
+        addTags.add("러시아어");
+
+        AdminRequest.AddAssetInDTO addAssetInDTO = new AdminRequest.AddAssetInDTO();
+        addAssetInDTO.setAssetName("Run Motion");
+        addAssetInDTO.setAssetDescription("This motion is Running motion in 3D");
+        addAssetInDTO.setPrice(10.5);
+        addAssetInDTO.setDiscount(10);
+        addAssetInDTO.setCategory("powerful");
+        addAssetInDTO.setSubCategory("robot");
+        addAssetInDTO.setAddTagList(addTags);
+        addAssetInDTO.setFileUrl("This is update FileUrl");
+        addAssetInDTO.setFileSize(3.14);
+        addAssetInDTO.setExtension(".FBX");
+        addAssetInDTO.setThumbnailUrl("This is update thumbnailUrl");
+        addAssetInDTO.setPreviewUrlList(previewUrlList);
+
+        System.out.println("테스트 request : " + objectMapper.writeValueAsString(addAssetInDTO));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/admin/asset")
+                .content(objectMapper.writeValueAsString(addAssetInDTO))
+                .contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.msg").value("성공"));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+
+        Optional<Asset> asset = assetRepository.findById(32L);
+        Optional<Category> category = categoryRepository.findById(6L);
+        Optional<SubCategory> subCategory = subCategoryRepository.findById(7L);
+        List<Tag> tagList = tagRepository.findAll();
+        assertEquals("Run Motion", asset.get().getAssetName());
+        assertEquals("powerful", category.get().getCategoryName());
+        assertEquals("robot", subCategory.get().getSubCategoryName());
+        assertEquals(15, tagList.size());
+        assertEquals("한글", tagList.get(10).getTagName());
+    }
+
+    @DisplayName("관리자 에셋 등록 실패 : 권한 체크 실패")
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void add_asset_fail_test() throws Exception {
+        // given
+        List<String> previewUrlList = new ArrayList<>();
+        previewUrlList.add("1 previewUrl");
+        previewUrlList.add("2 previewUrl");
+        previewUrlList.add("3 previewUrl");
+        previewUrlList.add("4 previewUrl");
+
+        List<String> deleteTags = new ArrayList<>();
+        deleteTags.add("tag1");
+        deleteTags.add("tag2");
+        deleteTags.add("tag3");
+        deleteTags.add("tag4");
+        deleteTags.add("tag5");
+
+        List<String> addTags = new ArrayList<>();
+        addTags.add("한글");
+        addTags.add("영어");
+        addTags.add("중국어");
+        addTags.add("일어");
+        addTags.add("러시아어");
+
+        AdminRequest.UpdateAssetInDTO updateAssetInDTO = new AdminRequest.UpdateAssetInDTO();
+        updateAssetInDTO.setAssetId(1L);
+        updateAssetInDTO.setAssetName("Run Motion");
+        updateAssetInDTO.setAssetDescription("This motion is Running motion in 3D");
+        updateAssetInDTO.setPrice(10.5);
+        updateAssetInDTO.setDiscount(10);
+        updateAssetInDTO.setCategory("powerful");
+        updateAssetInDTO.setSubCategory("robot");
+        updateAssetInDTO.setDeleteTagList(deleteTags);
+        updateAssetInDTO.setAddTagList(addTags);
+        updateAssetInDTO.setFileUrl("This is update FileUrl");
+        updateAssetInDTO.setThumbnailUrl("This is update thumbnailUrl");
+        updateAssetInDTO.setPreviewUrlList(previewUrlList);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/admin/asset")
                 .content(objectMapper.writeValueAsString(updateAssetInDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 

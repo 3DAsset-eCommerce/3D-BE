@@ -87,6 +87,27 @@ public class AdminService {
     }
 
     /**
+     * 에셋 등록
+     */
+    @Transactional
+    public void addAssetService(AdminRequest.AddAssetInDTO addAssetInDTO) {
+        // 1. 에셋 세이브
+        Asset assetPS = saveAsset(addAssetInDTO);
+
+        // 2. 프리뷰 세이브
+        savePreview(assetPS, addAssetInDTO);
+
+        // 3. 카테고리 세이브
+        Category categoryPS = saveCategory(assetPS, addAssetInDTO);
+
+        // 4. 서브카테고리 세이브
+        SubCategory subCategoryPS = addSubCategory(assetPS, categoryPS, addAssetInDTO);
+
+        // 5. 태그리스트 세이브
+        addTagList(assetPS, categoryPS, subCategoryPS, addAssetInDTO);
+    }
+
+    /**
      * 에셋 수정
      */
     @Transactional
@@ -259,4 +280,87 @@ public class AdminService {
         }
         assetTagRepository.saveAll(assetTagList);
     }
+
+    private Asset saveAsset(AdminRequest.AddAssetInDTO addAssetInDTO){
+        Asset asset = Asset.builder().build();
+        asset.addAssetDetails(addAssetInDTO);
+        try {
+            return assetRepository.save(asset);
+        }catch (Exception e){
+            throw new Exception500("에셋 저장이 실패했습니다. ");
+        }
+    }
+
+    private void savePreview(Asset assetPS, AdminRequest.AddAssetInDTO addAssetInDTO){
+        List<Preview> previewList = new ArrayList<>();
+        for(String p : addAssetInDTO.getPreviewUrlList()) {
+            Preview preview = Preview.builder().asset(assetPS).previewUrl(p).build();
+            previewList.add(preview);
+        }
+        previewRepository.saveAll(previewList);
+    }
+
+    private Category saveCategory(Asset assetPS, AdminRequest.AddAssetInDTO addAssetInDTO) {
+        String categoryName = addAssetInDTO.getCategory();
+        Category category = categoryRepository.findCategoryByCategoryName(categoryName).orElseGet(
+                () -> Category.builder()
+                        .categoryName(categoryName)
+                        .build()
+        );
+        try {
+            Category categoryPS = categoryRepository.save(category);
+            AssetCategory assetCategory = AssetCategory.builder().asset(assetPS).category(categoryPS).build();
+            try {
+                assetCategoryRepository.save(assetCategory);
+            }catch (Exception e){
+                throw new Exception500("에셋카테고리 저장이 실패했습니다. ");
+            }
+            return categoryPS;
+        }catch (Exception e){
+            throw new Exception500("카테고리 저장이 실패했습니다. ");
+        }
+    }
+
+    private SubCategory addSubCategory(Asset assetPS, Category categoryPS, AdminRequest.AddAssetInDTO addAssetInDTO) {
+        String subCategoryName = addAssetInDTO.getSubCategory();
+        SubCategory subCategory = subCategoryRepository.findSubCategoryBySubCategoryName(subCategoryName).orElseGet(
+                () -> SubCategory.builder()
+                        .subCategoryName(subCategoryName)
+                        .build()
+        );
+
+        try {
+            SubCategory subCategoryPS = subCategoryRepository.save(subCategory);
+            AssetSubCategory assetSubCategory = AssetSubCategory.builder().asset(assetPS).category(categoryPS).subCategory(subCategoryPS).build();
+            try{
+                assetSubCategoryRepository.save(assetSubCategory);
+            }catch (Exception e){
+                throw new Exception500("에셋서브카테고리 저장이 실패했습니다. ");
+            }
+            return subCategoryPS;
+        }catch (Exception e){
+            throw new Exception500("서브카테고리 저장이 실패했습니다. ");
+        }
+    }
+
+    private void addTagList(Asset assetPS, Category categoryPS, SubCategory subCategoryPS, AdminRequest.AddAssetInDTO addAssetInDTO){
+        List<String> addTagList = addAssetInDTO.getAddTagList();
+        List<String> tagNameListPS = tagRepository.findTagNameList();
+        List<Tag> tagList = new ArrayList<>(); // 새로 태그 테이블에 등록할 태그리스트
+        for (String tagName: addTagList) {
+            if (!tagNameListPS.contains(tagName)) {
+                Tag tag = Tag.builder().tagName(tagName).build();
+                tagList.add(tag);
+            }
+        }
+        tagRepository.saveAll(tagList);
+
+        List<AssetTag> assetTagList = new ArrayList<>();
+        for(Tag tag : tagList) {
+            AssetTag assetTag = AssetTag.builder().asset(assetPS).category(categoryPS).subCategory(subCategoryPS).tag(tag).build();
+            assetTagList.add(assetTag);
+        }
+        assetTagRepository.saveAll(assetTagList);
+    }
+
 }
