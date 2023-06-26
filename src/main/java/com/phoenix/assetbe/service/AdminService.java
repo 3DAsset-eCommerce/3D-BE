@@ -102,11 +102,11 @@ public class AdminService {
         changePreviewUrl(assetPS, updateAssetInDTO);
 
         // 3. Category, SubCategory 변경
-        changeCategory(updateAssetInDTO);
-        changeSubCategory(updateAssetInDTO);
+        Category category = changeCategory(updateAssetInDTO);
+        SubCategory subCategory = changeSubCategory(updateAssetInDTO, category);
 
         // 4. Tag 변경
-        changeTag(updateAssetInDTO);
+        changeTag(updateAssetInDTO, category, subCategory);
     }
 
     /**
@@ -116,19 +116,6 @@ public class AdminService {
         Page<AdminResponse.OrderListOutDTO.OrderOutDTO> orderList = orderQueryRepository.findOrderListByAdmin(orderPeriod, startDate, endDate, orderNumber, assetNumber, assetName, email, pageable);
         return new AdminResponse.OrderListOutDTO(orderList);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -186,67 +173,91 @@ public class AdminService {
         }
     }
 
-    private void changeCategory(AdminRequest.UpdateAssetInDTO updateAssetInDTO) {
+    private Category changeCategory(AdminRequest.UpdateAssetInDTO updateAssetInDTO) {
         AssetCategory assetCategoryPS = assetCategoryRepository.findAssetCategoryByAssetId(updateAssetInDTO.getAssetId());
         if (!assetCategoryPS.getCategory().getCategoryName().equals(updateAssetInDTO.getCategory())) {
             String categoryName = updateAssetInDTO.getCategory();
-            Category categoryPS = categoryRepository.findCategoryByCategoryName(categoryName).orElseGet(
+            Category category = categoryRepository.findCategoryByCategoryName(categoryName).orElseGet(
                     () -> Category.builder()
                             .categoryName(categoryName)
                             .build()
             );
             try {
-                categoryRepository.save(categoryPS);
+                Category categoryPS = categoryRepository.save(category);
                 assetCategoryPS.changeCategory(categoryPS);
+                return categoryPS;
             } catch (Exception e) {
                 throw new Exception500("카테고리를 DB에 저장하는데 실패했습니다. ");
             }
         }
+
+        return null;
     }
 
-    private void changeSubCategory(AdminRequest.UpdateAssetInDTO updateAssetInDTO) {
+    private SubCategory changeSubCategory(AdminRequest.UpdateAssetInDTO updateAssetInDTO, Category category) {
         AssetSubCategory assetSubCategoryPS = assetSubCategoryRepository.findAssetSubCategoryByAssetId(updateAssetInDTO.getAssetId());
         if (!assetSubCategoryPS.getSubCategory().getSubCategoryName().equals(updateAssetInDTO.getSubCategory())) {
             String subCategoryName = updateAssetInDTO.getSubCategory();
-            SubCategory subCategoryPS = subCategoryRepository.findSubCategoryBySubCategoryName(subCategoryName).orElseGet(
+            SubCategory subCategory = subCategoryRepository.findSubCategoryBySubCategoryName(subCategoryName).orElseGet(
                     () -> SubCategory.builder()
                             .subCategoryName(subCategoryName)
                             .build()
             );
+
             try {
-                subCategoryRepository.save(subCategoryPS);
+                SubCategory subCategoryPS = subCategoryRepository.save(subCategory);
                 assetSubCategoryPS.changeSubCategory(subCategoryPS);
+                if (category != null) {
+                    assetSubCategoryPS.changeCategory(category);
+                }
+                return subCategoryPS;
             } catch (Exception e) {
                 throw new Exception500("서브 카테고리를 DB에 저장하는데 실패했습니다. ");
             }
         }
+        return null;
     }
 
-    private void changeTag(AdminRequest.UpdateAssetInDTO updateAssetInDTO) {
-        List<AssetTag> assetTagPS = assetTagRepository.findAssetTagByAssetId(updateAssetInDTO.getAssetId());
-        List<String> deleteTags = updateAssetInDTO.getDeleteTagList();
-        List<String> addTags = updateAssetInDTO.getAddTagList();
+    private void changeTag(AdminRequest.UpdateAssetInDTO updateAssetInDTO, Category category, SubCategory subCategory) {
+        List<AssetTag> assetTagPSList = assetTagRepository.findAssetTagByAssetId(updateAssetInDTO.getAssetId());
+        List<String> deleteTagList = updateAssetInDTO.getDeleteTagList();
+        List<String> addTagList = updateAssetInDTO.getAddTagList();
 
-        assetTagPS.removeIf(assetTag -> deleteTags.contains(assetTag.getTag().getTagName()));
-        assetTagRepository.deleteAll(assetTagPS);
+        assetTagPSList.removeIf(assetTag -> !deleteTagList.contains(assetTag.getTag().getTagName()));
+        assetTagRepository.deleteAll(assetTagPSList);
 
-        List<Tag> tagListPS = new ArrayList<>();
-        for (String tagName: addTags) {
-            Tag tagPS = tagRepository.findTagByTagName(tagName)
-                    .orElseGet(() -> {
-                        Tag tag = Tag.builder().tagName(tagName).build();
-                        try {
-                            tagRepository.save(tag);
-                            tagListPS.add(tag);
-                        } catch (Exception e) {
-                            throw new Exception500("태그 등록에 실패했습니다. ");
-                        }
-                        return tag;
-                    });
-            tagListPS.add(tagPS);
+        List<Tag> tagList = new ArrayList<>();
+        List<Tag> tagPS = tagRepository.findAll();
+        List<String> tagNameListPS = tagRepository.findTagNameList();
+        for (String tagName: addTagList) {
+            if (!tagNameListPS.contains(tagName)) {
+                Tag tag = Tag.builder().tagName(tagName).build();
+                tagList.add(tag);
+            }
         }
 
-        for (int i = 0; i < tagListPS.size(); i++) // 순환하면서 change하는 코드
-            assetTagPS.get(i).changeTag(tagListPS.get(i));
+        tagRepository.saveAll(tagList);
+
+        for (Tag tag: tagPS) {
+            if (addTagList.contains(tag.getTagName()))
+                tagList.add(tag);
+        }
+
+        assetTagPSList = assetTagRepository.findAssetTagByAssetId(updateAssetInDTO.getAssetId());
+        for (AssetTag assetTag: assetTagPSList) {
+            assetTag.changeAssetTag(assetTag.getTag(), category, subCategory);
+        }
+
+        List<AssetTag> assetTagList = new ArrayList<>();
+
+        for (Tag tag: tagList) {
+            AssetTag assetTag = AssetTag.builder()
+                    .tag(tag)
+                    .category(assetTagPSList.get(0).getCategory())
+                    .subCategory(assetTagPSList.get(0).getSubCategory())
+                    .build();
+            assetTagList.add(assetTag);
+        }
+        assetTagRepository.saveAll(assetTagList);
     }
 }

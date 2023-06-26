@@ -59,8 +59,6 @@ public class AdminControllerTest extends MyRestDoc {
     @Autowired
     private AssetRepository assetRepository;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private OrderRepository orderRepository;
     @Autowired
     private OrderProductRepository orderProductRepository;
@@ -636,5 +634,111 @@ public class AdminControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data.orderList.size()").value(1L));
+    }
+
+    @DisplayName("관리자 에셋 수정 성공")
+    @WithUserDetails(value = "kuanliza8@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void update_asset_test() throws Exception {
+        // given
+        List<String> previewUrlList = new ArrayList<>();
+        previewUrlList.add("1 previewUrl");
+        previewUrlList.add("2 previewUrl");
+        previewUrlList.add("3 previewUrl");
+        previewUrlList.add("4 previewUrl");
+
+        List<String> deleteTags = new ArrayList<>();
+        deleteTags.add("tag1");
+        deleteTags.add("tag2");
+        deleteTags.add("tag3");
+        deleteTags.add("tag4");
+        deleteTags.add("tag5");
+
+        List<String> addTags = new ArrayList<>();
+        addTags.add("한글");
+        addTags.add("영어");
+        addTags.add("중국어");
+        addTags.add("일어");
+        addTags.add("러시아어");
+
+        AdminRequest.UpdateAssetInDTO updateAssetInDTO = new AdminRequest.UpdateAssetInDTO();
+        updateAssetInDTO.setAssetId(1L);
+        updateAssetInDTO.setAssetName("Run Motion");
+        updateAssetInDTO.setAssetDescription("This motion is Running motion in 3D");
+        updateAssetInDTO.setPrice(10.5);
+        updateAssetInDTO.setDiscount(10);
+        updateAssetInDTO.setCategory("powerful");
+        updateAssetInDTO.setSubCategory("robot");
+        updateAssetInDTO.setDeleteTagList(deleteTags);
+        updateAssetInDTO.setAddTagList(addTags);
+        updateAssetInDTO.setFileUrl("This is update FileUrl");
+        updateAssetInDTO.setThumbnailUrl("This is update thumbnailUrl");
+        updateAssetInDTO.setPreviewUrlList(previewUrlList);
+
+        System.out.println("테스트 request : " + objectMapper.writeValueAsString(updateAssetInDTO));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/admin/asset/update")
+                .content(objectMapper.writeValueAsString(updateAssetInDTO))
+                .contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.msg").value("성공"));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
+    }
+
+    @DisplayName("관리자 에셋 수정 실패 : 권한 체크 실패")
+    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @Test
+    public void update_asset_fail_test() throws Exception {
+        // given
+        List<String> previewUrlList = new ArrayList<>();
+        previewUrlList.add("1 previewUrl");
+        previewUrlList.add("2 previewUrl");
+        previewUrlList.add("3 previewUrl");
+        previewUrlList.add("4 previewUrl");
+
+        List<String> deleteTags = new ArrayList<>();
+        deleteTags.add("tag1");
+        deleteTags.add("tag2");
+        deleteTags.add("tag3");
+        deleteTags.add("tag4");
+        deleteTags.add("tag5");
+
+        List<String> addTags = new ArrayList<>();
+        addTags.add("한글");
+        addTags.add("영어");
+        addTags.add("중국어");
+        addTags.add("일어");
+        addTags.add("러시아어");
+
+        AdminRequest.UpdateAssetInDTO updateAssetInDTO = new AdminRequest.UpdateAssetInDTO();
+        updateAssetInDTO.setAssetId(1L);
+        updateAssetInDTO.setAssetName("Run Motion");
+        updateAssetInDTO.setAssetDescription("This motion is Running motion in 3D");
+        updateAssetInDTO.setPrice(10.5);
+        updateAssetInDTO.setDiscount(10);
+        updateAssetInDTO.setCategory("powerful");
+        updateAssetInDTO.setSubCategory("robot");
+        updateAssetInDTO.setDeleteTagList(deleteTags);
+        updateAssetInDTO.setAddTagList(addTags);
+        updateAssetInDTO.setFileUrl("This is update FileUrl");
+        updateAssetInDTO.setThumbnailUrl("This is update thumbnailUrl");
+        updateAssetInDTO.setPreviewUrlList(previewUrlList);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/s/admin/asset/update")
+                .content(objectMapper.writeValueAsString(updateAssetInDTO))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.msg").value("forbidden"))
+                .andExpect(jsonPath("$.data").value("권한이 없습니다. "));
+        //resultActions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 }

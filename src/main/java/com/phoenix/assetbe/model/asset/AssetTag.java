@@ -39,4 +39,17 @@ public class AssetTag {
     public void changeTag(Tag tag) {
         this.tag = tag;
     }
+
+    public void changeAssetTag(Tag tag, Category category, SubCategory subCategory) {
+        if (category != null && subCategory != null) {
+            this.category = category;
+            this.subCategory = subCategory;
+        } else if (category == null && subCategory != null) {
+            this.subCategory = subCategory;
+        } else if (subCategory == null && category != null) {
+            this.category = category;
+        }
+        this.tag = tag;
+    }
+
 }

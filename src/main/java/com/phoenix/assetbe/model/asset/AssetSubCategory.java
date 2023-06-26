@@ -32,4 +32,8 @@ public class AssetSubCategory {
     public void changeSubCategory(SubCategory subCategory) {
         this.subCategory = subCategory;
     }
+
+    public void changeCategory(Category category) {
+        this.category = category;
+    }
 }
