@@ -77,7 +77,7 @@ public class AdminService {
     }
 
     /**
-     * 주문내열조회
+     * 주문내역조회
      */
     public AdminResponse.OrderListOutDTO getOrderListByAdminService(String orderPeriod, String startDate, String endDate, String orderNumber, String assetNumber, String assetName, String email, Pageable pageable){
 
