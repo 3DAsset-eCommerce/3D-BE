@@ -1,10 +1,7 @@
 package com.phoenix.assetbe.core.util;
 
-import lombok.RequiredArgsConstructor;
+import com.phoenix.assetbe.core.config.MailProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.mail.MailProperties;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,18 +12,15 @@ import org.springframework.util.StringUtils;
 import javax.mail.internet.MimeMessage;
 
 @Component
-@Profile("dev")
-@RequiredArgsConstructor
 public class MailUtils {
+    private static MailProperties mailProperties;
 
     private static JavaMailSender mailSender;
 
-    @Value("${MAIL_FROM_ADDRESS}")
-    private static String username;
-
     @Autowired
-    private MailUtils(JavaMailSender mailSender) {
-                this.mailSender = mailSender;
+    private MailUtils(MailProperties mailProperties, JavaMailSender mailSender) {
+        this.mailProperties = mailProperties;
+        this.mailSender = mailSender;
     }
 
     /**
@@ -49,7 +43,7 @@ public class MailUtils {
             messageHelper.setSubject(title);
             messageHelper.setText(content, true);
             messageHelper.addInline("logo", imageResource);
-            messageHelper.setFrom(username);
+            messageHelper.setFrom(mailProperties.getFromMail());
             messageHelper.setTo(toEmail);
 
             mailSender.send(message); // 메일발송

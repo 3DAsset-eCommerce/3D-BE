@@ -13,11 +13,13 @@ import software.amazon.awssdk.regions.Region;
 
 @Configuration
 public class S3Config {
-    @Value("${AWS_ACCESS_KEY}")
+    @Value("${aws.access-key}")
     private String accessKey;
-    @Value("${AWS_SECRET_KEY}")
+
+    @Value("${aws.secret-key}")
     private String secretKey;
-    @Value("${AWS_DEFAULT_REGION}")
+
+    @Value("${aws.default-region}")
     private String region;
 
     @Bean
