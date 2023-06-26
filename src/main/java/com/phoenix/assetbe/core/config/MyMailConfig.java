@@ -14,8 +14,6 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class MyMailConfig {
 
-    Properties pt = new Properties();
-
     private final MailProperties mailProperties;
 
     @Bean
@@ -26,14 +24,13 @@ public class MyMailConfig {
         javaMailSender.setPassword(this.mailProperties.getPassword());
         javaMailSender.setPort(this.mailProperties.getPort());
 
-        pt.put("mail.smtp.socketFactory.port", this.mailProperties.getPort());
-        pt.put("mail.smtp.auth", true);
-        pt.put("mail.smtp.starttls.enable", true);
-        pt.put("mail.smtp.starttls.required", true);
-        pt.put("mail.smtp.socketFactory.fallback", false);
-        pt.put("mail.smtp.socketFactory.class", this.mailProperties.getSocketFactoryClass());
+        Properties properties = new Properties();
+        properties.put("mail.smtp.socketFactory.port", this.mailProperties.getPort());
+        properties.put("mail.smtp.socketFactory.class", this.mailProperties.getSocketFactoryClass());
+        properties.put("mail.smtp.auth", true);
+        properties.put("mail.smtp.starttls.enable", true);
 
-        javaMailSender.setJavaMailProperties(pt);
+        javaMailSender.setJavaMailProperties(properties);
         javaMailSender.setDefaultEncoding("UTF-8");
 
         return javaMailSender;
