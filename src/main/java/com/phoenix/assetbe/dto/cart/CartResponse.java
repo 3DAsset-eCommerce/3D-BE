@@ -35,29 +35,29 @@ public class CartResponse {
             this.orderId = orderId;
             this.wishListId = wishListId;
         }
-    }
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    public static class AssetOutInList{
-        private Long assetId;
-        private String assetName;
-        private Double price;
-        private Double discountPrice;
-        private String extension;
-        private Double size;
-        private String thumbnailUrl;
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Getter
+        @Setter
+        public static class AssetOutInList{
+            private Long assetId;
+            private String assetName;
+            private Double price;
+            private Double discountPrice;
+            private String extension;
+            private Double size;
+            private String thumbnailUrl;
 
-        public AssetOutInList(Asset asset) {
-            this.assetId = asset.getId();
-            this.assetName = asset.getAssetName();
-            this.price = asset.getPrice();
-            this.discountPrice = asset.getDiscountPrice();
-            this.extension = asset.getExtension();
-            this.size = asset.getSize();
-            this.thumbnailUrl = asset.getThumbnailUrl();
+            public AssetOutInList(Asset asset) {
+                this.assetId = asset.getId();
+                this.assetName = asset.getAssetName();
+                this.price = asset.getPrice();
+                this.discountPrice = asset.getDiscountPrice();
+                this.extension = asset.getExtension();
+                this.size = asset.getSize();
+                this.thumbnailUrl = asset.getThumbnailUrl();
+            }
         }
     }
 }
