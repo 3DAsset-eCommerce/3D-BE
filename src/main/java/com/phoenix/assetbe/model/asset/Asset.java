@@ -28,13 +28,13 @@ public class Asset extends MyTimeBaseUtil {
 
     private Double discountPrice;
 
-    private Double size;
+    private Double size; // v
 
-    private LocalDate releaseDate;
+    private LocalDate releaseDate; // v
 
-    private String extension;
+    private String extension; // v
 
-    private String creator;
+    private String creator; // v
 
     private Double rating;
 

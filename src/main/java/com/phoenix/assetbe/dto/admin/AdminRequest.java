@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.dto.admin;
 
+import com.phoenix.assetbe.model.asset.Asset;
 import lombok.Getter;
 import lombok.Setter;
 
