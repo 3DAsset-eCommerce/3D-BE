@@ -77,6 +77,7 @@ public class UserServiceTest extends DummyEntity {
      */
 
     @Test
+    @DisplayName("로그인 성공")
     public void testLoginService() throws Exception {
         // given
         Long userId = 1L;
@@ -87,7 +88,6 @@ public class UserServiceTest extends DummyEntity {
         loginInDTO.setKeepLogin(true);
 
         String requestBody = objectMapper.writeValueAsString(loginInDTO);
-        System.out.println("request 테스트: " + requestBody);
 
         User 유현주 = newMockUser(1L, "유", "현주");
         MyUserDetails myUserDetails = new MyUserDetails(유현주);
@@ -109,7 +109,8 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
-    public void testLoginService_WithInvalidCredentials_ShouldThrowException401() throws Exception {
+    @DisplayName("로그인 실패")
+    public void testLoginService_InvalidIdAndPassword() throws Exception {
         // given
         Long userId = 1L;
         String email = "yuhyunju@nate.com";
@@ -133,7 +134,8 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
-    public void testSendPasswordChangeCodeService() {
+    @DisplayName("비밀번호 재설정 코드 확인 성공")
+    public void testCheckPasswordChangeCodeService() {
         // given
         Long userId = 1L;
         String email = "yuhyunju@nate.com";
@@ -157,7 +159,8 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
-    public void testCheckPasswordChangeCodeService_WithInvalidCode_ShouldThrowException400() {
+    @DisplayName("비밀번호 재설정 코드 확인 실패")
+    public void testCheckPasswordChangeCodeService_WithInvalidCode() {
         // given
         Long userId = 1L;
         String email = "yuhyunju@nate.com";
@@ -182,6 +185,7 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
+    @DisplayName("비밀번호 변경 성공")
     public void testChangePasswordService() {
         // given
         String email = "yuhyunju@nate.com";
@@ -205,7 +209,8 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
-    public void testChangePasswordService_WithInvalidCode_ShouldThrowException400() {
+    @DisplayName("비밀번호 변경 실패")
+    public void testChangePasswordService_WithInvalidCode() {
         // given
         String email = "yuhyunju@nate.com";
         String newPassword = "newpassword";
@@ -235,6 +240,7 @@ public class UserServiceTest extends DummyEntity {
      */
 
     @Test
+    @DisplayName("이메일 중복 확인 : 중복x")
     void testCheckEmailDuplicateService() {
         // given
         String notExistingEmail = "notExisting_email@example.com";
@@ -252,7 +258,8 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
-    void testCheckEmailDuplicateService_WithExistingEmail_ShouldThrowException400() {
+    @DisplayName("이메일 중복 확인 : 중복o")
+    void testCheckEmailDuplicateService_WithExistingEmail() {
         // given
         String existingEmail = "existing_email@example.com";
         UserRequest.CheckEmailInDTO CheckEmailInDTO = new UserRequest.CheckEmailInDTO();
@@ -269,6 +276,7 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
+    @DisplayName("이메일 인증코드 확인 성공")
     void testCheckSignupCodeService() {
         // given
         Long userId = 1L;
@@ -293,7 +301,8 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
-    void testCheckSignupCodeService_WithInvalidCode_ShouldThrowException400() {
+    @DisplayName("이메일 인증코드 확인 실패")
+    void testCheckSignupCodeService_WithInvalidCode() {
         // given
         Long userId = 1L;
         String email = "yuhyunju@nate.com";
@@ -319,7 +328,8 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
-    void testSignupService_WithValidRequest_ShouldChangePassword() {
+    @DisplayName("회원가입 성공")
+    void testSignupService() {
         // given
         String email = "yuhyunju@nate.com";
         String firstName = "hyunju";
@@ -344,7 +354,8 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
-    void testSignupService_WithInvalidName_ShouldThrowException400() {
+    @DisplayName("회원가입 실패 : 잘못된 이름")
+    void testSignupService_WithInvalidName() {
         // given
         String email = "yuhyunju@nate.com";
         String firstName = "hyunju";
@@ -374,6 +385,7 @@ public class UserServiceTest extends DummyEntity {
      * 마이페이지
      */
     @Test
+    @DisplayName("비밀번호 확인 성공")
     public void testCheckPasswordService() throws Exception {
         // given
         Long userId = 1L;
@@ -382,7 +394,6 @@ public class UserServiceTest extends DummyEntity {
         checkPasswordInDTO.setPassword("qwe123!@#");
 
         String requestBody = objectMapper.writeValueAsString(checkPasswordInDTO);
-        System.out.println("request 테스트: " + requestBody);
 
         User 송재근 = newMockUser(1L, "송", "재근");
         when(userRepository.findByUserWithIdAndStatus(any(), any(Status.class))).thenReturn(Optional.ofNullable(송재근));
@@ -398,6 +409,7 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
+    @DisplayName("회원 탈퇴 성공")
     public void testWithdrawService() throws Exception {
         // given
         Long userId = 1L;
@@ -405,7 +417,6 @@ public class UserServiceTest extends DummyEntity {
         withdrawInDTO.setMessage("아파서 쉽니다.");
 
         String requestBody = objectMapper.writeValueAsString(withdrawInDTO);
-        System.out.println("request 테스트: " + requestBody);
 
         User 송재근 = newMockUser(1L, "송", "재근");
         when(userRepository.findByUserWithIdAndStatus(any(), any(Status.class))).thenReturn(Optional.ofNullable(송재근));
@@ -421,6 +432,7 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
+    @DisplayName("회원정보 수정 성공")
     public void testUpdateService() throws Exception {
         // given
         Long userId = 1L;
@@ -429,7 +441,6 @@ public class UserServiceTest extends DummyEntity {
         updateInDTO.setNewPassword("5678");
 
         String requestBody = objectMapper.writeValueAsString(updateInDTO);
-        System.out.println("request 테스트: " + requestBody);
 
         User 송재근 = newMockUser(1L, "송", "재근");
         userRepository.save(송재근);
@@ -447,6 +458,7 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
+    @DisplayName("회원 정보 조회 성공")
     public void testGetMyInfoService() throws Exception {
         // given
         Long userId = 1L;
@@ -468,6 +480,7 @@ public class UserServiceTest extends DummyEntity {
      * 내 에셋
      */
     @Test
+    @DisplayName("내 에셋 리스트 조회 성공")
     public void testGetMyAssetListService() throws Exception {
         // given
         Long userId = 1L;
@@ -500,6 +513,7 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
+    @DisplayName("내 에셋 검색 성공")
     public void testSearchMyAsset() throws Exception {
         // Given
         Long userId = 2L;
@@ -527,6 +541,7 @@ public class UserServiceTest extends DummyEntity {
     }
 
     @Test
+    @DisplayName("내 에셋 다운로드 성공")
     public void testDownloadMyAssetService() throws Exception {
         // given
         Long userId = 1L;
