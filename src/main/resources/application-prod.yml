@@ -3,7 +3,12 @@ server:
     encoding:
       charset: utf-8
       force: true
-  port: 8085
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: fastcampus1!
+    key-store-type: PKCS12
+  port: 443
 
 spring:
   datasource:
