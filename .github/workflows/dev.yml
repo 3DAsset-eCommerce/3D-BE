@@ -4,12 +4,13 @@ on:
   push:
     branches:
       - dev
+
 env:
-  AWS_ACCESS_KEY: ${{secrets.AWS_ACCESS_KEY}}
-  AWS_SECRET_KEY: ${{secrets.AWS_SECRET_KEY}}
+  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  AWS_S3_BUCKET: ${{secrets.AWS_S3_BUCKET}}
-  AWS_S3_BUCKET_URL: ${{secrets.AWS_S3_BUCKET_URL}}
+  AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+  AWS_S3_BUCKET_URL: ${{ secrets.AWS_S3_BUCKET_URL }}
   RDS_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
   RDS_PORT: ${{ secrets.DB_PORT }}
   RDS_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
@@ -18,7 +19,6 @@ env:
   SSL_PASSWORD: ${{ secrets.SSL_PASSWORD }}
   MAIL_FROM_ADDRESS: ${{ secrets.MAIL_FROM_ADDRESS }}
   MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-
 
 jobs:
   build:
@@ -33,6 +33,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
@@ -47,6 +48,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
@@ -61,19 +63,20 @@ jobs:
               "password": ${{ secrets.DOCKER_PASSWORD }}
             }
           build-args: |
-            AWS_ACCESS_KEY= ${{ secrets.AWS_ACCESS_KEY }}
-            AWS_SECRET_KEY= ${{ secrets.AWS_SECRET_KEY }}
-            AWS_DEFAULT_REGION= ${{ secrets.AWS_DEFAULT_REGION }}
-            AWS_S3_BUCKET= ${{ secrets.AWS_S3_BUCKET }}
-            AWS_S3_BUCKET_URL= ${{ secrets.AWS_S3_BUCKET_URL }}
-            RDS_ENDPOINT= ${{ secrets.DB_ENDPOINT }}
-            RDS_PORT= ${{ secrets.DB_PORT }}
-            RDS_DATABASE_NAME= ${{ secrets.DB_DATABASE_NAME }}
-            RDS_USERNAME= ${{ secrets.DB_USERNAME }}
-            RDS_PASSWORD= ${{ secrets.DB_PASSWORD }}
-            SSL_PASSWORD= ${{ secrets.SSL_PASSWORD }}
-            MAIL_FROM_ADDRESS= ${{ secrets.MAIL_FROM_ADDRESS }}
-            MAIL_PASSWORD= ${{ secrets.MAIL_PASSWORD }}
+            AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+            AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}
+            AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}
+            AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
+            AWS_S3_BUCKET_URL=${{ secrets.AWS_S3_BUCKET_URL }}
+            RDS_ENDPOINT=${{ secrets.DB_ENDPOINT }}
+            RDS_PORT=${{ secrets.DB_PORT }}
+            RDS_DATABASE_NAME=${{ secrets.DB_DATABASE_NAME }}
+            RDS_USERNAME=${{ secrets.DB_USERNAME }}
+            RDS_PASSWORD=${{ secrets.DB_PASSWORD }}
+            SSL_PASSWORD=${{ secrets.SSL_PASSWORD }}
+            MAIL_FROM_ADDRESS=${{ secrets.MAIL_FROM_ADDRESS }}
+            MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+
       - name: Install Docker and Docker Compose
         run: |
           #!/bin/bash
@@ -104,30 +107,49 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Download files from AWS S3 bucket
+        run: |
+          aws s3 cp s3://${{ env.AWS_S3_BUCKET }} /home/user/file
+
+      - name: Set environment variables for Docker Compose
+        run: |
+          echo "AWS_ACCESS_KEY=${{ env.AWS_ACCESS_KEY }}" >> .env
+          echo "AWS_SECRET_KEY=${{ env.AWS_SECRET_KEY }}" >> .env
+          echo "AWS_DEFAULT_REGION=${{ env.AWS_DEFAULT_REGION }}" >> .env
+          echo "AWS_S3_BUCKET=${{ env.AWS_S3_BUCKET }}" >> .env
+          echo "AWS_S3_BUCKET_URL=${{ env.AWS_S3_BUCKET_URL }}" >> .env
+          echo "RDS_ENDPOINT=${{ env.RDS_ENDPOINT }}" >> .env
+          echo "RDS_PORT=${{ env.RDS_PORT }}" >> .env
+          echo "RDS_DATABASE_NAME=${{ env.RDS_DATABASE_NAME }}" >> .env
+          echo "RDS_USERNAME=${{ env.RDS_USERNAME }}" >> .env
+          echo "RDS_PASSWORD=${{ env.RDS_PASSWORD }}" >> .env
+          echo "SSL_PASSWORD=${{ env.SSL_PASSWORD }}" >> .env
+          echo "MAIL_FROM_ADDRESS=${{ env.MAIL_FROM_ADDRESS }}" >> .env
+          echo "MAIL_PASSWORD=${{ env.MAIL_PASSWORD }}" >> .env
+
       - name: SSH to EC2 instance
         uses: appleboy/ssh-action@master
         with:
-          host:  54.180.100.104
+          host: 54.180.100.104
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            #  cd /home/ubuntu/myapp
-            # sudo docker-compose ps -q | xargs -r docker stop
-            # sudo docker-compose pull -v
-            # sudo docker-compose up -d
             if ! command -v docker &> /dev/null; then
-            sudo yum update -y
-            sudo yum install -y docker
+              sudo yum update -y
+              sudo yum install -y docker
             fi
+
             if ! sudo systemctl is-active --quiet docker; then
-            sudo systemctl start docker
-            sudo usermod -a -G docker ec2-user
+              sudo systemctl start docker
+              sudo usermod -a -G docker ec2-user
             fi
+
             if sudo docker ps -a --format '{{.Names}}' | grep -q "^springappDev$"; then
-            sudo docker pull  ${{ secrets.DOCKER_IMAGE_DEV }}
-            sudo docker stop springappDev
-            sudo docker rm springappDev
-            sudo docker run -d --name springappDev -p 443:443 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE_DEV }}
+              sudo docker pull ${{ secrets.DOCKER_IMAGE_DEV }}
+              sudo docker stop springappDev
+              sudo docker rm springappDev
+              sudo docker run -d --name springappDev -p 443:443 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE_DEV }}
             else
-            sudo docker run -d --name springappDev -p 443:443 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE_DEV }}
+              sudo docker run -d --name springappDev -p 443:443 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE_DEV }}
             fi
