@@ -86,4 +86,11 @@ public class AdminRequest {
         @NotEmpty(message = "에셋 프리뷰를 넣어주세요. ")
         private List<String> previewUrlList;
     }
+
+    @Getter @Setter
+    public static class DeleteFileInDTO {
+
+        @NotEmpty(message = "삭제할 파일의 url을 입력해주세요")
+        private String keyName;
+    }
 }

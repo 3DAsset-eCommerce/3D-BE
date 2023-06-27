@@ -72,10 +72,11 @@ public class AdminController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping("/s/admin/delete/{keyName}")
-    public ResponseEntity<?> deleteFile(@PathVariable("keyName") String keyName) {
-        s3Service.deleteFile(keyName);
-        return ResponseEntity.ok().body(null);
+    @PostMapping("/s/admin/delete")
+    public ResponseEntity<?> deleteFile(@RequestBody AdminRequest.DeleteFileInDTO deleteFileInDTO) {
+        s3Service.deleteFile(deleteFileInDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>(null);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     /**

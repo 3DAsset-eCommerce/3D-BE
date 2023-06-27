@@ -2,12 +2,14 @@ package com.phoenix.assetbe.service;
 
 import com.phoenix.assetbe.core.config.S3Properties;
 import com.phoenix.assetbe.core.exception.Exception500;
+import com.phoenix.assetbe.dto.admin.AdminRequest;
 import com.phoenix.assetbe.dto.user.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -32,10 +34,10 @@ public class S3Service {
     public UserResponse.uploadOutDTO upload(MultipartFile multipartFile, String fileType) {
 
         String uploadFilePath = fileType + "/" + getFolderName();
-        long fileSize = multipartFile.getSize();
-        String extension = FilenameUtils.getExtension(multipartFile.getName());
-
+        String  fileSize = String.valueOf(multipartFile.getSize()) + "byte";
         String originalFileName = multipartFile.getOriginalFilename();
+        String extension = FilenameUtils.getExtension(originalFileName);
+
         String uploadFileName = getUuidFileName(originalFileName);
         String uploadFileUrl = "";
 
@@ -68,7 +70,8 @@ public class S3Service {
     /**
      * S3에 업로드된 파일 삭제
      */
-    public void deleteFile(String keyName) {
+    public void deleteFile(AdminRequest.DeleteFileInDTO deleteFileInDTO) {
+        String keyName = deleteFileInDTO.getKeyName();
 
         try {
             boolean isObjectExist = false;

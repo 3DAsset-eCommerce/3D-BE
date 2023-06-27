@@ -115,7 +115,7 @@ public class UserResponse {
     @AllArgsConstructor
     public static class uploadOutDTO {
         private String keyName;
-        private Long size;
+        private String size;
         private String extension;
     }
 }
