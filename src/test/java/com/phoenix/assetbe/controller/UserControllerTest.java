@@ -902,18 +902,17 @@ public class UserControllerTest extends MyRestDoc {
     }
 
     @DisplayName("내 에셋 검색 성공")
-    @WithUserDetails(value = "songjaegeun2@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "yuhyunju1@nate.com", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     public void search_my_asset_test() throws Exception {
         // given
-        Long id = 2L;
+        Long id = 1L;
         String page = "0";
         String size = "14";
-        List<String> keywordList = Arrays.asList("cute man", "cute boy");
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/s/user/{id}/assets/search", id)
-                .param("keyword", keywordList.toArray(new String[0]))
+                .param("keyword", "woman", "cute")
                 .param("page", page)
                 .param("size", size));
 

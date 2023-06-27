@@ -67,14 +67,14 @@ public class MyAssetQueryRepository {
             BooleanExpression wordExpression = null; // 일치여부를 확인하기 위해
 
             for (String word: keywordWords) {
-                if (wordExpression == null) wordExpression = asset.assetName.startsWithIgnoreCase(word);
-                else wordExpression = wordExpression.or(asset.assetName.startsWithIgnoreCase(word));
+                if (wordExpression == null) wordExpression = asset.assetName.containsIgnoreCase(word);
+                else wordExpression = wordExpression.or(asset.assetName.containsIgnoreCase(word));
             }
             keywordExpressions.add(wordExpression); // 추가
         }
 
         BooleanExpression combineExpression = keywordExpressions.stream()
-                .reduce(BooleanExpression::or) // or 조건으로 결합
+                .reduce(BooleanExpression::and) // or 조건으로 결합
                 .orElse(null);
 
         List<UserResponse.MyAssetListOutDTO.GetMyAssetOutDTO> result = queryFactory
@@ -83,6 +83,7 @@ public class MyAssetQueryRepository {
                 .from(myAsset)
                 .innerJoin(myAsset.asset, asset)
                 .where(myAsset.user.id.eq(userId).and(combineExpression))
+                .orderBy(myAsset.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -124,24 +125,6 @@ public class MyAssetQueryRepository {
         }
         return null;
     }
-
-//    private List<OrderSpecifier<?>> assetSortByKeyword(List<String> keywordList) {
-//        if (!keywordList.isEmpty()) {
-//            List<ComparableExpressionBase<?>> keywordExpressions = new ArrayList<>();
-//            for (String keyword : keywordList) {
-//                keywordExpressions.add(asset.assetName.equalsIgnoreCase(keyword));
-//            }
-//
-//            List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
-//            for (ComparableExpressionBase<?> expression : keywordExpressions) {
-//                orderSpecifiers.add(new OrderSpecifier<>(Order.ASC, expression));
-//            }
-//
-//            return orderSpecifiers;
-//        }
-//
-//        return null;
-//    }
 
     /**
      * 검증
