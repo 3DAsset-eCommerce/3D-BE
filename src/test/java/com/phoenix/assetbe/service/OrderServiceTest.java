@@ -7,6 +7,7 @@ import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.dto.order.OrderRequest;
 import com.phoenix.assetbe.dto.order.OrderResponse;
 import com.phoenix.assetbe.model.asset.Asset;
+import com.phoenix.assetbe.model.asset.MyAssetRepository;
 import com.phoenix.assetbe.model.order.*;
 import com.phoenix.assetbe.model.user.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,9 @@ public class OrderServiceTest extends DummyEntity {
     @Mock
     private PaymentRepository paymentRepository;
 
+    @Mock
+    private MyAssetRepository myAssetRepository;
+
     private OrderService orderService;
 
     @Mock
@@ -52,7 +56,7 @@ public class OrderServiceTest extends DummyEntity {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        orderService = new OrderService(orderRepository, paymentRepository, orderProductRepository, orderQueryRepository, userService, assetService);
+        orderService = new OrderService(orderRepository, paymentRepository, orderProductRepository, myAssetRepository, orderQueryRepository, userService, assetService);
     }
 
     @Test
@@ -82,6 +86,7 @@ public class OrderServiceTest extends DummyEntity {
         verify(paymentRepository, times(1)).save(any());
         verify(orderRepository, times(1)).save(any());
         verify(orderProductRepository, times(1)).saveAll(anyList());
+        verify(myAssetRepository, times(1)).saveAll(anyList());
     }
 
     @Test
@@ -111,6 +116,7 @@ public class OrderServiceTest extends DummyEntity {
         verify(paymentRepository, never()).save(any());
         verify(orderRepository, never()).save(any());
         verify(orderProductRepository, never()).saveAll(anyList());
+        verify(myAssetRepository,  never()).saveAll(anyList());
     }
 
     @Test

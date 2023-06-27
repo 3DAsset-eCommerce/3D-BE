@@ -5,6 +5,8 @@ import com.phoenix.assetbe.core.exception.Exception400;
 import com.phoenix.assetbe.dto.order.OrderRequest;
 import com.phoenix.assetbe.dto.order.OrderResponse;
 import com.phoenix.assetbe.model.asset.Asset;
+import com.phoenix.assetbe.model.asset.MyAsset;
+import com.phoenix.assetbe.model.asset.MyAssetRepository;
 import com.phoenix.assetbe.model.order.*;
 import com.phoenix.assetbe.model.user.User;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +29,12 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
     private final OrderProductRepository orderProductRepository;
+    private final MyAssetRepository myAssetRepository;
 
     private final OrderQueryRepository orderQueryRepository;
     private final UserService userService;
     private final AssetService assetService;
+
 
     @Transactional
     public OrderResponse.OrderAssetsOutDTO orderAssetsService(OrderRequest.OrderAssetsInDTO orderAssetsInDTO, MyUserDetails myUserDetails) {
@@ -46,8 +50,11 @@ public class OrderService {
         List<Asset> orderAssetList = assetService.findAllAssetById(orderAssetsInDTO.getAssetList());
         Double totalPrice = 0D;
         List<OrderProduct> orderProductList = new ArrayList<>();
+        List<MyAsset> myAssetList = new ArrayList<>();
         for(Asset orderAsset : orderAssetList){
             OrderProduct orderProduct = OrderProduct.builder().order(order).asset(orderAsset).build();
+            MyAsset myAsset = MyAsset.builder().asset(orderAsset).user(user).build();
+            myAssetList.add(myAsset);
             orderProductList.add(orderProduct);
             totalPrice += orderAsset.getPrice();
         }
@@ -59,6 +66,7 @@ public class OrderService {
         paymentRepository.save(payment);
         orderRepository.save(order);
         orderProductRepository.saveAll(orderProductList);
+        myAssetRepository.saveAll(myAssetList);
 
         return new OrderResponse.OrderAssetsOutDTO(order.getId());
     }
