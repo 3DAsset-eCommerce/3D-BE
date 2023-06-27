@@ -4,6 +4,8 @@ import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -19,13 +21,16 @@ public class Payment extends MyTimeBaseUtil {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
+    @NotBlank
     private String receiptURL;
 
+    @NotNull
     private Double totalPrice;
 
+    @NotBlank
     private String paymentTool;
 
     public void mappingOrder(Order order){

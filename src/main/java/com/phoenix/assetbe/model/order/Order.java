@@ -5,6 +5,7 @@ import com.phoenix.assetbe.model.user.User;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -20,9 +21,10 @@ public class Order extends MyTimeBaseUtil {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @NotBlank
     private String phoneNumber;
 
     @OneToOne(mappedBy = "order")

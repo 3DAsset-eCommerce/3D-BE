@@ -5,6 +5,8 @@ import com.phoenix.assetbe.dto.admin.AdminRequest;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -19,22 +21,31 @@ public class Asset extends MyTimeBaseUtil {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String assetName;
 
+    @NotNull
     private Double price;
 
+    @NotBlank
     private String description;
 
+    @NotNull
     private Integer discount;
 
+    @NotNull
     private Double discountPrice;
 
+    @NotNull
     private Double size; // v
 
+    @NotNull
     private LocalDate releaseDate; // v
 
+    @NotBlank
     private String extension; // v
 
+    @NotBlank
     private String creator; // v
 
     private Double rating;
@@ -45,12 +56,15 @@ public class Asset extends MyTimeBaseUtil {
 
     private Long reviewCount;
 
+    @NotNull
     private boolean status; // 활성화 여부
 
     private LocalDateTime updatedAt; // 비즈니스 로직상 찍기 (최신 버전을 찍은 날짜)
 
+    @NotBlank
     private String fileUrl;
 
+    @NotBlank
     private String thumbnailUrl;
 
     @Builder

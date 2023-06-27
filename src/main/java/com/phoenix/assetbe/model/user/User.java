@@ -1,9 +1,12 @@
 package com.phoenix.assetbe.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.UUID;
@@ -21,12 +24,17 @@ public class User extends MyTimeBaseUtil {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String lastName;
 
+    @NotBlank
     private String firstName;
 
+    @NotBlank
     private String email;
 
+    @JsonIgnore
+    @NotBlank
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -44,8 +52,10 @@ public class User extends MyTimeBaseUtil {
 
     private LocalDateTime updatedAt;
 
+    @NotBlank
     private String emailCheckToken;
 
+    @NotNull
     private LocalDateTime emailCheckTokenCreatedAt;
 
     @PreUpdate

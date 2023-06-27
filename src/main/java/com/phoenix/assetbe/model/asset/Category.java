@@ -3,6 +3,7 @@ package com.phoenix.assetbe.model.asset;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -17,6 +18,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String categoryName;
 
 

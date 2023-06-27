@@ -3,6 +3,7 @@ package com.phoenix.assetbe.model.auth;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -18,6 +19,6 @@ public class RefreshToken {
     private Long id;
 
     //user 1:1
-
+    @NotBlank
     private String refreshToken;
 }

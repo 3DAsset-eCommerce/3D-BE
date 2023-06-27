@@ -6,6 +6,8 @@ import com.phoenix.assetbe.model.user.User;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,15 +24,17 @@ public class Review extends MyTimeBaseUtil {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_id")
+    @JoinColumn(name = "asset_id", nullable = false)
     private Asset asset;
 
+    @NotBlank
     private String content;
 
+    @NotNull
     private Double rating;
 
     private LocalDateTime updatedAt;

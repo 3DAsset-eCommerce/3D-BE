@@ -4,6 +4,7 @@ import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,9 +21,10 @@ public class Preview extends MyTimeBaseUtil {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_id")
+    @JoinColumn(name = "asset_id", nullable = false)
     private Asset asset;
 
+    @NotBlank
     private String previewUrl;
 
     /**
