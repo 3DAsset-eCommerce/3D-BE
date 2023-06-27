@@ -95,7 +95,12 @@ public class Asset extends MyTimeBaseUtil {
     /**
      * 메소드
      */
-    public void increaseVisitCount(){this.visitCount++;}
+    public void increaseVisitCount() {
+        if(visitCount == null){
+            this.visitCount = 1L;
+        }
+        this.visitCount++;
+    }
     public void calculateRatingAndIncreaseReviewCount(Asset asset, Double reviewRatingSum){
         this.rating = (double) Math.round(reviewRatingSum * 10 / (asset.getReviewCount() + 1)) / 10;
         this.reviewCount = asset.getReviewCount() + 1;
@@ -146,6 +151,9 @@ public class Asset extends MyTimeBaseUtil {
     }
 
     public void increaseWishCount(){
+        if(wishCount == null){
+            this.wishCount = 1L;
+        }
         this.wishCount++;
     }
 
