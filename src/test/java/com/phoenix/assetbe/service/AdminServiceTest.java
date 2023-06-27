@@ -68,6 +68,7 @@ public class AdminServiceTest extends DummyEntity {
      * 카테고리
      */
     @Test
+    @DisplayName("카테고리 리스트 조회 성공")
     public void testGetCategoryListService() throws Exception {
         // given
         List<Category> mockCategoryList = new ArrayList<>();
@@ -86,6 +87,7 @@ public class AdminServiceTest extends DummyEntity {
      * 서브 카테고리
      */
     @Test
+    @DisplayName("서브 카테고리 리스트 조회 성공")
     public void testGetSubCategoryListService() throws Exception {
         // given
         String categoryName = "pretty";
@@ -110,6 +112,7 @@ public class AdminServiceTest extends DummyEntity {
      * 에셋
      */
     @Test
+    @DisplayName("에셋 비활성화 성공")
     public void testInactiveAssetService() throws Exception {
         // given
         List<Long> assetIdList = Arrays.asList(1L, 2L, 3L);
@@ -125,6 +128,7 @@ public class AdminServiceTest extends DummyEntity {
     }
 
     @Test
+    @DisplayName("에셋 활성화 성공")
     public void testActiveAssetService() throws Exception {
         // given
         List<Long> assetIdList = Arrays.asList(1L, 2L, 3L);

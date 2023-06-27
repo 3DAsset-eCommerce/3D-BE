@@ -126,7 +126,7 @@ public class CartServiceTest extends DummyEntity {
 
         // then
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
-        verify(cartRepository, never()).deleteAllById(anyList());
+        verify(cartRepository, never()).saveAll(anyList());
     }
 
     @Test

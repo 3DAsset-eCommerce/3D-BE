@@ -44,7 +44,7 @@ public class WishServiceTest extends DummyEntity {
     }
 
     @Test
-    @DisplayName(" 담기 성공")
+    @DisplayName("위시리스트 담기 성공")
     void testAddWishList() {
         // given
         Long userId = 1L;
