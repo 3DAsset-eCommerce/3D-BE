@@ -107,10 +107,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-
-      - name: Download files from AWS S3 bucket
-        run: |
-          aws s3 cp s3://${{ env.AWS_S3_BUCKET }} /home/user/file
+#
+#      - name: Download files from AWS S3 bucket
+#        run: |
+#          aws s3 cp s3://${{ env.AWS_S3_BUCKET }} /home/user/file
 
       - name: Set environment variables for Docker Compose
         run: |
