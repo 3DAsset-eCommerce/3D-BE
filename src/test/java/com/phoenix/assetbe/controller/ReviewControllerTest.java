@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -80,12 +81,12 @@ public class ReviewControllerTest extends MyRestDoc {
 
         User user1 = userRepository.findById(1L).orElseThrow();
         User user3 = userRepository.findById(3L).orElseThrow();
-        Asset asset = Asset.builder().assetName("a").reviewCount(1L).rating(4D).status(true).build();
+        Asset asset = dummy.newAsset("a",5000D,3.14D, LocalDate.of(2023,06,20),4D,1L);
+        assetRepository.save(asset);
         Review review = Review.builder().rating(4D).content("좋아요").user(user3).asset(asset).build();
+        reviewRepository.save(review);
         MyAsset myAsset1 = MyAsset.builder().asset(asset).user(user3).build();
         MyAsset myAsset2 = MyAsset.builder().asset(asset).user(user1).build();
-        assetRepository.save(asset);
-        reviewRepository.save(review);
         myAssetRepository.saveAll(Arrays.asList(myAsset1, myAsset2));
 
         em.clear();

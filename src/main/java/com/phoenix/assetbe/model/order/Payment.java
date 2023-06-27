@@ -21,10 +21,9 @@ public class Payment extends MyTimeBaseUtil {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id")
     private Order order;
 
-    @NotBlank
     private String receiptURL;
 
     @NotNull

@@ -127,7 +127,7 @@ public class AdminService {
         SubCategory subCategory = changeSubCategory(updateAssetInDTO, category);
 
         // 4. Tag 변경
-        changeTag(updateAssetInDTO, category, subCategory);
+        changeTag(updateAssetInDTO, category, subCategory, assetPS);
     }
 
     /**
@@ -197,20 +197,25 @@ public class AdminService {
         AssetCategory assetCategoryPS = assetCategoryRepository.findAssetCategoryByAssetId(updateAssetInDTO.getAssetId());
         if (!assetCategoryPS.getCategory().getCategoryName().equals(updateAssetInDTO.getCategory())) {
             String categoryName = updateAssetInDTO.getCategory();
-            Category category = categoryRepository.findCategoryByCategoryName(categoryName).orElseGet(
-                    () -> Category.builder()
-                            .categoryName(categoryName)
-                            .build()
-            );
-            try {
-                Category categoryPS = categoryRepository.save(category);
+            Optional<Category> categoryOP = categoryRepository.findCategoryByCategoryName(categoryName);
+
+            if (categoryOP.isEmpty()) {
+                Category category = Category.builder()
+                        .categoryName(categoryName)
+                        .build();
+                try {
+                    Category categoryPS = categoryRepository.save(category);
+                    assetCategoryPS.changeCategory(categoryPS);
+                    return categoryPS;
+                } catch (Exception e) {
+                    throw new Exception500("카테고리를 DB에 저장하는데 실패했습니다. ");
+                }
+            }else{
+                Category categoryPS = categoryOP.get();
                 assetCategoryPS.changeCategory(categoryPS);
                 return categoryPS;
-            } catch (Exception e) {
-                throw new Exception500("카테고리를 DB에 저장하는데 실패했습니다. ");
             }
         }
-
         return null;
     }
 
@@ -218,27 +223,34 @@ public class AdminService {
         AssetSubCategory assetSubCategoryPS = assetSubCategoryRepository.findAssetSubCategoryByAssetId(updateAssetInDTO.getAssetId());
         if (!assetSubCategoryPS.getSubCategory().getSubCategoryName().equals(updateAssetInDTO.getSubCategory())) {
             String subCategoryName = updateAssetInDTO.getSubCategory();
-            SubCategory subCategory = subCategoryRepository.findSubCategoryBySubCategoryName(subCategoryName).orElseGet(
-                    () -> SubCategory.builder()
-                            .subCategoryName(subCategoryName)
-                            .build()
-            );
+            Optional<SubCategory> subCategoryOP = subCategoryRepository.findSubCategoryBySubCategoryName(subCategoryName);
 
-            try {
-                SubCategory subCategoryPS = subCategoryRepository.save(subCategory);
+            if (subCategoryOP.isEmpty()){
+                SubCategory subCategory = SubCategory.builder()
+                        .subCategoryName(subCategoryName)
+                        .build();
+                try {
+                    SubCategory subCategoryPS = subCategoryRepository.save(subCategory);
+                    assetSubCategoryPS.changeSubCategory(subCategoryPS);
+                    if (category != null) {
+                        assetSubCategoryPS.changeCategory(category);
+                    }
+                    return subCategoryPS;
+                } catch (Exception e) {
+                    throw new Exception500("서브 카테고리를 DB에 저장하는데 실패했습니다. ");
+                }
+            }else {
+                SubCategory subCategoryPS = subCategoryOP.get();
                 assetSubCategoryPS.changeSubCategory(subCategoryPS);
                 if (category != null) {
                     assetSubCategoryPS.changeCategory(category);
                 }
-                return subCategoryPS;
-            } catch (Exception e) {
-                throw new Exception500("서브 카테고리를 DB에 저장하는데 실패했습니다. ");
             }
         }
         return null;
     }
 
-    private void changeTag(AdminRequest.UpdateAssetInDTO updateAssetInDTO, Category category, SubCategory subCategory) {
+    private void changeTag(AdminRequest.UpdateAssetInDTO updateAssetInDTO, Category category, SubCategory subCategory, Asset asset) {
         List<AssetTag> assetTagPSList = assetTagRepository.findAssetTagByAssetId(updateAssetInDTO.getAssetId());
         List<String> deleteTagList = updateAssetInDTO.getDeleteTagList();
         List<String> addTagList = updateAssetInDTO.getAddTagList();
@@ -275,6 +287,7 @@ public class AdminService {
                     .tag(tag)
                     .category(assetTagPSList.get(0).getCategory())
                     .subCategory(assetTagPSList.get(0).getSubCategory())
+                    .asset(asset)
                     .build();
             assetTagList.add(assetTag);
         }

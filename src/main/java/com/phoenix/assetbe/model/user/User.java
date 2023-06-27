@@ -34,7 +34,6 @@ public class User extends MyTimeBaseUtil {
     private String email;
 
     @JsonIgnore
-    @NotBlank
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -52,10 +51,8 @@ public class User extends MyTimeBaseUtil {
 
     private LocalDateTime updatedAt;
 
-    @NotBlank
     private String emailCheckToken;
 
-    @NotNull
     private LocalDateTime emailCheckTokenCreatedAt;
 
     @PreUpdate

@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,8 +81,8 @@ public class AdminControllerTest extends MyRestDoc {
         myTestSetUp.saveUserScenario(userList, assetList);
         myTestSetUp.saveCategoryAndSubCategoryAndTag(assetList);
 
-        Asset asset1 = Asset.builder().assetName("asset1").status(false).build(); // 31
-        assetRepository.save(asset1);
+        Asset asset31 = dummy.newAsset("asset1", 10000D, 3.14D, LocalDate.of(2023,06,25), null, 0L);
+        assetRepository.save(asset31);
     }
 
     /**
@@ -355,16 +356,16 @@ public class AdminControllerTest extends MyRestDoc {
     @Test
     public void get_order_list_by_admin_with_period_test() throws Exception {
         // Given
-        Asset a32 = Asset.builder().assetName("aaaaa").build();
-        Asset a33 = Asset.builder().assetName("abbbb").build();
-        Asset a34 = Asset.builder().assetName("acccc").build();
-        Asset a35 = Asset.builder().assetName("adddd").build();
-        Asset a36 = Asset.builder().assetName("aeeee").build();
-        Asset a37 = Asset.builder().assetName("affff").build();
-        Asset a38 = Asset.builder().assetName("agggg").build();
-        Asset a39 = Asset.builder().assetName("ahhhh").build();
-        Asset a40 = Asset.builder().assetName("aiiii").build();
-        Asset a41 = Asset.builder().assetName("ajjjj").build();
+        Asset a32 = dummy.newAsset("aaaaa",5000D,3.14D,LocalDate.parse("2023-06-20"),null,null);
+        Asset a33 = dummy.newAsset("abbbb",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a34 = dummy.newAsset("acccc",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a35 = dummy.newAsset("adddd",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a36 = dummy.newAsset("aeeee",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a37 = dummy.newAsset("affff",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a38 = dummy.newAsset("agggg",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a39 = dummy.newAsset("ahhhh",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a40 = dummy.newAsset("aiiii",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a41 = dummy.newAsset("ajjjj",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
         assetRepository.saveAll(Arrays.asList(a32,a33,a34,a35,a36,a37,a38,a39,a40,a41));
 
         List<Order> o = orderRepository.findAll();
@@ -403,16 +404,16 @@ public class AdminControllerTest extends MyRestDoc {
     @Test
     public void get_order_list_by_admin_with_period_and_sort_asc_test() throws Exception {
         // Given
-        Asset a32 = Asset.builder().assetName("aaaaa").build();
-        Asset a33 = Asset.builder().assetName("abbbb").build();
-        Asset a34 = Asset.builder().assetName("acccc").build();
-        Asset a35 = Asset.builder().assetName("adddd").build();
-        Asset a36 = Asset.builder().assetName("aeeee").build();
-        Asset a37 = Asset.builder().assetName("affff").build();
-        Asset a38 = Asset.builder().assetName("agggg").build();
-        Asset a39 = Asset.builder().assetName("ahhhh").build();
-        Asset a40 = Asset.builder().assetName("aiiii").build();
-        Asset a41 = Asset.builder().assetName("ajjjj").build();
+        Asset a32 = dummy.newAsset("aaaaa",5000D,3.14D,LocalDate.parse("2023-06-20"),null,null);
+        Asset a33 = dummy.newAsset("abbbb",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a34 = dummy.newAsset("acccc",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a35 = dummy.newAsset("adddd",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a36 = dummy.newAsset("aeeee",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a37 = dummy.newAsset("affff",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a38 = dummy.newAsset("agggg",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a39 = dummy.newAsset("ahhhh",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a40 = dummy.newAsset("aiiii",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a41 = dummy.newAsset("ajjjj",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
         assetRepository.saveAll(Arrays.asList(a32,a33,a34,a35,a36,a37,a38,a39,a40,a41));
 
         List<Order> o = orderRepository.findAll();
@@ -453,16 +454,16 @@ public class AdminControllerTest extends MyRestDoc {
     @Test
     public void get_order_list_by_admin_with_period_and_order_number_test() throws Exception {
         // Given
-        Asset a32 = Asset.builder().assetName("aaaaa").build();
-        Asset a33 = Asset.builder().assetName("abbbb").build();
-        Asset a34 = Asset.builder().assetName("acccc").build();
-        Asset a35 = Asset.builder().assetName("adddd").build();
-        Asset a36 = Asset.builder().assetName("aeeee").build();
-        Asset a37 = Asset.builder().assetName("affff").build();
-        Asset a38 = Asset.builder().assetName("agggg").build();
-        Asset a39 = Asset.builder().assetName("ahhhh").build();
-        Asset a40 = Asset.builder().assetName("aiiii").build();
-        Asset a41 = Asset.builder().assetName("ajjjj").build();
+        Asset a32 = dummy.newAsset("aaaaa",5000D,3.14D,LocalDate.parse("2023-06-20"),null,null);
+        Asset a33 = dummy.newAsset("abbbb",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a34 = dummy.newAsset("acccc",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a35 = dummy.newAsset("adddd",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a36 = dummy.newAsset("aeeee",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a37 = dummy.newAsset("affff",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a38 = dummy.newAsset("agggg",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a39 = dummy.newAsset("ahhhh",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a40 = dummy.newAsset("aiiii",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a41 = dummy.newAsset("ajjjj",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
         assetRepository.saveAll(Arrays.asList(a32,a33,a34,a35,a36,a37,a38,a39,a40,a41));
 
         List<Order> o = orderRepository.findAll();
@@ -502,16 +503,16 @@ public class AdminControllerTest extends MyRestDoc {
     @Test
     public void get_order_list_by_admin_with_period_and_asset_number_test() throws Exception {
         // Given
-        Asset a32 = Asset.builder().assetName("aaaaa").build();
-        Asset a33 = Asset.builder().assetName("abbbb").build();
-        Asset a34 = Asset.builder().assetName("acccc").build();
-        Asset a35 = Asset.builder().assetName("adddd").build();
-        Asset a36 = Asset.builder().assetName("aeeee").build();
-        Asset a37 = Asset.builder().assetName("affff").build();
-        Asset a38 = Asset.builder().assetName("agggg").build();
-        Asset a39 = Asset.builder().assetName("ahhhh").build();
-        Asset a40 = Asset.builder().assetName("aiiii").build();
-        Asset a41 = Asset.builder().assetName("ajjjj").build();
+        Asset a32 = dummy.newAsset("aaaaa",5000D,3.14D,LocalDate.parse("2023-06-20"),null,null);
+        Asset a33 = dummy.newAsset("abbbb",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a34 = dummy.newAsset("acccc",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a35 = dummy.newAsset("adddd",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a36 = dummy.newAsset("aeeee",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a37 = dummy.newAsset("affff",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a38 = dummy.newAsset("agggg",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a39 = dummy.newAsset("ahhhh",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a40 = dummy.newAsset("aiiii",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a41 = dummy.newAsset("ajjjj",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
         assetRepository.saveAll(Arrays.asList(a32,a33,a34,a35,a36,a37,a38,a39,a40,a41));
 
         List<Order> o = orderRepository.findAll();
@@ -552,16 +553,16 @@ public class AdminControllerTest extends MyRestDoc {
     @Test
     public void get_order_list_by_admin_with_period_and_asset_name_test() throws Exception {
         // Given
-        Asset a32 = Asset.builder().assetName("aaaaa").build();
-        Asset a33 = Asset.builder().assetName("abbbb").build();
-        Asset a34 = Asset.builder().assetName("acccc").build();
-        Asset a35 = Asset.builder().assetName("adddd").build();
-        Asset a36 = Asset.builder().assetName("aeeee").build();
-        Asset a37 = Asset.builder().assetName("affff").build();
-        Asset a38 = Asset.builder().assetName("agggg").build();
-        Asset a39 = Asset.builder().assetName("ahhhh").build();
-        Asset a40 = Asset.builder().assetName("aiiii").build();
-        Asset a41 = Asset.builder().assetName("ajjjj").build();
+        Asset a32 = dummy.newAsset("aaaaa",5000D,3.14D,LocalDate.parse("2023-06-20"),null,null);
+        Asset a33 = dummy.newAsset("abbbb",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a34 = dummy.newAsset("acccc",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a35 = dummy.newAsset("adddd",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a36 = dummy.newAsset("aeeee",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a37 = dummy.newAsset("affff",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a38 = dummy.newAsset("agggg",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a39 = dummy.newAsset("ahhhh",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a40 = dummy.newAsset("aiiii",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a41 = dummy.newAsset("ajjjj",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
         assetRepository.saveAll(Arrays.asList(a32,a33,a34,a35,a36,a37,a38,a39,a40,a41));
 
         List<Order> o = orderRepository.findAll();
@@ -601,16 +602,16 @@ public class AdminControllerTest extends MyRestDoc {
     @Test
     public void get_order_list_by_admin_with_period_and_email_test() throws Exception {
         // Given
-        Asset a32 = Asset.builder().assetName("aaaaa").build();
-        Asset a33 = Asset.builder().assetName("abbbb").build();
-        Asset a34 = Asset.builder().assetName("acccc").build();
-        Asset a35 = Asset.builder().assetName("adddd").build();
-        Asset a36 = Asset.builder().assetName("aeeee").build();
-        Asset a37 = Asset.builder().assetName("affff").build();
-        Asset a38 = Asset.builder().assetName("agggg").build();
-        Asset a39 = Asset.builder().assetName("ahhhh").build();
-        Asset a40 = Asset.builder().assetName("aiiii").build();
-        Asset a41 = Asset.builder().assetName("ajjjj").build();
+        Asset a32 = dummy.newAsset("aaaaa",5000D,3.14D,LocalDate.parse("2023-06-20"),null,null);
+        Asset a33 = dummy.newAsset("abbbb",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a34 = dummy.newAsset("acccc",5000D,3.14D,LocalDate.parse("2023-06-21"),null,null);
+        Asset a35 = dummy.newAsset("adddd",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a36 = dummy.newAsset("aeeee",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a37 = dummy.newAsset("affff",5000D,3.14D,LocalDate.parse("2023-06-22"),null,null);
+        Asset a38 = dummy.newAsset("agggg",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a39 = dummy.newAsset("ahhhh",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a40 = dummy.newAsset("aiiii",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
+        Asset a41 = dummy.newAsset("ajjjj",5000D,3.14D,LocalDate.parse("2023-06-23"),null,null);
         assetRepository.saveAll(Arrays.asList(a32,a33,a34,a35,a36,a37,a38,a39,a40,a41));
 
         List<Order> o = orderRepository.findAll();
