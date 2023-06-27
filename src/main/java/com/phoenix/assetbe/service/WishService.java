@@ -46,6 +46,7 @@ public class WishService {
         } catch (Exception e) {
             throw new Exception500("위시리스트 담기 실패 : "+e.getMessage());
         }
+        assetPS.increaseWishCount();
     }
 
     @Transactional
@@ -54,6 +55,10 @@ public class WishService {
         List<Long> wishes = deleteWishInDTO.getWishes();
 
         userService.authCheck(myUserDetails, userId);
+        List<WishList> wishList = wishListRepository.findAllById(wishes);
+        for(WishList wish : wishList){
+            wish.getAsset().decreaseWishCount();
+        }
 
         try {
             wishListRepository.deleteAllById(wishes);

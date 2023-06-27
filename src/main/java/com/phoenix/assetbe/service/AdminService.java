@@ -128,6 +128,9 @@ public class AdminService {
 
         // 4. Tag 변경
         changeTag(updateAssetInDTO, category, subCategory, assetPS);
+
+        // 5. 업데이트 날짜 변경
+        assetPS.onUpdate();
     }
 
     /**

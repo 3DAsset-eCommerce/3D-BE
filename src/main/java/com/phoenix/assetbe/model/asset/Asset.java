@@ -144,4 +144,16 @@ public class Asset extends MyTimeBaseUtil {
             this.discountPrice = price - (price * (discount / 100.0));
         }
     }
+
+    public void increaseWishCount(){
+        this.wishCount++;
+    }
+
+    public void decreaseWishCount(){
+        this.wishCount--;
+    }
+
+    public void onUpdate(){
+        this.updatedAt = LocalDateTime.now();
+    }
 }
