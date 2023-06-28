@@ -13,7 +13,7 @@ env:
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
   AWS_S3_BUCKET_URL: ${{ secrets.AWS_S3_BUCKET_URL }}
-  RDS_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
+  RDS_ENDPOINT: ${{ secrets.DB_ENDPOINT.replace(".", "%2E") }}
   RDS_PORT: ${{ secrets.DB_PORT }}
   RDS_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
   RDS_USERNAME: ${{ secrets.DB_USERNAME }}
@@ -69,7 +69,7 @@ jobs:
             AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}
             AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
             AWS_S3_BUCKET_URL=${{ secrets.AWS_S3_BUCKET_URL }}
-            RDS_ENDPOINT=${{ secrets.DB_ENDPOINT }}
+            RDS_ENDPOINT=${{ secrets.DB_ENDPOINT.replace(".", "%2E") }}
             RDS_PORT=${{ secrets.DB_PORT }}
             RDS_DATABASE_NAME=${{ secrets.DB_DATABASE_NAME }}
             RDS_USERNAME=${{ secrets.DB_USERNAME }}
@@ -115,7 +115,7 @@ jobs:
           echo "AWS_DEFAULT_REGION=${{ env.AWS_DEFAULT_REGION }}" >> .env
           echo "AWS_S3_BUCKET=${{ env.AWS_S3_BUCKET }}" >> .env
           echo "AWS_S3_BUCKET_URL=${{ env.AWS_S3_BUCKET_URL }}" >> .env
-          echo "RDS_ENDPOINT=${{ env.RDS_ENDPOINT }}" >> .env
+          echo "RDS_ENDPOINT=${{ env.RDS_ENDPOINT.replace(".", "%2E") }}" >> .env
           echo "RDS_PORT=${{ env.RDS_PORT }}" >> .env
           echo "RDS_DATABASE_NAME=${{ env.RDS_DATABASE_NAME }}" >> .env
           echo "RDS_USERNAME=${{ env.RDS_USERNAME }}" >> .env
