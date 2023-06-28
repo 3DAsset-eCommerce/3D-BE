@@ -22,7 +22,7 @@ public class MyUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collector = new ArrayList<>();
-        collector.add(() -> String.valueOf(user.getRole()));
+        collector.add(() -> "ROLE_" + user.getRole());
         return collector;
     }
 
@@ -53,6 +53,7 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        if(user.getStatus().toString().equals("ACTIVE")) return true;
+        return false;
     }
 }

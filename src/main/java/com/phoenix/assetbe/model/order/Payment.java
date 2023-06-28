@@ -1,18 +1,19 @@
 package com.phoenix.assetbe.model.order;
 
 import com.phoenix.assetbe.core.util.MyTimeBaseUtil;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Table(name = "payment_tb")
 @Entity
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="id", callSuper=false)
 public class Payment extends MyTimeBaseUtil {
 
     @Id
@@ -25,8 +26,14 @@ public class Payment extends MyTimeBaseUtil {
 
     private String receiptURL;
 
-    private double totalPrice;
+    @NotNull
+    private Double totalPrice;
 
+    @NotBlank
     private String paymentTool;
+
+    public void mappingOrder(Order order){
+        this.order = order;
+    }
 
 }

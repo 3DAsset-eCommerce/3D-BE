@@ -1,13 +1,13 @@
 package com.phoenix.assetbe.model.asset;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Table(name = "category_tb")
 @Entity
@@ -18,12 +18,14 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
     private String categoryName;
 
-    private String subCategoryName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_id")
-    private Asset asset;
-
+    /**
+     * 메소드
+     */
+    public void changeCategory(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }

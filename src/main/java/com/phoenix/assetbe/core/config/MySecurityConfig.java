@@ -1,9 +1,12 @@
 package com.phoenix.assetbe.core.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.assetbe.core.auth.jwt.MyJwtAuthorizationFilter;
 import com.phoenix.assetbe.core.exception.Exception401;
 import com.phoenix.assetbe.core.exception.Exception403;
 import com.phoenix.assetbe.core.util.MyFilterResponseUtil;
+import com.phoenix.assetbe.dto.ResponseDTO;
+import com.phoenix.assetbe.model.user.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +20,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 @Slf4j
 @Configuration
@@ -69,23 +75,44 @@ public class MySecurityConfig {
         // 8. 인증 실패 처리
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
             log.warn("인증되지 않은 사용자가 자원에 접근하려 합니다 : "+authException.getMessage());
-            MyFilterResponseUtil.unAuthorized(response, new Exception401("인증되지 않았습니다"));
+            MyFilterResponseUtil.unAuthorized(response, new Exception401("인증되지 않았습니다. "));
         });
 
         // 10. 권한 실패 처리
         http.exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> {
             log.warn("권한이 없는 사용자가 자원에 접근하려 합니다 : "+accessDeniedException.getMessage());
-            MyFilterResponseUtil.forbidden(response, new Exception403("권한이 없습니다"));
+            MyFilterResponseUtil.forbidden(response, new Exception403("권한이 없습니다. "));
         });
 
         // 11. 인증, 권한 필터 설정
         http.authorizeRequests(
-                authorize -> authorize.antMatchers("/s/**").authenticated()
-                        .antMatchers("/manager/**")
-                        .access("hasRole('ADMIN') or hasRole('MANAGER')")
-                        .antMatchers("/admin/**").hasRole("ADMIN")
+                authorize -> authorize
+                        .antMatchers("/s/admin/**").access("hasRole('ADMIN')")
+                        .antMatchers("/s/**").authenticated()
                         .anyRequest().permitAll()
         );
+
+        // 12. 로그아웃 설정
+        http.logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    // 로그아웃 성공 시 수행할 작업
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+
+                    // 응답 데이터 생성
+                    ResponseDTO<String> responseDto = new ResponseDTO<>("로그아웃이 성공적으로 처리되었습니다.");
+
+                    // JSON 변환
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String jsonResponse = objectMapper.writeValueAsString(responseDto);
+
+                    response.getWriter().write(jsonResponse);
+                    response.getWriter().flush();
+                });
 
         return http.build();
     }
@@ -93,7 +120,7 @@ public class MySecurityConfig {
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*"); // GET, POST, PUT, DELETE (Javascript 요청 허용)
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST")); // GET, POST만 허용
         configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용 (프론트 앤드 IP만 허용 react)
         configuration.setAllowCredentials(true); // 클라이언트에서 쿠키 요청 허용
         configuration.addExposedHeader("Authorization"); // 옛날에는 디폴트 였다. 지금은 아닙니다.
