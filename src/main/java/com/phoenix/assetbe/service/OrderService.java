@@ -34,6 +34,7 @@ public class OrderService {
     private final OrderQueryRepository orderQueryRepository;
     private final UserService userService;
     private final AssetService assetService;
+    private final CartService cartService;
 
 
     @Transactional
@@ -56,6 +57,8 @@ public class OrderService {
             MyAsset myAsset = MyAsset.builder().asset(orderAsset).user(user).build();
             myAssetList.add(myAsset);
             orderProductList.add(orderProduct);
+
+            cartService.deleteByUserIdAndAssetId(user.getId(), orderAsset.getId());
             totalPrice += orderAsset.getPrice();
         }
 
