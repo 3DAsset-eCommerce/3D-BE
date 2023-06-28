@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @Component
 public class DataInit extends DummyEntity{
 
-//    @Profile("prod")
+//    @Profile("dev")
 //    @Bean
 //    CommandLineRunner init(UserRepository userRepository,
 //                           AssetRepository assetRepository,
@@ -94,8 +94,14 @@ public class DataInit extends DummyEntity{
 //                Asset asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), Double.valueOf(rating), 1L);
 //                assetList.add(asset);
 //            }
-//            for(int i = 8; i < 30; i++){
-//                Asset asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), 0D, 0L);
+//            Asset asset = newAsset(titles.get(8), prices.get(8), sizes.get(8), dates.get(8), 0D, 0L);
+//            assetList.add(asset);
+//            for(int i = 9; i < 18; i++){
+//                asset = newAsset1(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), 0D, 0L);
+//                assetList.add(asset);
+//            }
+//            for(int i = 18; i < 30; i++){
+//                asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), 0D, 0L);
 //                assetList.add(asset);
 //            }
 //            assetRepository.saveAll(assetList);
@@ -134,7 +140,7 @@ public class DataInit extends DummyEntity{
 //            for(int i = 0; i < 5; i++){ //1~6 동일한 카테고리
 //                Category category = categoryList.get(i);
 //                for(int j = 0; j < 6; j++){
-//                    Asset asset = assetList.get((i * 6) + j);
+//                    asset = assetList.get((i * 6) + j);
 //
 //                    assetCategoryList.add(AssetCategory.builder().asset(asset).category(category).build());
 //                }
@@ -146,7 +152,7 @@ public class DataInit extends DummyEntity{
 //            for(int i = 0; i < 5; i++){ //1~6 동일한 카테고리, 각각 다른 서브 카테고리
 //                Category category = categoryList.get(i);
 //                for(int j = 0; j < 6; j++){
-//                    Asset asset = assetList.get((i * 6) + j);
+//                    asset = assetList.get((i * 6) + j);
 //                    SubCategory subCategory = subCategoryList.get(j);
 //
 //                    assetSubCategoryList.add(AssetSubCategory.builder().asset(asset).category(category).subCategory(subCategory).build());
@@ -159,7 +165,7 @@ public class DataInit extends DummyEntity{
 //            for(int i = 0; i < 5; i++){
 //                Category category = categoryList.get(i);
 //                for(int j = 0; j < 6; j++){
-//                    Asset asset = assetList.get((i * 6) + j);
+//                    asset = assetList.get((i * 6) + j);
 //                    SubCategory subCategory = subCategoryList.get(j);
 //
 //                    for(int k = 0; k < 10; k++){
@@ -172,8 +178,8 @@ public class DataInit extends DummyEntity{
 //
 //            // Preview
 //            List<Preview> previewList = new ArrayList<>();
-//            for(Asset asset : assetList){
-//                Preview preview = Preview.builder().asset(asset).previewUrl("preview.url").build();
+//            for(Asset asset1 : assetList){
+//                Preview preview = Preview.builder().asset(asset1).previewUrl("preview.url").build();
 //                previewList.add(preview);
 //            }
 //            previewRepository.saveAll(previewList);
@@ -196,7 +202,7 @@ public class DataInit extends DummyEntity{
 //                User user = userList.get(userIndex);
 //
 //                for(int i = 4; i < 12; i++){
-//                    Asset asset = assetList.get(i);
+//                    asset = assetList.get(i);
 //
 //                    cartList.add(Cart.builder().user(user).asset(asset).build());
 //                }
@@ -211,7 +217,7 @@ public class DataInit extends DummyEntity{
 //                User user = userList.get(userIndex);
 //
 //                for(int i = 9; i < 18; i++){
-//                    Asset asset = assetList.get(i);
+//                    asset = assetList.get(i);
 //
 //                    wishListList.add(WishList.builder().user(user).asset(asset).build());
 //                }
@@ -234,7 +240,7 @@ public class DataInit extends DummyEntity{
 //                paymentRepository.save(payment);
 //
 //                for(int i = 0; i < 8; i++){
-//                    Asset asset = assetList.get(i);
+//                    asset = assetList.get(i);
 //                    OrderProduct orderProduct = OrderProduct.builder().order(order).asset(asset).build();
 //                    MyAsset myAsset = MyAsset.builder().asset(asset).user(user).build();
 //
