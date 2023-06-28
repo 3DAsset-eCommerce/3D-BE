@@ -147,8 +147,8 @@ jobs:
            sudo docker pull  ${{ secrets.DOCKER_IMAGE }}
            sudo docker stop springappProd
            sudo docker rm springappProd
-           sudo docker run -d --name springappProd -p 8085:8085 -e SPRING_PROFILES_ACTIVE=prod ${{ secrets.DOCKER_IMAGE }}
+           sudo docker run -d --name springappProd -p 443:443 -e SPRING_PROFILES_ACTIVE=prod ${{ secrets.DOCKER_IMAGE }}
            else
-           sudo docker run -d --name springappProd -p 8085:8085 -e SPRING_PROFILES_ACTIVE=prod ${{ secrets.DOCKER_IMAGE }}
+           sudo docker run -d --name springappProd -p 443:443 -e SPRING_PROFILES_ACTIVE=prod ${{ secrets.DOCKER_IMAGE }}
            fi
 
