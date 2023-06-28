@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -44,13 +45,11 @@ public class CartService {
 
         for (Asset asset : assetList) {
             Cart cart = Cart.builder().user(userPS).asset(asset).build();
-            cartList.add(cart);
-        }
-
-        try {
-            cartRepository.saveAll(cartList);
-        } catch (Exception e) {
-            throw new Exception500("장바구니 담기 실패 : "+e.getMessage());
+            try {
+                cartRepository.save(cart);
+            } catch (Exception e) {
+                throw new Exception500("장바구니 담기 실패 : "+e.getMessage());
+            }
         }
     }
 
@@ -61,10 +60,12 @@ public class CartService {
 
         userService.authCheck(myUserDetails, userId);
 
-        try {
-            cartRepository.deleteAllById(carts);
-        } catch (Exception e) {
-            throw new Exception500("장바구니 삭제 실패 : "+e.getMessage());
+        for (Long cartId : carts) {
+            try {
+                cartRepository.deleteById(cartId);
+            } catch (Exception e) {
+                throw new Exception500("장바구니 삭제 실패 : "+e.getMessage());
+            }
         }
     }
 
@@ -92,5 +93,9 @@ public class CartService {
     public List<Cart> findAllCartById(List<Long> cartIds){
         List<Cart> cartList = cartRepository.findAllById(cartIds);
         return cartList;
+    }
+
+    public void deleteByUserIdAndAssetId(Long userId, Long assetId) {
+        cartRepository.deleteByUserIdAndAssetId(userId, assetId);
     }
 }
