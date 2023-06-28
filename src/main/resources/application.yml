@@ -13,6 +13,7 @@ spring:
           auth: true
           starttls:
             enable: true
+
 application:
   aws:
     access-key: ${AWS_ACCESS_KEY}
