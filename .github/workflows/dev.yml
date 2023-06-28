@@ -33,7 +33,6 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
