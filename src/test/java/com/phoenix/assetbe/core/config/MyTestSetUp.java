@@ -130,16 +130,27 @@ public class MyTestSetUp extends DummyEntity{
 
         //Asset
         List<Asset> assetList = new ArrayList<Asset>();
-        for(int i = 0; i < 30; i++){
-            Asset asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), ratings.get(i), 1L);
+        for(int i = 0; i < 8; i++){
+            int rating = (i % 5) + 1;
+            Asset asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), Double.valueOf(rating), 1L);
+            assetList.add(asset);
+        }
+        Asset asset = newAsset(titles.get(8), prices.get(8), sizes.get(8), dates.get(8), 0D, 0L);
+        assetList.add(asset);
+        for(int i = 9; i < 18; i++){
+            asset = newAsset1(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), 0D, 0L);
+            assetList.add(asset);
+        }
+        for(int i = 18; i < 30; i++){
+            asset = newAsset(titles.get(i), prices.get(i), sizes.get(i), dates.get(i), 0D, 0L);
             assetList.add(asset);
         }
         assetRepository.saveAll(assetList);
 
         // Preview
         List<Preview> previewList = new ArrayList<>();
-        for(Asset asset : assetList){
-            Preview preview = Preview.builder().asset(asset).previewUrl("preview.url").build();
+        for(Asset asset1 : assetList){
+            Preview preview = Preview.builder().asset(asset1).previewUrl("preview.url").build();
             previewList.add(preview);
         }
         previewRepository.saveAll(previewList);
