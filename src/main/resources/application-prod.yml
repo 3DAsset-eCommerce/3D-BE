@@ -14,7 +14,7 @@ spring:
     url: jdbc:mysql://asset.cmbxkvuyugn5.ap-northeast-2.rds.amazonaws.com:${RDS_PORT}/${RDS_DATABASE_NAME}?useSSL=true&serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${RDS_USERNAME}
-    password: ${RDS_PASSWORD}
+    password: fastcampus1!
   jpa:
     open-in-view: false
     hibernate:
