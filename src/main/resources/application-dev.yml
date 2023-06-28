@@ -1,10 +1,19 @@
 server:
+  http2:
+    enabled: true
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: fastcampus1!
+    key-store-type: PKCS12
+  tomcat:
+    uri-encoding: UTF-8
+  port: 443
+#  port: 8080
   servlet:
     encoding:
       charset: utf-8
       force: true
-  port: 8080
-
 spring:
   datasource:
     url: jdbc:h2:mem:test;MODE=MySQL
@@ -25,7 +34,6 @@ spring:
       default_batch_fetch_size: 100
     # db session controller까지 가져오기
     open-in-view: false
-  # hibernateLazyInitializer 오류 해결법
   jackson:
     serialization:
       fail-on-empty-beans: false

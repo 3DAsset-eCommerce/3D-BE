@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class MyTimeBaseUtil {
 
     @CreatedDate
-    @Column(updatable = false, name = "created_at")
+    @Column(updatable = false, name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
 }

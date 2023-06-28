@@ -1,4 +1,22 @@
 spring:
   profiles:
     active:
-      - dev
+      - prod
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dbguswn5644@gmail.com
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+application:
+  aws:
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    region: ${AWS_DEFAULT_REGION}
+    bucket: ${AWS_S3_BUCKET}
+    bucket-url: ${AWS_S3_BUCKET_URL}

@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.core.auth.session;
 
+import com.phoenix.assetbe.model.user.Status;
 import com.phoenix.assetbe.model.user.User;
 import com.phoenix.assetbe.model.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User userPS = userRepository.findByEmail(email).orElseThrow(
+        User userPS = userRepository.findByUserWithEmailAndStatus(email, Status.ACTIVE).orElseThrow(
                 () -> new InternalAuthenticationServiceException("인증 실패"));
         return new MyUserDetails(userPS);
     }

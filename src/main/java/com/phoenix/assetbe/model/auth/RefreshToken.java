@@ -1,13 +1,13 @@
 package com.phoenix.assetbe.model.auth;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Getter
 @Table(name = "refresh_token_tb")
 @Entity
@@ -19,6 +19,6 @@ public class RefreshToken {
     private Long id;
 
     //user 1:1
-
+    @NotBlank
     private String refreshToken;
 }
