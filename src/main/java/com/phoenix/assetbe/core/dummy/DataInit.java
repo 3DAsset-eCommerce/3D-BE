@@ -21,26 +21,27 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-public class DataInit extends DummyEntity{
+public class DataInit extends DummyEntity {
 
 //    @Profile("dev")
 //    @Bean
-//    CommandLineRunner init(UserRepository userRepository,
-//                           AssetRepository assetRepository,
-//                           CategoryRepository categoryRepository,
-//                           SubCategoryRepository subCategoryRepository,
-//                           TagRepository tagRepository,
-//                           AssetCategoryRepository assetCategoryRepository,
-//                           AssetSubCategoryRepository assetSubCategoryRepository,
-//                           AssetTagRepository assetTagRepository,
-//                           PreviewRepository previewRepository,
-//                           CartRepository cartRepository,
-//                           WishListRepository wishListRepository,
-//                           OrderRepository orderRepository,
-//                           OrderProductRepository orderProductRepository,
-//                           PaymentRepository paymentRepository,
-//                           MyAssetRepository myAssetRepository,
-//                           ReviewRepository reviewRepository){
+//    CommandLineRunner init(
+//            UserRepository userRepository,
+//            AssetRepository assetRepository,
+//            CategoryRepository categoryRepository,
+//            SubCategoryRepository subCategoryRepository,
+//            TagRepository tagRepository,
+//            AssetCategoryRepository assetCategoryRepository,
+//            AssetSubCategoryRepository assetSubCategoryRepository,
+//            AssetTagRepository assetTagRepository,
+//            PreviewRepository previewRepository,
+//            CartRepository cartRepository,
+//            WishListRepository wishListRepository,
+//            OrderRepository orderRepository,
+//            OrderProductRepository orderProductRepository,
+//            PaymentRepository paymentRepository,
+//            MyAssetRepository myAssetRepository,
+//            ReviewRepository reviewRepository) {
 //        return args -> {
 //
 //            // User  1L  yu  hyunju1   yuhyunju1@nate.com  qwe123!@#
