@@ -13,7 +13,7 @@ env:
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
   AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
   AWS_S3_BUCKET_URL: ${{ secrets.AWS_S3_BUCKET_URL }}
-  RDS_ENDPOINT: ${{ secrets.DB_ENDPOINT.replace(".", "%2E") }}
+  RDS_ENDPOINT: ${{ secrets.DB_ENDPOINT }}
   RDS_PORT: ${{ secrets.DB_PORT }}
   RDS_DATABASE_NAME: ${{ secrets.DB_DATABASE_NAME }}
   RDS_USERNAME: ${{ secrets.DB_USERNAME }}
@@ -69,7 +69,7 @@ jobs:
             AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}
             AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
             AWS_S3_BUCKET_URL=${{ secrets.AWS_S3_BUCKET_URL }}
-            RDS_ENDPOINT=${{ secrets.DB_ENDPOINT.replace(".", "%2E") }}
+            RDS_ENDPOINT=${{ env.RDS_ENDPOINT.replace(/\./g, "%2E") }}
             RDS_PORT=${{ secrets.DB_PORT }}
             RDS_DATABASE_NAME=${{ secrets.DB_DATABASE_NAME }}
             RDS_USERNAME=${{ secrets.DB_USERNAME }}
@@ -115,7 +115,7 @@ jobs:
           echo "AWS_DEFAULT_REGION=${{ env.AWS_DEFAULT_REGION }}" >> .env
           echo "AWS_S3_BUCKET=${{ env.AWS_S3_BUCKET }}" >> .env
           echo "AWS_S3_BUCKET_URL=${{ env.AWS_S3_BUCKET_URL }}" >> .env
-          echo "RDS_ENDPOINT=${{ env.RDS_ENDPOINT.replace(".", "%2E") }}" >> .env
+          echo "RDS_ENDPOINT=${{ env.RDS_ENDPOINT.replace(/\./g, "%2E") }}" >> .env
           echo "RDS_PORT=${{ env.RDS_PORT }}" >> .env
           echo "RDS_DATABASE_NAME=${{ env.RDS_DATABASE_NAME }}" >> .env
           echo "RDS_USERNAME=${{ env.RDS_USERNAME }}" >> .env
@@ -131,24 +131,23 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-           #  cd /home/ubuntu/myapp
-           # sudo docker-compose ps -q | xargs -r docker stop
-           # sudo docker-compose pull -v
-           # sudo docker-compose up -d
-           if ! command -v docker &> /dev/null; then
-           sudo yum update -y
-           sudo yum install -y docker
-           fi
-           if ! sudo systemctl is-active --quiet docker; then
-           sudo systemctl start docker
-           sudo usermod -a -G docker ec2-user
-           fi
-           if sudo docker ps -a --format '{{.Names}}' | grep -q "^springappProd$"; then
-           sudo docker pull  ${{ secrets.DOCKER_IMAGE }}
-           sudo docker stop springappProd
-           sudo docker rm springappProd
-           sudo docker run -d --name springappProd -p 443:443 -e SPRING_PROFILES_ACTIVE=prod ${{ secrets.DOCKER_IMAGE }}
-           else
-           sudo docker run -d --name springappProd -p 443:443 -e SPRING_PROFILES_ACTIVE=prod ${{ secrets.DOCKER_IMAGE }}
-           fi
-
+            #  cd /home/ubuntu/myapp
+            # sudo docker-compose ps -q | xargs -r docker stop
+            # sudo docker-compose pull -v
+            # sudo docker-compose up -d
+            if ! command -v docker &> /dev/null; then
+            sudo yum update -y
+            sudo yum install -y docker
+            fi
+            if ! sudo systemctl is-active --quiet docker; then
+            sudo systemctl start docker
+            sudo usermod -a -G docker ec2-user
+            fi
+            if sudo docker ps -a --format '{{.Names}}' | grep -q "^springappProd$"; then
+            sudo docker pull  ${{ secrets.DOCKER_IMAGE }}
+            sudo docker stop springappProd
+            sudo docker rm springappProd
+            sudo docker run -d --name springappProd -p 443:443 -e SPRING_PROFILES_ACTIVE=prod ${{ secrets.DOCKER_IMAGE }}
+            else
+            sudo docker run -d --name springappProd -p 443:443 -e SPRING_PROFILES_ACTIVE=prod ${{ secrets.DOCKER_IMAGE }}
+            fi
