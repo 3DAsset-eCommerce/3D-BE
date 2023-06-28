@@ -39,7 +39,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
-    runtimeOnly 'com.mysql:mysql-connector-java:8.0.27'
+    implementation 'com.mysql:mysql-connector-java:8.0.27'
 
     // Querydsl 추가
     implementation 'com.querydsl:querydsl-jpa'
