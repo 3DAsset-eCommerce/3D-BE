@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 @Component
 public class DataInit extends DummyEntity {
 
-    @Profile("dev")
     @Bean
     CommandLineRunner init(
             UserRepository userRepository,
