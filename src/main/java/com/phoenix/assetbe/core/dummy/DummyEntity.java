@@ -62,17 +62,16 @@ public class DummyEntity {
                 .description("assetName은 price원입니다. ")
                 .discount(0)
                 .size(size)
-                .extension(".FBX")
+                .extension("fbx")
                 .releaseDate(date)
                 .creator("NationA")
                 .rating(rating)
-                .wishCount(1111L)
                 .visitCount(2222L)
                 .reviewCount(reviewCount)
                 .status(true)
                 .updatedAt(LocalDateTime.now())
-                .fileUrl(assetName + ".fileUrl")
-                .thumbnailUrl(assetName + ".thumbnailUrl")
+                .fileUrl(".")
+                .thumbnailUrl(".")
                 .build();
     }
 }
