@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.phoenix.assetbe.model.asset.QMyAsset.myAsset;
 import static com.phoenix.assetbe.model.cart.QCart.cart;
 import static com.phoenix.assetbe.model.order.QOrder.order;
 import static com.phoenix.assetbe.model.order.QOrderProduct.orderProduct;
@@ -40,11 +41,10 @@ public class WishListQueryRepository {
     public List<WishResponse.GetWishListWithOrderAndCartOutDTO> getWishListWithOrderAndCartByUserId(Long userId) {
 
         return queryFactory
-                .select(Projections.constructor(WishResponse.GetWishListWithOrderAndCartOutDTO.class, wishList.id, wishList.asset, order.id, cart.id))
+                .select(Projections.constructor(WishResponse.GetWishListWithOrderAndCartOutDTO.class, wishList.id, wishList.asset, myAsset.id, cart.id))
                 .from(wishList)
-                .leftJoin(order).on(order.user.id.eq(userId))
-                .leftJoin(orderProduct).on(order.id.eq(orderProduct.order.id)).on(wishList.asset.eq(orderProduct.asset))
                 .innerJoin(user).on(user.id.eq(wishList.user.id))
+                .leftJoin(myAsset).on(myAsset.asset.eq(wishList.asset)).on(myAsset.user.id.eq(userId))
                 .leftJoin(cart).on(cart.user.id.eq(userId)).on(wishList.asset.eq(cart.asset))
                 .where(user.id.eq(userId))
                 .fetch();

@@ -67,15 +67,14 @@ public class CartServiceTest extends DummyEntity {
 
         Asset asset1 = newAsset("에셋1", 1000D, 1D, LocalDate.now(), 1D, 1L);
         Asset asset2 = newAsset("에셋2", 1000D, 1D, LocalDate.now(), 1D, 1L);
-        when(assetService.findAssetById(1L)).thenReturn(asset1);
-        when(assetService.findAssetById(2L)).thenReturn(asset2);
+        when(assetService.findAllAssetById(assets)).thenReturn(Arrays.asList(asset1, asset2));
 
         cartService.addCartService(addCartInDTO, myUserDetails);
 
         // then
         verify(userService, times(1)).findValidUserById(anyLong());
         verify(assetService, times(1)).findAllAssetById(anyList());
-        verify(cartRepository, times(1)).saveAll(anyList());
+        verify(cartRepository, times(2)).save(any());
     }
 
     @Test
@@ -100,7 +99,7 @@ public class CartServiceTest extends DummyEntity {
         // then
         verify(userService, times(1)).findValidUserById(anyLong());
         verify(assetService, never()).findAllAssetById(anyList());
-        verify(cartRepository, never()).saveAll(anyList());
+        verify(cartRepository, never()).save(any());
     }
 
     @Test
@@ -126,7 +125,7 @@ public class CartServiceTest extends DummyEntity {
 
         // then
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
-        verify(cartRepository, never()).saveAll(anyList());
+        verify(cartRepository, never()).save(any());
     }
 
     @Test
@@ -157,7 +156,7 @@ public class CartServiceTest extends DummyEntity {
 
         // then
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
-        verify(cartRepository, times(1)).deleteAllById(anyList());
+        verify(cartRepository, times(2)).deleteById(anyLong());
     }
 
     @Test
@@ -183,7 +182,7 @@ public class CartServiceTest extends DummyEntity {
 
         // then
         verify(userService, times(1)).authCheck(any(MyUserDetails.class), anyLong());
-        verify(cartRepository, never()).deleteAllById(anyList());
+        verify(cartRepository, never()).deleteById(anyLong());
     }
 
     @Test

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.phoenix.assetbe.model.asset.QMyAsset.myAsset;
 import static com.phoenix.assetbe.model.cart.QCart.cart;
 import static com.phoenix.assetbe.model.order.QOrder.order;
 import static com.phoenix.assetbe.model.order.QOrderProduct.orderProduct;
@@ -38,11 +39,10 @@ public class CartQueryRepository {
     public List<CartResponse.GetCartWithOrderOutDTO> getCartWithOrderAndWishByUserId(Long userId) {
 
         return queryFactory
-                .select(Projections.constructor(CartResponse.GetCartWithOrderOutDTO.class, cart.id, cart.asset, orderProduct.id, wishList.id))
+                .select(Projections.constructor(CartResponse.GetCartWithOrderOutDTO.class, cart.id, cart.asset, myAsset.id, wishList.id))
                 .from(cart)
-                .leftJoin(order).on(order.user.id.eq(userId))
-                .leftJoin(orderProduct).on(order.id.eq(orderProduct.order.id)).on(cart.asset.eq(orderProduct.asset))
                 .innerJoin(user).on(user.id.eq(cart.user.id))
+                .leftJoin(myAsset).on(myAsset.asset.eq(cart.asset)).on(myAsset.user.id.eq(userId))
                 .leftJoin(wishList).on(wishList.user.id.eq(userId)).on(cart.asset.eq(wishList.asset))
                 .where(user.id.eq(userId))
                 .fetch();

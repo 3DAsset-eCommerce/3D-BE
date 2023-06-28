@@ -49,14 +49,15 @@ public class OrderServiceTest extends DummyEntity {
     private OrderQueryRepository orderQueryRepository;
     @Mock
     private UserService userService;
-
     @Mock
     private AssetService assetService;
+    @Mock
+    private CartService cartService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        orderService = new OrderService(orderRepository, paymentRepository, orderProductRepository, myAssetRepository, orderQueryRepository, userService, assetService);
+        orderService = new OrderService(orderRepository, paymentRepository, orderProductRepository, myAssetRepository, orderQueryRepository, userService, assetService, cartService);
     }
 
     @Test
