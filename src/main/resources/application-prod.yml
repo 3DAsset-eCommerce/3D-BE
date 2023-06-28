@@ -36,3 +36,9 @@ logging:
 
 file:
   path: ./upload/ # UPLOAD 폴더 상대경로 / AWS에 S3 사용하는게 좋음
+
+sentry:
+  dsn: https://e1ff18e8f36c4ba6a3298804c7f1e6b4@o4505437284532224.ingest.sentry.io/4505437304586240
+  # Set traces-sample-rate to 1.0 to capture 100% of transactions for performance monitoring.
+  # We recommend adjusting this value in production.
+  traces-sample-rate: 1.0

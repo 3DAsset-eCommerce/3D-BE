@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'io.sentry:sentry-spring-boot-starter:6.18.1'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.3.0'
     implementation group: 'org.qlrm', name: 'qlrm', version: '2.1.1'
