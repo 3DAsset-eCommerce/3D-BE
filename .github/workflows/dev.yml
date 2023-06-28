@@ -146,6 +146,7 @@ jobs:
               sudo docker pull ${{ secrets.DOCKER_IMAGE_DEV }}
               sudo docker stop springappDev
               sudo docker rm springappDev
+
               sudo docker run -d --name springappDev -p 443:8080 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE_DEV }}
             else
               sudo docker run -d --name springappDev -p 443:8080 -e SPRING_PROFILES_ACTIVE=dev ${{ secrets.DOCKER_IMAGE_DEV }}

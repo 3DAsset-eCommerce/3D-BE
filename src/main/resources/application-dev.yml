@@ -27,7 +27,7 @@ spring:
         web-allow-others: true
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
