@@ -76,6 +76,7 @@ public class OrderQueryRepository {
                  .select(Projections.constructor(OrderResponse.OrderProductWithDetailsOutDTO.OrderDetailsDTO.class,
                          order.id,
                          order.createdAt,
+                         payment.paymentTool,
                          payment.totalPrice,
                          JPAExpressions
                                  .select(orderProduct.count())
