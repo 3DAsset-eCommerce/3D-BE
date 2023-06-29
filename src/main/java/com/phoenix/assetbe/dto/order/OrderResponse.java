@@ -76,6 +76,7 @@ public class OrderResponse {
             private Double price;
             private Double discountPrice;
             private Double size;
+            private String thumbnailUrl;
 
             public OrderProductOutDTO(Asset asset) {
                 this.assetId = asset.getId();
@@ -84,6 +85,7 @@ public class OrderResponse {
                 this.price = asset.getPrice();
                 this.discountPrice = asset.getDiscountPrice();
                 this.size = asset.getSize();
+                this.thumbnailUrl = asset.getThumbnailUrl();
             }
         }
 
