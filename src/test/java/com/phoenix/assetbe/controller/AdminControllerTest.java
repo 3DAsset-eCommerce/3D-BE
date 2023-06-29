@@ -985,6 +985,8 @@ public class AdminControllerTest extends MyRestDoc {
         updateAssetInDTO.setDeleteTagList(deleteTags);
         updateAssetInDTO.setAddTagList(addTags);
         updateAssetInDTO.setFileUrl("This is update FileUrl");
+        updateAssetInDTO.setFileSize(10.0);
+        updateAssetInDTO.setExtension(".FBX");
         updateAssetInDTO.setThumbnailUrl("This is update thumbnailUrl");
         updateAssetInDTO.setPreviewUrlList(previewUrlList);
 

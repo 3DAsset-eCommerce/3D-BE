@@ -123,15 +123,28 @@ public class Asset extends MyTimeBaseUtil {
     public void changeFileUrl(String fileUrl) {this.fileUrl = fileUrl;}
     public void changeThumbnailUrl(String thumbnailUrl) {this.thumbnailUrl = thumbnailUrl;}
 
-    // Asset Name, description, price, discount 변경 메소드
+    // Asset Name, description, price, discount, extension, size 변경 메소드
     public void changeAssetName(String assetName) {this.assetName = assetName;}
     public void changeAssetDescription(String assetDescription) {this.description = assetDescription;}
     public void changePrice(Double price) {this.price = price;}
+    public void changeExtension(String extension) {this.extension = extension;}
+    public void changeFileSize(Double fileSize) {this.size = fileSize;}
     public void changeDiscountAndDiscountPrice(Integer discount) {
         this.discount = discount;
         this.discountPrice = this.price * ((100 - discount) / 100); // 할인 후 가격 저장
     }
 
+    // WishCount 변경 메소드
+    public void increaseWishCount(){
+        if(wishCount == null){this.wishCount = 1L;}
+        this.wishCount++;
+    }
+    public void decreaseWishCount(){this.wishCount--;}
+
+    // updatedAt 메소드
+    public void onUpdate(){this.updatedAt = LocalDateTime.now();}
+
+    // asset 등록 메소드
     public void addAssetDetails(AdminRequest.AddAssetInDTO addAssetInDTO){
         this.assetName = addAssetInDTO.getAssetName();
         this.price = addAssetInDTO.getPrice();
@@ -148,20 +161,5 @@ public class Asset extends MyTimeBaseUtil {
         if(price != null && discount != null){
             this.discountPrice = price - (price * (discount / 100.0));
         }
-    }
-
-    public void increaseWishCount(){
-        if(wishCount == null){
-            this.wishCount = 1L;
-        }
-        this.wishCount++;
-    }
-
-    public void decreaseWishCount(){
-        this.wishCount--;
-    }
-
-    public void onUpdate(){
-        this.updatedAt = LocalDateTime.now();
     }
 }

@@ -117,8 +117,8 @@ public class AdminService {
                 () -> new Exception404("존재하지 않는 에셋입니다. ")
         );
 
-        // 2. Url, Name, Description, Price, Discount 전부 바꾸기
-        changeNameDescriptionPriceDiscount(assetPS, updateAssetInDTO);
+        // 2. Url, Name, Description, Price, Discount, Size, Extension 전부 바꾸기
+        changeNameDescriptionPriceDiscountSizeExtension(assetPS, updateAssetInDTO);
         changeUrl(assetPS, updateAssetInDTO);
         changePreviewUrl(assetPS, updateAssetInDTO);
 
@@ -181,7 +181,7 @@ public class AdminService {
         }
     }
 
-    private void changeNameDescriptionPriceDiscount(Asset assetPS, AdminRequest.UpdateAssetInDTO updateAssetInDTO) {
+    private void changeNameDescriptionPriceDiscountSizeExtension(Asset assetPS, AdminRequest.UpdateAssetInDTO updateAssetInDTO) {
         if (!updateAssetInDTO.getAssetName().equals(assetPS.getAssetName())) {
             assetPS.changeAssetName(updateAssetInDTO.getAssetName());
         }
@@ -193,6 +193,12 @@ public class AdminService {
         }
         if (!updateAssetInDTO.getDiscount().equals(assetPS.getDiscount())) {
             assetPS.changeDiscountAndDiscountPrice(updateAssetInDTO.getDiscount());
+        }
+        if (!updateAssetInDTO.getExtension().equals(assetPS.getExtension())) {
+            assetPS.changeExtension(updateAssetInDTO.getExtension());
+        }
+        if (!updateAssetInDTO.getFileSize().equals(assetPS.getSize())) {
+            assetPS.changeFileSize(updateAssetInDTO.getFileSize());
         }
     }
 

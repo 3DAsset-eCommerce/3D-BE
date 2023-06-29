@@ -50,6 +50,10 @@ public class AdminRequest {
 
         @NotEmpty(message = "에셋 파일을 넣어주세요. ")
         private String fileUrl;
+        @NotEmpty(message = "에셋 크기를 넣어주세요. ")
+        private Double fileSize;
+        @NotEmpty(message = "에셋 파일을 넣어주세요. ")
+        private String extension;
         @NotEmpty(message = "에셋 썸네일을 넣어주세요. ")
         private String thumbnailUrl;
         @NotEmpty(message = "에셋 프리뷰를 넣어주세요. ")
