@@ -45,3 +45,9 @@ logging:
   level:
     '[com.phoenix.assetbe]': DEBUG # DEBUG 레벨부터 에러 확인할 수 있게 설정하기
     '[org.hibernate.type]': TRACE # 콘솔 쿼리에 ? 에 주입된 값 보기
+
+#sentry:
+#  dsn: https://5f8a9a57749340d1b549e3c283909f34@o4505437284532224.ingest.sentry.io/4505437695836160
+#  # Set traces-sample-rate to 1.0 to capture 100% of transactions for performance monitoring.
+#  # We recommend adjusting this value in production.
+#  traces-sample-rate: 1.0

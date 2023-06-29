@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.annotation.MyLog;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.admin.AdminRequest;
 import com.phoenix.assetbe.dto.admin.AdminResponse;
@@ -27,6 +28,7 @@ public class AdminController {
     /**
      * 카테고리
      */
+    @MyLog
     @GetMapping("/s/admin/category")
     public ResponseEntity<?> getCategoryList() {
         AdminResponse.GetCategoryListOutDTO getCategoryListOutDTO = adminService.getCategoryListService();
@@ -37,6 +39,7 @@ public class AdminController {
     /**
      * 서브 카테고리
      */
+    @MyLog
     @GetMapping("/s/admin/{categoryName}/subcategory")
     public ResponseEntity<?> getSubCategoryList(@PathVariable String categoryName) {
         AdminResponse.GetSubCategoryListOutDTO getSubCategoryListOutDTO = adminService.getSubCategoryListService(categoryName);
@@ -47,6 +50,7 @@ public class AdminController {
     /**
      * 에셋
      */
+    @MyLog
     @PostMapping("/s/admin/asset/inactive")
     public ResponseEntity<?> inactiveAsset(@RequestBody AdminRequest.InactiveAssetInDTO inactiveAssetInDTO) {
         adminService.inactiveAssetService(inactiveAssetInDTO);
@@ -54,6 +58,7 @@ public class AdminController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/s/admin/asset/active")
     public ResponseEntity<?> activeAsset(@RequestBody AdminRequest.ActiveAssetInDTO activeAssetInDTO) {
         adminService.activeAssetService(activeAssetInDTO);
@@ -65,6 +70,7 @@ public class AdminController {
     /**
      * S3 관련
      */
+    @MyLog
     @PostMapping("/s/admin/file/{type}")
     public ResponseEntity<?> uploadFile(@RequestPart("file") MultipartFile file, @PathVariable("type") String type) {
         UserResponse.uploadOutDTO uploadOutDTO = s3Service.upload(file, type);
@@ -72,6 +78,7 @@ public class AdminController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/s/admin/delete")
     public ResponseEntity<?> deleteFile(@RequestBody AdminRequest.DeleteFileInDTO deleteFileInDTO) {
         s3Service.deleteFile(deleteFileInDTO);
@@ -82,6 +89,7 @@ public class AdminController {
     /**
      * 관리자 에셋 조회
      */
+    @MyLog
     @GetMapping("/s/admin/assets")
     public ResponseEntity<?> getAssetListByAdmin(
             @RequestParam(value = "num", required = false) Long assetNumber,
@@ -97,6 +105,7 @@ public class AdminController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @GetMapping("/s/admin/orders")
     public ResponseEntity<?> getOrderListByAdmin(
             @RequestParam(value = "period", required = false) String orderPeriod,
@@ -117,6 +126,7 @@ public class AdminController {
     /**
      * 관리자 에셋 수정
      */
+    @MyLog
     @PostMapping("/s/admin/asset/update")
     public ResponseEntity<?> updateAsset(@RequestBody AdminRequest.UpdateAssetInDTO updateAssetInDTO) {
         adminService.updateAssetService(updateAssetInDTO);
@@ -127,6 +137,7 @@ public class AdminController {
     /**
      * 관리자 에셋 등록
      */
+    @MyLog
     @PostMapping("/s/admin/asset")
     public ResponseEntity<?> addAsset(@RequestBody AdminRequest.AddAssetInDTO addAssetInDTO) {
         adminService.addAssetService(addAssetInDTO);

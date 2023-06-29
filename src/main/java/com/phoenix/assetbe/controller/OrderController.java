@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.annotation.MyLog;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.order.OrderRequest;
@@ -25,6 +26,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    @MyLog
     @PostMapping("/s/order")
     public ResponseEntity<?> orderAssets(@RequestBody OrderRequest.OrderAssetsInDTO orderAssetsInDTO , @AuthenticationPrincipal MyUserDetails myUserDetails){
         OrderResponse.OrderAssetsOutDTO orderAssetsOutDTO = orderService.orderAssetsService(orderAssetsInDTO, myUserDetails);
@@ -32,6 +34,7 @@ public class OrderController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @GetMapping("/s/user/{id}/orders")
     public ResponseEntity<?> getOrderList(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                                           @PathVariable("id") Long id,
@@ -50,6 +53,7 @@ public class OrderController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @GetMapping("/s/user/{userId}/orders/{orderId}")
     public ResponseEntity<?> getOrderDetails(@PathVariable("userId") Long userId, @PathVariable("orderId") Long orderId, @AuthenticationPrincipal MyUserDetails myUserDetails){
         OrderResponse.OrderProductWithDetailsOutDTO orderDetailsOutDTO = orderService.getOrderDetailsService(userId, orderId, myUserDetails);

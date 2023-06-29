@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.annotation.MyLog;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.asset.ReviewRequest;
@@ -18,6 +19,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    @MyLog
     @GetMapping("/assets/{id}/reviews")
     public ResponseEntity<?> getReviews(@PathVariable Long id,
                                         @AuthenticationPrincipal MyUserDetails myUserDetails) {
@@ -27,6 +29,7 @@ public class ReviewController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/s/assets/{id}/reviews")
     public ResponseEntity<?> addReview(@PathVariable Long id,
                                        @RequestBody ReviewRequest.ReviewInDTO addReviewInDTO,
@@ -38,6 +41,7 @@ public class ReviewController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/s/assets/{assetId}/reviews/{reviewId}")
     public ResponseEntity<?> updateReview(@PathVariable Long assetId, @PathVariable Long reviewId,
                                        @RequestBody ReviewRequest.ReviewInDTO updateReviewInDTO,
@@ -49,6 +53,7 @@ public class ReviewController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/s/assets/{assetId}/reviews/{reviewId}/delete")
     public ResponseEntity<?> deleteReview(@PathVariable Long assetId, @PathVariable Long reviewId,
                                           @RequestBody ReviewRequest.DeleteReviewInDTO deleteReviewInDTO,

@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.annotation.MyLog;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.dto.cart.CartRequest;
 import com.phoenix.assetbe.dto.cart.CartResponse;
@@ -20,6 +21,7 @@ public class CartController {
 
     private final CartService cartService;
 
+    @MyLog
     @PostMapping("/s/cart/add")
     public ResponseEntity<?> addCart(@RequestBody CartRequest.AddCartInDTO addCartInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails){
         cartService.addCartService(addCartInDTO, myUserDetails);
@@ -27,6 +29,7 @@ public class CartController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/s/cart/delete")
     public ResponseEntity<?> deleteCart(@RequestBody CartRequest.DeleteCartInDTO deleteCartInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails){
         cartService.deleteCartService(deleteCartInDTO, myUserDetails);
@@ -34,6 +37,7 @@ public class CartController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @GetMapping("/s/user/{id}/cartCount")
     public ResponseEntity<?> countCart(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails){
         CartResponse.CountCartOutDTO countCartOutDTO = cartService.countCartService(id, myUserDetails);
@@ -41,6 +45,7 @@ public class CartController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @GetMapping("/s/user/{id}/cart")
     public ResponseEntity<?> getCartList(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails){
         List<CartResponse.GetCartWithOrderOutDTO> cartList = cartService.getCartListService(id, myUserDetails);

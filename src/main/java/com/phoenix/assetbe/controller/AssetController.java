@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.annotation.MyLog;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
@@ -28,6 +29,7 @@ public class AssetController {
     /**
      * 개별 에셋
      */
+    @MyLog
     @GetMapping("/assets")
     public ResponseEntity<?> getAssetList(
             @PageableDefault(size = 28, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
@@ -41,6 +43,7 @@ public class AssetController {
     /**
      * 에셋 상세
      */
+    @MyLog
     @GetMapping("/assets/{id}/details")
     public ResponseEntity<?> getAssetDetails(@PathVariable Long id,
                                              @AuthenticationPrincipal MyUserDetails myUserDetails) {
@@ -54,6 +57,7 @@ public class AssetController {
     /**
      * 카테고리별 에셋
      */
+    @MyLog
     @GetMapping("/assets/{categoryName}")
     public ResponseEntity<?> getAssetListByCategory(
             @PathVariable String categoryName,
@@ -72,6 +76,7 @@ public class AssetController {
      * 카테고리별
      * 하위카테고리별 에셋
      */
+    @MyLog
     @GetMapping("/assets/{categoryName}/{subCategoryName}")
     public ResponseEntity<?> getAssetListBySubCategory(
             @PathVariable String categoryName,
@@ -90,6 +95,7 @@ public class AssetController {
     /**
      * 키워드로 에셋 검색
      */
+    @MyLog
     @GetMapping("/assets/search")
     public ResponseEntity<?> getAssetListBySearch(
             @RequestParam(value = "keyword", required = false) List<String> keywordList,

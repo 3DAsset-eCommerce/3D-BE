@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.annotation.MyLog;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.asset.AssetResponse;
 import com.phoenix.assetbe.dto.asset.CategoryResponse;
@@ -17,6 +18,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @MyLog
     @GetMapping("/assets/count")
     public ResponseEntity<?> getCategoryList() {
         CategoryResponse.CategoryOutDTO categoryOutDTO = categoryService.getCategoryListService();

@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.annotation.MyLog;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.dto.ResponseDTO;
 import com.phoenix.assetbe.dto.cart.CartRequest;
@@ -22,6 +23,7 @@ public class WishController {
 
     private final WishService wishService;
 
+    @MyLog
     @PostMapping("/s/wishlist/add")
     public ResponseEntity<?> addWish(@RequestBody WishRequest.AddWishInDTO addWishInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails){
         wishService.addWishService(addWishInDTO, myUserDetails);
@@ -29,6 +31,7 @@ public class WishController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/s/wishlist/delete")
     public ResponseEntity<?> deleteWish(@RequestBody WishRequest.DeleteWishInDTO deleteWishInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails){
         wishService.deleteWishService(deleteWishInDTO, myUserDetails);
@@ -36,6 +39,7 @@ public class WishController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @GetMapping("/s/user/{id}/wishlist")
     public ResponseEntity<?> getWishList(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails){
         List<WishResponse.GetWishListWithOrderAndCartOutDTO> wishList = wishService.getWishListService(id, myUserDetails);

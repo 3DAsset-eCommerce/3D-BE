@@ -1,5 +1,6 @@
 package com.phoenix.assetbe.controller;
 
+import com.phoenix.assetbe.core.annotation.MyLog;
 import com.phoenix.assetbe.core.auth.jwt.MyJwtProvider;
 import com.phoenix.assetbe.core.auth.session.MyUserDetails;
 import com.phoenix.assetbe.dto.ResponseDTO;
@@ -30,6 +31,7 @@ public class UserController {
     /**
      * 로그인
      */
+    @MyLog
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid UserRequest.LoginInDTO loginInDTO, Errors errors){
         UserResponse.LoginOutDTOWithJWT loginOutDTOWithJWT = userService.loginService(loginInDTO);
@@ -92,6 +94,7 @@ public class UserController {
     /**
      * 마이페이지
      */
+    @MyLog
     @PostMapping("/s/user/check")
     public ResponseEntity<?> checkPassword(@RequestBody UserRequest.CheckPasswordInDTO checkPasswordInDTO, Errors errors, @AuthenticationPrincipal MyUserDetails myUserDetails) {
         userService.checkPasswordService(checkPasswordInDTO, myUserDetails);
@@ -99,6 +102,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/s/user/{id}/withdraw")
     public ResponseEntity<?> withdraw(@PathVariable Long id, @RequestBody UserRequest.WithdrawInDTO withdrawInDTO, Errors errors,
                                       @AuthenticationPrincipal MyUserDetails myUserDetails) {
@@ -107,6 +111,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/s/user/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UserRequest.UpdateInDTO updateInDTO, Errors errors,
                                     @AuthenticationPrincipal MyUserDetails myUserDetails) {
@@ -115,6 +120,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @GetMapping("/s/user")
     public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal MyUserDetails myUserDetails) {
         UserResponse.GetMyInfoOutDTO getMyInfoOutDTO = userService.getMyInfoService(myUserDetails);
@@ -125,6 +131,7 @@ public class UserController {
     /**
      * 나의 에셋
      */
+    @MyLog
     @GetMapping("/s/user/{id}/assets")
     public ResponseEntity<?> getMyAssetList(@PathVariable Long id,
                                             @PageableDefault(size = 14, page = 0, sort = "assetName", direction = Sort.Direction.ASC) Pageable pageable,
@@ -134,6 +141,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @GetMapping("/s/user/{id}/assets/search")
     public ResponseEntity<?> searchMyAsset(@PathVariable Long id,
                                            @RequestParam(value = "keyword") List<String> keywordList,
@@ -144,6 +152,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/s/user/download")
     public ResponseEntity<?> downloadMyAsset(@RequestBody UserRequest.DownloadMyAssetInDTO downloadMyAssetInDTO, @AuthenticationPrincipal MyUserDetails myUserDetails) {
         UserResponse.DownloadMyAssetListOutDTO downloadMyAssetListOutDTO = userService.downloadMyAssetService(downloadMyAssetInDTO, myUserDetails);

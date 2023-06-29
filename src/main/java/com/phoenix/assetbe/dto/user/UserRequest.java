@@ -62,7 +62,7 @@ public class UserRequest {
                 message = "50자가 넘지 않도록 이메일 형식에 맞춰 작성해주세요. ")
         private String email;
 
-        @NotEmpty(message = "인증코드를 입력해주세요.")
+        @NotEmpty(message = "인증코드를 입력해주세요. ")
         private String code;
     }
 
@@ -80,7 +80,7 @@ public class UserRequest {
         @NotEmpty
         private String password;
 
-        @NotEmpty(message = "인증코드를 입력해주세요.")
+        @NotEmpty(message = "인증코드를 입력해주세요. ")
         private String code;
     }
 
