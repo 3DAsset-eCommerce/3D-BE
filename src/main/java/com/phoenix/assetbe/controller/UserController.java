@@ -39,6 +39,7 @@ public class UserController {
         return ResponseEntity.ok().header(MyJwtProvider.HEADER, loginOutDTOWithJWT.getJwt()).body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/login/send")
     public ResponseEntity<?> sendPasswordChangeCode(@RequestBody @Valid UserRequest.SendCodeInDTO sendCodeInDTO, Errors errors){
         UserResponse.SendCodeOutDTO sendCodeOutDTO = userService.sendPasswordChangeCodeService(sendCodeInDTO);
@@ -46,6 +47,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/login/check")
     public ResponseEntity<?> checkPasswordChangeCode(@RequestBody @Valid UserRequest.CheckCodeInDTO CheckCodeInDTO, Errors errors){
         userService.checkPasswordChangeCodeService(CheckCodeInDTO);
@@ -53,6 +55,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/login/change")
     public ResponseEntity<?> changePassword(@RequestBody @Valid UserRequest.ChangePasswordInDTO changePasswordInDTO, Errors errors){
         userService.changePasswordService(changePasswordInDTO);
@@ -63,6 +66,7 @@ public class UserController {
     /**
      * 회원가입
      */
+    @MyLog
     @PostMapping("/signup/duplicate")
     public ResponseEntity<?> checkEmailDuplicate(@RequestBody @Valid UserRequest.CheckEmailInDTO checkEmailInDTO, Errors errors){
         userService.checkEmailDuplicateService(checkEmailInDTO);
@@ -70,6 +74,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/signup/send")
     public ResponseEntity<?> sendSignupCode(@RequestBody @Valid UserRequest.SendCodeInDTO sendCodeInDTO, Errors errors){
         UserResponse.SendCodeOutDTO sendCodeOutDTO = userService.sendSignupCodeService(sendCodeInDTO);
@@ -77,6 +82,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/signup/check")
     public ResponseEntity<?> checkSignupCode(@RequestBody @Valid UserRequest.CheckCodeInDTO CheckCodeInDTO, Errors errors){
         userService.checkSignupCodeService(CheckCodeInDTO);
@@ -84,6 +90,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @MyLog
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid UserRequest.SignupInDTO signupInDTO, Errors errors) {
         userService.signupService(signupInDTO);
