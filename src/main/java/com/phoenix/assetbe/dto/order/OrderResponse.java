@@ -76,6 +76,7 @@ public class OrderResponse {
             private Double price;
             private Double discountPrice;
             private Double size;
+            private String thumbnailUrl;
 
             public OrderProductOutDTO(Asset asset) {
                 this.assetId = asset.getId();
@@ -84,6 +85,7 @@ public class OrderResponse {
                 this.price = asset.getPrice();
                 this.discountPrice = asset.getDiscountPrice();
                 this.size = asset.getSize();
+                this.thumbnailUrl = asset.getThumbnailUrl();
             }
         }
 
@@ -93,14 +95,16 @@ public class OrderResponse {
             private Long orderId;
             private String orderNumber;
             private LocalDate orderDate;
+            private String paymentTool;
             private Double totalPrice;
             private Long assetCount;
 
-            public OrderDetailsDTO(Long orderId, LocalDateTime orderDate, Double totalPrice, Long assetCount) {
+            public OrderDetailsDTO(Long orderId, LocalDateTime orderDate, String paymentTool, Double totalPrice, Long assetCount) {
                 this.orderId = orderId;
                 String orderNumber = orderDate.toLocalDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")).toString();
                 this.orderNumber = orderNumber + "-" + String.format("%06d", orderId);
                 this.orderDate = LocalDate.from(orderDate);
+                this.paymentTool = paymentTool;
                 this.totalPrice = totalPrice;
                 this.assetCount = assetCount;
             }

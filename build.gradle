@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.12'
+    id 'org.springframework.boot' version '2.7.6'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
@@ -40,7 +40,8 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'mysql:mysql-connector-java'
+    runtimeOnly 'mysql:mysql-connector-java'
 
     // Querydsl 추가
     implementation 'com.querydsl:querydsl-jpa'
@@ -68,6 +69,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.11.0'
 
 }
+
 
 // Querydsl 추가, 자동 생성된 Q클래스 gradle clean으로 제거
 clean {
