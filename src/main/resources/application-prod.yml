@@ -12,7 +12,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://${RDS_ENDPOINT}:${RDS_PORT}/${RDS_DATABASE_NAME}?useSSL=true&serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://assetstore.csu2eldpg64j.ap-northeast-2.rds.amazonaws.com:${RDS_PORT}/${RDS_DATABASE_NAME}?useSSL=true&serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${RDS_USERNAME}
     password: ${RDS_PASSWORD}
