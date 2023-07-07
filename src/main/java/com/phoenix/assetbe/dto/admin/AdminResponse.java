@@ -81,6 +81,9 @@ public class AdminResponse {
                 this.categoryName = categoryName;
                 this.subCategoryName = subCategoryName;
                 this.releaseDate = releaseDate;
+                if(updatedAt == null){
+                    this.updatedAt = null;
+                }
                 this.updatedAt = LocalDate.from(updatedAt);
             }
         }
