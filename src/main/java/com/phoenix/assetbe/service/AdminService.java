@@ -367,22 +367,48 @@ public class AdminService {
 
     private void addTagList(Asset assetPS, Category categoryPS, SubCategory subCategoryPS, AdminRequest.AddAssetInDTO addAssetInDTO){
         List<String> addTagList = addAssetInDTO.getAddTagList();
-        List<String> tagNameListPS = tagRepository.findTagNameList();
-        List<Tag> tagList = new ArrayList<>(); // 새로 태그 테이블에 등록할 태그리스트
-        for (String tagName: addTagList) {
-            if (!tagNameListPS.contains(tagName)) {
-                Tag tag = Tag.builder().tagName(tagName).build();
-                tagList.add(tag);
+        if(addTagList == null){
+            AssetTag assetTag = AssetTag.builder().asset(assetPS).category(categoryPS).subCategory(subCategoryPS).tag(null).build();
+            try {
+                assetTagRepository.save(assetTag);
+            }catch (Exception e){
+                throw new Exception500("에셋태그 저장이 실패했습니다. ");
+            }
+        }else {
+            List<Tag> tagListPS = tagRepository.findAll();
+            List<String> tagNameList = new ArrayList<>();
+            for (Tag tag : tagListPS) {
+                tagNameList.add(tag.getTagName());
+            }
+            List<Tag> tagList = new ArrayList<>(); // 새로 태그 테이블에 등록할 태그리스트
+            for (String tagName : addTagList) {
+                if (!tagNameList.contains(tagName)) {
+                    Tag tag = Tag.builder().tagName(tagName).build();
+                    tagList.add(tag);
+                }
+            }
+            try {
+                tagRepository.saveAll(tagList);
+            }catch (Exception e) {
+                throw new Exception500("새로운 태그 생성이 실패했습니다. ");
+            }
+            for (Tag tag : tagListPS) {
+                for (String tagName : addTagList) {
+                    if (tag.getTagName().equals(tagName)) {
+                        tagList.add(tag);
+                    }
+                }
+            }
+            List<AssetTag> assetTagList = new ArrayList<>();
+            for (Tag tag : tagList) {
+                AssetTag assetTag = AssetTag.builder().asset(assetPS).category(categoryPS).subCategory(subCategoryPS).tag(tag).build();
+                assetTagList.add(assetTag);
+            }
+            try {
+                assetTagRepository.saveAll(assetTagList);
+            }catch (Exception e){
+                throw new Exception500("에셋태그 저장이 실패했습니다. ");
             }
         }
-        tagRepository.saveAll(tagList);
-
-        List<AssetTag> assetTagList = new ArrayList<>();
-        for(Tag tag : tagList) {
-            AssetTag assetTag = AssetTag.builder().asset(assetPS).category(categoryPS).subCategory(subCategoryPS).tag(tag).build();
-            assetTagList.add(assetTag);
-        }
-        assetTagRepository.saveAll(assetTagList);
     }
-
 }
