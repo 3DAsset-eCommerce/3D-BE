@@ -83,8 +83,9 @@ public class AdminResponse {
                 this.releaseDate = releaseDate;
                 if(updatedAt == null){
                     this.updatedAt = null;
+                }else{
+                    this.updatedAt = LocalDate.from(updatedAt);
                 }
-                this.updatedAt = LocalDate.from(updatedAt);
             }
         }
     }

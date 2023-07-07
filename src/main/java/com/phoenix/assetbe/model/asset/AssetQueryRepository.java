@@ -134,9 +134,9 @@ public class AssetQueryRepository {
                 )
                 .from(asset)
                 .innerJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
-                .innerJoin(category).on(category.id.eq(assetTag.category.id))
-                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
-                .innerJoin(tag).on(tag.id.eq(assetTag.tag.id))
+                .leftJoin(category).on(category.id.eq(assetTag.category.id))
+                .leftJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
+                .leftJoin(tag).on(tag.id.eq(assetTag.tag.id))
                 .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.eq(asset)))
                 .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.eq(asset)))
                 .where(asset.status.eq(true), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), tagListEq(tagList), containKeyword(keywordList))
@@ -148,9 +148,9 @@ public class AssetQueryRepository {
         Long totalCount = queryFactory.select(asset.id.countDistinct())
                 .from(asset)
                 .innerJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
-                .innerJoin(category).on(category.id.eq(assetTag.category.id))
-                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
-                .innerJoin(tag).on(tag.id.eq(assetTag.tag.id))
+                .leftJoin(category).on(category.id.eq(assetTag.category.id))
+                .leftJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
+                .leftJoin(tag).on(tag.id.eq(assetTag.tag.id))
                 .where(asset.status.eq(true), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), tagListEq(tagList), containKeyword(keywordList))
                 .fetchOne();
 
@@ -182,9 +182,9 @@ public class AssetQueryRepository {
                 )
                 .from(asset)
                 .innerJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
-                .innerJoin(category).on(category.id.eq(assetTag.category.id))
-                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
-                .innerJoin(tag).on(tag.id.eq(assetTag.tag.id))
+                .leftJoin(category).on(category.id.eq(assetTag.category.id))
+                .leftJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
+                .leftJoin(tag).on(tag.id.eq(assetTag.tag.id))
                 .where(asset.status.eq(true), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), tagListEq(tagList), containKeyword(keywordList))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -194,9 +194,9 @@ public class AssetQueryRepository {
         Long totalCount = queryFactory.select(asset.id.countDistinct())
                 .from(asset)
                 .innerJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
-                .innerJoin(category).on(category.id.eq(assetTag.category.id))
-                .innerJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
-                .innerJoin(tag).on(tag.id.eq(assetTag.tag.id))
+                .leftJoin(category).on(category.id.eq(assetTag.category.id))
+                .leftJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
+                .leftJoin(tag).on(tag.id.eq(assetTag.tag.id))
                 .where(asset.status.eq(true), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), tagListEq(tagList), containKeyword(keywordList))
                 .fetchOne();
 
@@ -223,8 +223,8 @@ public class AssetQueryRepository {
                 )
                 .from(asset)
                 .innerJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
-                .innerJoin(category).on(category.id.eq(assetSubCategory.category.id))
-                .innerJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
+                .leftJoin(category).on(category.id.eq(assetSubCategory.category.id))
+                .leftJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
                 .where(statusEq(status), assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containAllKeyword(assetNameList))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -234,13 +234,14 @@ public class AssetQueryRepository {
         Long totalCount = queryFactory.select(asset.id.count())
                 .from(asset)
                 .innerJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
-                .innerJoin(category).on(category.id.eq(assetSubCategory.category.id))
-                .innerJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
+                .leftJoin(category).on(category.id.eq(assetSubCategory.category.id))
+                .leftJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
                 .where(statusEq(status), assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containAllKeyword(assetNameList))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, totalCount);
     }
+
     public boolean existsAssetByAssetId(Long assetId) {
         Integer fetchOne = queryFactory
                 .selectOne()
