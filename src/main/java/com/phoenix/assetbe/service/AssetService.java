@@ -50,9 +50,12 @@ public class AssetService {
     @Transactional
     public AssetResponse.AssetDetailsOutDTO getAssetDetailsService(Long assetId, MyUserDetails myUserDetails) {
         Long wishListId = null;
+        Long cartId = null;
         if (myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
-            wishListId = wishListQueryRepository.findIdByAssetIdAndUserId(assetId, userId);
+            AssetResponse.AssetDetailsOutDTO.Ids Ids = assetQueryRepository.findIdByAssetIdAndUserId(assetId, userId);
+            wishListId = Ids.getWishlistId();
+            cartId = Ids.getCartId();
         }
         Asset assetPS = findAssetById(assetId);
         List<String> tagNameList = assetTagQueryRepository.findTagNameListByAssetId(assetId);
@@ -63,7 +66,7 @@ public class AssetService {
         }catch (Exception e){
             throw new Exception500("view 증가 실패");
         }
-        return new AssetResponse.AssetDetailsOutDTO(assetPS, wishListId, previewList, tagNameList);
+        return new AssetResponse.AssetDetailsOutDTO(assetPS, wishListId, cartId, previewList, tagNameList);
     }
 
     /**

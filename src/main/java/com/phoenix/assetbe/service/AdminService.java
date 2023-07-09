@@ -367,7 +367,7 @@ public class AdminService {
 
     private void addTagList(Asset assetPS, Category categoryPS, SubCategory subCategoryPS, AdminRequest.AddAssetInDTO addAssetInDTO){
         List<String> addTagList = addAssetInDTO.getAddTagList();
-        if(addTagList == null){
+        if(addTagList.isEmpty()){
             AssetTag assetTag = AssetTag.builder().asset(assetPS).category(categoryPS).subCategory(subCategoryPS).tag(null).build();
             try {
                 assetTagRepository.save(assetTag);
