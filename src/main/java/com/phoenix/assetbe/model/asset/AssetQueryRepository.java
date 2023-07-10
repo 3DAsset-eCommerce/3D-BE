@@ -30,22 +30,6 @@ public class AssetQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     /**
-     * 에셋 상세보기
-     * 위시리스트id, 카트id
-     */
-    public AssetResponse.AssetDetailsOutDTO.Ids findIdByAssetIdAndUserId(Long assetId, Long userId) {
-        return queryFactory
-                .select(Projections.constructor(AssetResponse.AssetDetailsOutDTO.Ids.class,
-                                wishList.id,
-                                cart.id)
-                )
-                .from(wishList)
-                .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.id.eq(assetId)))
-                .where(wishList.user.id.eq(userId), wishList.asset.id.eq(assetId))
-                .fetchOne();
-    }
-
-    /**
      * 로그인 유저
      * 개별 에셋
      * 에셋 검색
