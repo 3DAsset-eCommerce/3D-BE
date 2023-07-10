@@ -10,8 +10,6 @@ import java.util.List;
 
 import static com.phoenix.assetbe.model.asset.QMyAsset.myAsset;
 import static com.phoenix.assetbe.model.cart.QCart.cart;
-import static com.phoenix.assetbe.model.order.QOrder.order;
-import static com.phoenix.assetbe.model.order.QOrderProduct.orderProduct;
 import static com.phoenix.assetbe.model.user.QUser.user;
 import static com.phoenix.assetbe.model.wish.QWishList.wishList;
 
@@ -28,14 +26,6 @@ public class WishListQueryRepository {
                 .where(wishList.asset.id.eq(assetId).and(wishList.user.id.eq(userId)))
                 .fetchFirst(); // limit 1
         return fetchOne != null; // 1개가 있는지 없는지 판단 (없으면 null 이므로 null 체크)
-    }
-
-    public Long findIdByAssetIdAndUserId(Long assetId, Long userId) {
-        return queryFactory
-                .select(wishList.id)
-                .from(wishList)
-                .where(wishList.asset.id.eq(assetId).and(wishList.user.id.eq(userId)))
-                .fetchOne();
     }
 
     public List<WishResponse.GetWishListWithOrderAndCartOutDTO> getWishListWithOrderAndCartByUserId(Long userId) {

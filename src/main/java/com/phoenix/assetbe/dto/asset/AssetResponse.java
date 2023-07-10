@@ -31,10 +31,11 @@ public class AssetResponse {
         private Long wishCount;
         private Long visitCount;
         private Long wishlistId;
+        private Long cartId;
         private List<String> previewList;
         private List<String> tagList;
 
-        public AssetDetailsOutDTO(Asset asset, Long wishlistId, List<String> previewList, List<String> tagList) {
+        public AssetDetailsOutDTO(Asset asset, Long wishlistId, Long cartId, List<String> previewList, List<String> tagList) {
             this.assetId = asset.getId();
             this.assetName = asset.getAssetName();
             this.price = asset.getPrice();
@@ -50,8 +51,17 @@ public class AssetResponse {
             this.wishCount = asset.getWishCount();
             this.visitCount = asset.getVisitCount();
             this.wishlistId = wishlistId;
+            this.cartId = cartId;
             this.previewList = previewList;
             this.tagList = tagList;
+        }
+
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Getter @Setter
+        public static class Ids {
+            private Long wishlistId;
+            private Long cartId;
         }
     }
 

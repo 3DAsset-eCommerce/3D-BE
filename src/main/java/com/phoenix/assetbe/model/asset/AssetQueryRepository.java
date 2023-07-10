@@ -10,7 +10,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -28,6 +27,22 @@ import static com.phoenix.assetbe.model.wish.QWishList.wishList;
 public class AssetQueryRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    /**
+     * 에셋 상세보기
+     * 위시리스트id, 카트id
+     */
+    public AssetResponse.AssetDetailsOutDTO.Ids findIdByAssetIdAndUserId(Long assetId, Long userId) {
+        return queryFactory
+                .select(Projections.constructor(AssetResponse.AssetDetailsOutDTO.Ids.class,
+                        wishList.id,
+                        cart.id)
+                )
+                .from(wishList)
+                .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.id.eq(assetId)))
+                .where(wishList.user.id.eq(userId), wishList.asset.id.eq(assetId))
+                .fetchOne();
+    }
 
     /**
      * 로그인 유저
@@ -54,8 +69,8 @@ public class AssetQueryRepository {
                         cart.id)
                 )
                 .from(asset)
-                .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.eq(asset)))
-                .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.eq(asset)))
+                .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.id.eq(asset.id)))
+                .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.id.eq(asset.id)))
                 .where(asset.status.eq(true), containKeyword(keywordList))
                 .orderBy(assetSortByIncludedKeywordCount(keywordList).desc(), assetSort(pageable))
                 .offset(pageable.getOffset())
@@ -133,12 +148,12 @@ public class AssetQueryRepository {
                         cart.id)
                 )
                 .from(asset)
-                .innerJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
+                .leftJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
                 .leftJoin(category).on(category.id.eq(assetTag.category.id))
                 .leftJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
                 .leftJoin(tag).on(tag.id.eq(assetTag.tag.id))
-                .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.eq(asset)))
-                .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.eq(asset)))
+                .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.id.eq(asset.id)))
+                .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.id.eq(asset.id)))
                 .where(asset.status.eq(true), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), tagListEq(tagList), containKeyword(keywordList))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -147,7 +162,7 @@ public class AssetQueryRepository {
 
         Long totalCount = queryFactory.select(asset.id.countDistinct())
                 .from(asset)
-                .innerJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
+                .leftJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
                 .leftJoin(category).on(category.id.eq(assetTag.category.id))
                 .leftJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
                 .leftJoin(tag).on(tag.id.eq(assetTag.tag.id))
@@ -181,7 +196,7 @@ public class AssetQueryRepository {
                         asset.wishCount)
                 )
                 .from(asset)
-                .innerJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
+                .leftJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
                 .leftJoin(category).on(category.id.eq(assetTag.category.id))
                 .leftJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
                 .leftJoin(tag).on(tag.id.eq(assetTag.tag.id))
@@ -193,7 +208,7 @@ public class AssetQueryRepository {
 
         Long totalCount = queryFactory.select(asset.id.countDistinct())
                 .from(asset)
-                .innerJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
+                .leftJoin(assetTag).on(asset.id.eq(assetTag.asset.id))
                 .leftJoin(category).on(category.id.eq(assetTag.category.id))
                 .leftJoin(subCategory).on(subCategory.id.eq(assetTag.subCategory.id))
                 .leftJoin(tag).on(tag.id.eq(assetTag.tag.id))
@@ -222,7 +237,7 @@ public class AssetQueryRepository {
                         )
                 )
                 .from(asset)
-                .innerJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
+                .leftJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
                 .leftJoin(category).on(category.id.eq(assetSubCategory.category.id))
                 .leftJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
                 .where(statusEq(status), assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containAllKeyword(assetNameList))
@@ -233,7 +248,7 @@ public class AssetQueryRepository {
 
         Long totalCount = queryFactory.select(asset.id.count())
                 .from(asset)
-                .innerJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
+                .leftJoin(assetSubCategory).on(assetSubCategory.asset.id.eq(asset.id))
                 .leftJoin(category).on(category.id.eq(assetSubCategory.category.id))
                 .leftJoin(subCategory).on(subCategory.id.eq(assetSubCategory.subCategory.id))
                 .where(statusEq(status), assetNumberEq(assetNumber), categoryNameEq(categoryName), subCategoryNameEq(subCategoryName), containAllKeyword(assetNameList))
@@ -259,23 +274,35 @@ public class AssetQueryRepository {
     }
 
     private BooleanExpression assetNameEq(String assetName) {
-        return StringUtils.hasText(assetName) ? asset.assetName.eq(assetName) : null;
+        if (assetName == null){
+            return null;
+        }
+        return asset.assetName.eq(assetName);
     }
 
     private BooleanExpression categoryNameEq(String categoryName) {
-        return StringUtils.hasText(categoryName) ? category.categoryName.eq(categoryName) : null;
+        if (categoryName == null){
+            return null;
+        }
+        return category.categoryName.eq(categoryName);
     }
 
     private BooleanExpression subCategoryNameEq(String subCategoryName) {
-        return StringUtils.hasText(subCategoryName) ? subCategory.subCategoryName.eq(subCategoryName) : null;
+        if (subCategoryName == null){
+            return null;
+        }
+        return subCategory.subCategoryName.eq(subCategoryName);
     }
 
     private BooleanExpression tagNameEq(String tagName){
-        return StringUtils.hasText(tagName) ? tag.tagName.eq(tagName) : null;
+        if (tagName == null){
+            return null;
+        }
+        return tag.tagName.eq(tagName);
     }
 
     private BooleanExpression statusEq(String status){
-        if(status == null) {
+        if (status == null){
             return null;
         }
         if(status.equals("true")){
@@ -288,7 +315,10 @@ public class AssetQueryRepository {
     }
 
     private BooleanExpression assetNameLike(String keyword){
-        return StringUtils.hasText(keyword) ? asset.assetName.containsIgnoreCase(keyword) : null;
+        if (keyword == null){
+            return null;
+        }
+        return asset.assetName.containsIgnoreCase(keyword);
     }
 
     private BooleanBuilder tagListEq(List<String> tagList){
