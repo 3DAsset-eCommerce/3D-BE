@@ -60,6 +60,7 @@ public class AssetResponse {
         @AllArgsConstructor
         @Getter @Setter
         public static class Ids {
+            private Long assetId;
             private Long wishlistId;
             private Long cartId;
         }

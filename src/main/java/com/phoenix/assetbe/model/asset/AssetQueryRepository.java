@@ -17,6 +17,7 @@ import static com.phoenix.assetbe.model.asset.QAsset.asset;
 import static com.phoenix.assetbe.model.asset.QAssetSubCategory.assetSubCategory;
 import static com.phoenix.assetbe.model.asset.QAssetTag.assetTag;
 import static com.phoenix.assetbe.model.asset.QCategory.category;
+import static com.phoenix.assetbe.model.asset.QPreview.preview;
 import static com.phoenix.assetbe.model.asset.QSubCategory.subCategory;
 import static com.phoenix.assetbe.model.asset.QTag.tag;
 import static com.phoenix.assetbe.model.cart.QCart.cart;
@@ -30,17 +31,20 @@ public class AssetQueryRepository {
 
     /**
      * 에셋 상세보기
+     * 로그인 유저
      * 위시리스트id, 카트id
      */
-    public AssetResponse.AssetDetailsOutDTO.Ids findIdByAssetIdAndUserId(Long assetId, Long userId) {
+    public AssetResponse.AssetDetailsOutDTO.Ids findIds(Long assetId, Long userId) {
         return queryFactory
                 .select(Projections.constructor(AssetResponse.AssetDetailsOutDTO.Ids.class,
+                        asset.id,
                         wishList.id,
                         cart.id)
                 )
-                .from(wishList)
+                .from(asset)
+                .leftJoin(wishList).on(wishList.user.id.eq(userId).and(wishList.asset.id.eq(assetId)))
                 .leftJoin(cart).on(cart.user.id.eq(userId).and(cart.asset.id.eq(assetId)))
-                .where(wishList.user.id.eq(userId), wishList.asset.id.eq(assetId))
+                .where(asset.id.eq(assetId))
                 .fetchOne();
     }
 

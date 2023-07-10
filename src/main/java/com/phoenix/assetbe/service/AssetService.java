@@ -53,9 +53,9 @@ public class AssetService {
         Long cartId = null;
         if (myUserDetails != null) {
             Long userId = myUserDetails.getUser().getId();
-            AssetResponse.AssetDetailsOutDTO.Ids Ids = assetQueryRepository.findIdByAssetIdAndUserId(assetId, userId);
-            wishListId = Ids.getWishlistId();
-            cartId = Ids.getCartId();
+            AssetResponse.AssetDetailsOutDTO.Ids ids = assetQueryRepository.findIds(assetId, userId);
+            wishListId = ids.getWishlistId();
+            cartId = ids.getCartId();
         }
         Asset assetPS = findAssetById(assetId);
         List<String> tagNameList = assetTagQueryRepository.findTagNameListByAssetId(assetId);
