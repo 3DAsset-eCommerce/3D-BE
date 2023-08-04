@@ -66,7 +66,7 @@
 
 ## 시스템 구성도
 
-![system-architecture](https://github.com/3DAsset-eCommerce/3D-BE/assets/107292103/368a6d36-18ea-413e-b6ab-7d11a5f98485)
+![system-architecture](https://github.com/3DAsset-eCommerce/3D-BE/assets/92681117/f72be8c2-4fd6-4454-b986-d30ae22b8914)
 
 <br/>
 
@@ -77,8 +77,15 @@
 
 ## 개발일지
 👤 **yhj1129**
-- 백엔드 프로젝트 생성 및 1차 환경설정 (23/05/02) - `commit` : [9100388](https://github.com/smash-teams/smash-teams-BE/commit/9100388cd4ee3121a49b838409e15b5848ca9a49)
-- 백엔드 프로젝트 생성 및 1차 환경설정 (23/05/02) - `commit` : [9100388](https://github.com/smash-teams/smash-teams-BE/commit/9100388cd4ee3121a49b838409e15b5848ca9a49)
+- AWS S3 연결, 3D 파일 업로드/삭제 구현 (23/06/27) - `commit` : [75e2a38](https://github.com/3DAsset-eCommerce/3D-BE/commit/75e2a380c80b501f07859677824c16c15ca8660c)
+- 회원가입/비밀번호 찾기 이메일 인증 구현 (23/06/27) - `commit` : [d0a527e](https://github.com/3DAsset-eCommerce/3D-BE/commit/d0a527e4a11a9a77899c3ea676f47189930c03ff)
+- 위시리스트 조회 구현 (23/06/26) - `commit` : [a5ef41c](https://github.com/3DAsset-eCommerce/3D-BE/commit/a5ef41c194faa25e55964d48a498e037990eb1db)
+- 위시리스트 추가/삭제 구현 (23/06/26) - `commit` : [a5ef41c](https://github.com/3DAsset-eCommerce/3D-BE/commit/a5ef41c194faa25e55964d48a498e037990eb1db)
+- 주문 내역 조회 구현 (23/06/17) - `commit` : [75cdb07](https://github.com/3DAsset-eCommerce/3D-BE/commit/75cdb078e2e61af120319692e997ceee6f7d9545)
+- 주문하기 구현 (23/06/15) - `commit` : [0e76433](https://github.com/3DAsset-eCommerce/3D-BE/commit/0e7643382b2d65001f0c9105facad1c8814725c2)
+- 장바구니 리스트 조회 구현 (23/06/14) - `commit` : [0e69320](https://github.com/3DAsset-eCommerce/3D-BE/commit/0e69320b3b285fc70923c0e76f1c624ed68697ab)
+- 장바구니 삭제 구현 (23/06/08) - `commit` : [307ac34](https://github.com/3DAsset-eCommerce/3D-BE/commit/307ac34eb641ed015df84e72ee4c491585a0103a)
+- 장바구니 추가 구현 (23/06/08) - `commit` : [f3f7ce0](https://github.com/3DAsset-eCommerce/3D-BE/commit/f3f7ce048cd238bb2cc5698e2c646c3a089c0e03)
 
 ---
 👤 **realgreatcode**
@@ -110,9 +117,13 @@
 👤 **유현주(팀장)**
 
 - Role
-  - ERD 설계, Spring Security 및 AOP 세팅, CI/CD, 도메인 네임 및 HTTPS 관련 설정
-  - API(n 개)
-    - 목록
+  - ERD 설계, Spring Security 및 AOP 세팅, CI/CD, 도메인 네임 및 HTTPS 관련 설정, AWS 세팅 및 관리
+  - API(20 개)
+    - 로그인, 비밀번호 변경(인증코드 전송), 비밀번호 변경(인증코드 확인), 비밀번호 변경, 이메일 중복 체크, 회원가입(인증코드 전송), 회원가입(인증코드 확인), 회원가입
+    - 장바구니 담긴 개수 확인, 장바구니 리스트 조회, 장바구니 담기, 장바구니 삭제
+    - 위시리스트 조회, 위시리스트 담기, 위시리스트 삭제
+    - 주문하기, 주문 내역 상세 보기, 주문 내역 조회
+    - 3D 파일 AWS S3 업로드, 3D 파일 AWS S3 삭제
 - Github: [@yhj1129](https://github.com/yhj1129)
 
 👤 **양진호(팀원)**
