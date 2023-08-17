@@ -4,7 +4,7 @@
   <a href="https://github.com/kefranabg/readme-md-generator/graphs/commit-activity" target="_blank">
     <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
   </a>
-  <a href="https://github.com/wupitch/wupitch-server/blob/main/LICENSE" target="_blank">
+  <a href="https://github.com/3DAsset-eCommerce/3D-BE/blob/dev/LICENSE" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/github/license/wupitch/wupitch-server" />
   </a>
 </p>
@@ -147,7 +147,9 @@
 - Role
   - Sentry.io 세팅, RestDoc 문서 생성, 마이페이지, 관리자 페이지, 리드미 페이지
   - API(13 개)
-    - 비밀번호 확인, 나의 회원정보 조회, 나의 회원정보 수정, 회원 탈퇴, 내 에셋, 내 에셋 검색, 에셋 파일 다운로드, 에셋 등록, 에셋 수정, 에셋 비활성화, 에셋 활성화, 서브카테고리 조회, 카테고리 조회
+    - 비밀번호 확인, 나의 회원정보 조회, 나의 회원정보 수정, 회원 탈퇴, 내 에셋, 내 에셋 검색,
+    - 에셋 파일 다운로드, 에셋 등록, 에셋 수정, 에셋 비활성화, 에셋 활성화,
+    - 서브카테고리 조회, 카테고리 조회
 - Github: [@Jason_song97](https://github.com/JasonSong97)
 
 <br/>
@@ -161,7 +163,7 @@ Give a ⭐️ if this project helped you!
 ## 📝 License
 
 Copyright © 2023 [3DAsset-BE](https://github.com/3DAsset-eCommerce/3D-BE).<br />
-This project is [MIT](https://github.com/wupitch/wupitch-server/blob/main/LICENSE) licensed.
+This project is [MIT](https://github.com/3DAsset-eCommerce/3D-BE/blob/dev/LICENSE) licensed.
 
 ***
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
