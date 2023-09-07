@@ -89,8 +89,18 @@
 
 ---
 👤 **realgreatcode**
-- 유저 스케쥴 조회 구현 (23/05/07) - `commit` : [3e27392](https://github.com/smash-teams/smash-teams-BE/commit/3e273928403b0ad8fa0b720acddf77491f171fa8)
-- 유저 스케쥴 조회 구현 (23/05/07) - `commit` : [3e27392](https://github.com/smash-teams/smash-teams-BE/commit/3e273928403b0ad8fa0b720acddf77491f171fa8)
+- 에셋 상세보기 구현 (23/06/12) - `commit` : [bc30c79](https://github.com/3DAsset-eCommerce/3D-BE/pull/56/commits/bc30c79f563b432a5559c83242b1bb90f24534e0)
+- 에셋 리뷰 CRUD (23/06/12) - `commit` : [6f70c22](https://github.com/3DAsset-eCommerce/3D-BE/pull/58/commits/6f70c221137873b7c388585236f2cb5c1ef6fdca), [c8ca49f](https://github.com/3DAsset-eCommerce/3D-BE/pull/59/commits/c8ca49faacee49fdd5fdb60717622becb3f061ff), [a6d1f46](https://github.com/3DAsset-eCommerce/3D-BE/commit/a6d1f4678ed7002ef74d40da121c3a5039013b38)
+- 개별 에셋 구현 (23/06/13) - `commit` : [c7b3f2d](https://github.com/3DAsset-eCommerce/3D-BE/pull/67/commits/c7b3f2d66225b47e3c3eb314705b4a6411324180)
+- 상위 카테고리별 에셋 조회 (23/06/14) - `commit` : [508e104](https://github.com/3DAsset-eCommerce/3D-BE/commit/508e10486da145667e61bdf018650ae57d6746af)
+- 하위 카테고리별 에셋 조회 (23/06/15) - `commit` : [7608f33](https://github.com/3DAsset-eCommerce/3D-BE/commit/7608f3339ab011ef146ca091e289d7d746f06db7)
+- 카테고리별 에셋 카운팅 (23/06/20) - `commit` : [a6c0b96](https://github.com/3DAsset-eCommerce/3D-BE/pull/108/commits/a6c0b9683083dd041e9a35459757a377c519c408)
+- 에셋 검색 (23/06/21) - `commit` : [753cdff](https://github.com/3DAsset-eCommerce/3D-BE/commit/753cdff4a55af2aa5d6a8bb8cdd5036c9d7670e7)
+- 카테고리별 에셋 조회 통합 및 검색 기능 추가 (23/06/21) - `commit` : [88a41a7](https://github.com/3DAsset-eCommerce/3D-BE/commit/88a41a73018e10962fc751f7eb8331953cb8c8f6)
+- 주문 내역 조회(관리자) (23/06/25) - `commit` : [13ae49b](https://github.com/3DAsset-eCommerce/3D-BE/pull/158/commits/13ae49ba8c41ad591b159aa46725ccf57e14d054)
+- 에셋 조회(관리자) (23/06/26) - `commit` : [a4c0cf2](https://github.com/3DAsset-eCommerce/3D-BE/pull/158/commits/a4c0cf2f894dd0c334317453cbfef66b1d121d62)
+- 에셋 등록(관리자) (23/06/27) - `commit` : [4a7bfeb](https://github.com/3DAsset-eCommerce/3D-BE/commit/4a7bfeb9f82d6107989ab3a5aa2280730f5965d4)
+
 
 ---
 👤 **ji-hoooon**
@@ -129,10 +139,12 @@
 👤 **양진호(팀원)**
 
 - Role
-  - ERD 설계
-  - API(n 개)
-    - 목록
-- Github: [@realgreatcode](https://github.com/realgreatcode)
+  - ERD 설계, 에셋 페이지, 관리자 페이지
+  - API(14 개)
+    - 에셋 전체 리스트 조회, 상위 카테고리별 에셋 조회, 하위 카테고리별 에셋 조회, 카테고리별 에셋 카운팅 및 태그리스트 조회
+    - 에셋 검색, 에셋 상세보기, 에셋 리뷰 작성, 에셋 리뷰 보기, 에셋 리뷰 수정, 에셋 리뷰 삭제
+    - 주문 내역 조회(관리자), 에셋 조회(관리자), 에셋 등록(관리자), 에셋 수정(관리자)
+    - Github: [@realgreatcode](https://github.com/realgreatcode)
 
 👤 **이지훈(팀원)**
 
